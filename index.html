@@ -1,1 +1,517 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Évaluation complète — Lycée Maritime Boulogne</title>
+<link rel="icon" href="data:,">
+<style>
+  :root{
+    --accent:#1a73e8;--bg:#f6f8fb;--card:#ffffff;
+    --text:#1f2430;--muted:#98a2b3;--border:#e6e9ef;--radius:14px;
+    --shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(16,24,40,.07);
+    --success:#0f9d58;--warning:#f4b400;--danger:#d93025;
+  }
+  *{box-sizing:border-box}
+  html, body {
+    margin:0; padding:0;
+    background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    width:100%; max-width:100%; overflow-x:hidden;
+  }
+  .wrap{width:100%;max-width:1600px;margin:0 auto;padding:12px;overflow-x:hidden}
 
+  .header{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:16px 14px;margin-bottom:14px;text-align:center;
+  }
+  .header .banner{display:block;margin:0 auto 12px;max-width:400px;width:100%;height:auto}
+  .header h1{margin:0;font-size:18px;font-weight:700;line-height:1.3}
+  .header .subtitle{margin:6px 0 0;font-size:13px;color:#667085;font-weight:500}
+  .header .updated{
+    margin-top:10px;font-size:12px;color:#98a2b3;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .header .updated .dot{
+    display:inline-block;width:6px;height:6px;border-radius:50%;
+    background:var(--success);
+  }
+
+  /* Compteur global */
+  .stats-bar{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:12px;margin-bottom:16px;
+  }
+  .stat-box{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:14px 16px;text-align:center;
+  }
+  .stat-box .label{font-size:12px;color:#667085;font-weight:500;margin-bottom:4px}
+  .stat-box .value{font-size:22px;font-weight:700;color:var(--accent)}
+
+  .loading{
+    text-align:center;padding:40px 16px;color:var(--muted);font-size:15px;
+    display:flex;align-items:center;justify-content:center;gap:12px;
+  }
+  .loading .spin{
+    width:20px;height:20px;border:2px solid var(--border);
+    border-top-color:var(--accent);border-radius:50%;
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* Tableau (desktop) */
+  .table-wrap{display:none}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card);
+    border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+  thead th{
+    position:sticky;top:0;background:var(--accent);color:#fff;
+    text-align:left;padding:11px 12px;font-weight:600;
+    white-space:nowrap;cursor:pointer;user-select:none;
+    transition:background .15s;
+  }
+  thead th:hover{background:#1558b0}
+  thead th:not(:first-child){text-align:right}
+  thead th .arrow{display:inline-block;margin-left:6px;opacity:.4;font-size:11px}
+  thead th.sorted .arrow{opacity:1}
+  tbody td{padding:10px 12px;border-top:1px solid var(--border);
+    vertical-align:top;word-break:break-word}
+  tbody td:first-child{font-weight:600;color:#344054}
+  tbody td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
+  tbody td.empty{color:var(--muted);font-weight:400}
+  tbody tr:nth-child(even){background:#fafbfd}
+  tbody tr:hover{background:#eef4ff}
+  tbody td.suggestion{text-align:left;font-weight:400;color:#475467;
+    font-size:13px;max-width:400px}
+
+  /* Cartes (mobile) */
+  .cards{display:grid;grid-template-columns:1fr;gap:12px}
+  .card{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:16px 18px;
+  }
+  .card h3{margin:0 0 12px;font-size:17px;font-weight:600;color:var(--accent);
+    word-break:break-word;padding-bottom:8px;border-bottom:1px solid var(--border)}
+  .card .row{
+    display:grid;grid-template-columns:1fr auto;align-items:center;
+    gap:12px;padding:8px 0;border-bottom:1px dashed var(--border);
+    font-size:14.5px;
+  }
+  .card .row:last-child{border-bottom:none}
+  .card .row .k{color:#475467;font-size:14px;min-width:0;word-break:break-word}
+  .card .row .v{text-align:right;font-weight:700;color:var(--accent);
+    font-variant-numeric:tabular-nums;white-space:nowrap;font-size:15px}
+  .card .row .v.empty{color:var(--muted);font-weight:500}
+  .card .suggestions-block{
+    margin-top:12px;padding-top:12px;border-top:1px solid var(--border);
+  }
+  .card .suggestions-block .title{
+    font-size:13px;font-weight:600;color:#667085;margin-bottom:8px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .card .suggestions-block ul{
+    margin:0;padding-left:18px;list-style:disc;color:#475467;
+    font-size:13.5px;line-height:1.5;
+  }
+  .card .suggestions-block li{margin-bottom:6px}
+  .card .suggestions-block li:last-child{margin-bottom:0}
+  .card .suggestions-block .none{
+    color:var(--muted);font-style:italic;font-size:13px;
+  }
+
+  .empty-msg{text-align:center;padding:40px;color:var(--muted);font-size:14px}
+
+  footer.foot{
+    text-align:center;padding:24px 16px 12px;
+    font-size:12px;color:#98a2b3;
+  }
+  footer.foot a{color:var(--accent);text-decoration:none}
+  footer.foot a:hover{text-decoration:underline}
+
+  /* RESPONSIVE */
+  @media (min-width:900px){
+    .wrap{padding:20px}
+    .cards{display:none}
+    .table-wrap{display:block}
+  }
+  body.layout-mobile .wrap{padding:14px}
+  body.layout-mobile .header{padding:18px 16px;margin-bottom:16px}
+  body.layout-mobile .header h1{font-size:20px}
+  body.layout-mobile .header .subtitle{font-size:14px}
+  body.layout-mobile .cards{display:grid}
+  body.layout-mobile .table-wrap{display:none}
+
+  body.layout-tablet .wrap{padding:16px}
+  body.layout-tablet .header{padding:22px 18px}
+  body.layout-tablet .header h1{font-size:22px}
+  body.layout-tablet .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  body.layout-tablet .table-wrap{display:none}
+
+  body.layout-desktop .wrap{padding:20px}
+  body.layout-desktop .header{padding:28px 24px}
+  body.layout-desktop .header h1{font-size:24px}
+  body.layout-desktop .cards{display:none}
+  body.layout-desktop .table-wrap{display:block}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="header">
+    <img class="banner"
+      src="https://www.lyceemaritime-boulogne.com/application/themes/theme_simpleo_coteo/images/logo-lycee-maritime-boulogne.jpg"
+      alt="Lycée Maritime Boulogne">
+    <h1>Évaluation complète des formations</h1>
+    <p class="subtitle">Lycée Professionnel Maritime Boulogne - Le Portel</p>
+    <div class="updated" id="updated" style="display:none">
+      <span class="dot"></span>
+      <span>Données mises à jour le <span id="updated-date">…</span></span>
+    </div>
+  </header>
+
+  <div class="stats-bar" id="statsBar" style="display:none">
+    <div class="stat-box">
+      <div class="label">Formations évaluées</div>
+      <div class="value" id="statFormations">—</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Réponses totales</div>
+      <div class="value" id="statReponses">—</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Refus totaux</div>
+      <div class="value" id="statRefus">—</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Taux de refus global</div>
+      <div class="value" id="statTauxRefus">—</div>
+    </div>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spin"></div>
+    <div>Chargement des données…</div>
+  </div>
+
+  <div class="table-wrap" id="tableWrap" style="display:none">
+    <table id="table"></table>
+  </div>
+
+  <div class="cards" id="cards" style="display:none"></div>
+
+  <div class="empty-msg" id="empty" style="display:none">Aucune donnée disponible</div>
+
+  <footer class="foot">
+    <p>Page d'analyse interne — <a href="https://smqlpmboulogne.github.io/satisfactionfc/" target="_blank">Voir le site public</a></p>
+    <p>Source : Google Sheets — synchronisation automatique.</p>
+  </footer>
+</div>
+
+<script>
+  /* ============================================================
+     1) LAYOUT
+     ============================================================ */
+  function applyLayout(){
+    var w = Math.min(window.innerWidth||9999, document.documentElement.clientWidth||9999, screen.width||9999);
+    document.body.classList.remove('layout-mobile','layout-tablet','layout-desktop');
+    if (w < 700)       document.body.classList.add('layout-mobile');
+    else if (w < 1000) document.body.classList.add('layout-tablet');
+    else               document.body.classList.add('layout-desktop');
+  }
+  applyLayout();
+  window.addEventListener('resize', applyLayout);
+  window.addEventListener('orientationchange', () => setTimeout(applyLayout, 200));
+  setTimeout(applyLayout, 300);
+  setTimeout(applyLayout, 1000);
+
+  /* ============================================================
+     2) URLs DES CSV (sur l'autre dépôt)
+     ============================================================ */
+  const BASE = "https://smqlpmboulogne.github.io/satisfactionfc/";
+  const CSV_RESULTATS = BASE + "formations.csv";
+  const CSV_SUGGESTIONS = BASE + "suggestions.csv";
+  const DATE_FILE = BASE + "last-update.txt";
+
+  /* ============================================================
+     3) UTILITAIRES
+     ============================================================ */
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function parseCSV(text){
+    const rows = [];
+    let cur = [], field = '', inQuotes = false;
+    for (let i = 0; i < text.length; i++){
+      const c = text[i];
+      if (inQuotes){
+        if (c === '"'){
+          if (text[i+1] === '"'){ field += '"'; i++; }
+          else inQuotes = false;
+        } else field += c;
+      } else {
+        if (c === '"') inQuotes = true;
+        else if (c === ','){ cur.push(field); field = ''; }
+        else if (c === '\n'){ cur.push(field); rows.push(cur); cur = []; field = ''; }
+        else if (c === '\r'){ }
+        else field += c;
+      }
+    }
+    if (field !== '' || cur.length){ cur.push(field); rows.push(cur); }
+    return rows.filter(r => r.some(c => c.trim() !== ''));
+  }
+
+  /* ============================================================
+     4) ÉTAT GLOBAL
+     ============================================================ */
+  let DATA = { indicators: [], rows: [] };
+  let SUGGESTIONS = {}; // { "Formation": ["sugg1", "sugg2"] }
+  let sortKey = 'name';
+  let sortAsc = true;
+
+  /* ============================================================
+     5) CHARGEMENT DES DONNÉES
+     ============================================================ */
+  async function chargerTout(){
+    try {
+      // Charger les deux CSV en parallèle
+      const [resFormations, resSuggestions] = await Promise.all([
+        fetch(CSV_RESULTATS + '?t=' + Date.now(), { cache: 'no-store' }),
+        fetch(CSV_SUGGESTIONS + '?t=' + Date.now(), { cache: 'no-store' })
+      ]);
+
+      const csvFormations = await resFormations.text();
+      const csvSuggestions = await resSuggestions.text();
+
+      // Parser les formations
+      const rowsF = parseCSV(csvFormations);
+      const rowsS = parseCSV(csvSuggestions);
+
+      // Construire DATA
+      if (rowsF.length >= 2){
+        const headers = rowsF[0].map(h => h.trim());
+        const indicators = headers.slice(1);
+
+        DATA.indicators = indicators;
+        DATA.rows = rowsF.slice(1)
+          .filter(r => r[0] && r[0].trim() !== '')
+          .map(r => {
+            const name = r[0].trim();
+            const cells = indicators.map((_, i) => {
+              const raw = (r[i+1] || '').trim();
+              const bad = raw === '' || raw === '—';
+              let num = null;
+              if (!bad){
+                const cleaned = raw.replace(/[%\s]/g,'').replace(',','.');
+                const n = parseFloat(cleaned);
+                if (!isNaN(n)) num = n;
+              }
+              return { value: bad ? '—' : raw, empty: bad, num };
+            });
+            return { name, cells };
+          });
+      }
+
+      // Construire SUGGESTIONS
+      if (rowsS.length >= 2){
+        rowsS.slice(1).forEach(r => {
+          const formation = (r[0] || '').trim();
+          const suggestion = (r[2] || r[1] || '').trim(); // selon ordre colonnes
+          if (!formation || !suggestion) return;
+          if (!SUGGESTIONS[formation]) SUGGESTIONS[formation] = [];
+          SUGGESTIONS[formation].push(suggestion);
+        });
+      }
+
+      // Afficher
+      render();
+      updateStats();
+      chargerDate();
+
+    } catch (e) {
+      console.error("Erreur chargement:", e);
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('empty').textContent = "Impossible de charger les données : " + e.message;
+      document.getElementById('empty').style.display = 'block';
+    }
+  }
+
+  /* ============================================================
+     6) STATS GLOBALES
+     ============================================================ */
+  function updateStats(){
+    const nbFormations = DATA.rows.length;
+    let nbReponses = 0;
+    let nbRefus = 0;
+
+    DATA.rows.forEach(r => {
+      // On cherche une colonne "Réponses" ou "Refus" par son nom
+      DATA.indicators.forEach((ind, i) => {
+        const c = r.cells[i];
+        if (/^Réponses?$/i.test(ind) && c.num != null) nbReponses += c.num;
+        if (/^Refus$/i.test(ind) && c.num != null) nbRefus += c.num;
+      });
+    });
+
+    if (nbFormations > 0){
+      document.getElementById('statFormations').textContent = nbFormations;
+      document.getElementById('statReponses').textContent = nbReponses;
+      document.getElementById('statRefus').textContent = nbRefus;
+      if (nbReponses + nbRefus > 0){
+        const taux = (nbRefus / (nbReponses + nbRefus)) * 100;
+        document.getElementById('statTauxRefus').textContent = taux.toFixed(1) + ' %';
+      } else {
+        document.getElementById('statTauxRefus').textContent = '—';
+      }
+      document.getElementById('statsBar').style.display = 'grid';
+    }
+  }
+
+  /* ============================================================
+     7) TRI
+     ============================================================ */
+  function getValue(row, key){
+    if (key === 'name') return row.name.toLowerCase();
+    const i = parseInt(key.replace('col',''), 10);
+    const c = row.cells[i];
+    if (c.empty) return null;
+    return c.num != null ? c.num : c.value.toLowerCase();
+  }
+  function sortRows(rows){
+    return rows.slice().sort((a, b) => {
+      const va = getValue(a, sortKey), vb = getValue(b, sortKey);
+      if (va === null && vb === null) return 0;
+      if (va === null) return 1;
+      if (vb === null) return -1;
+      if (typeof va === 'number' && typeof vb === 'number'){
+        return sortAsc ? va - vb : vb - va;
+      }
+      const sa = String(va), sb = String(vb);
+      return sortAsc ? sa.localeCompare(sb,'fr') : sb.localeCompare(sa,'fr');
+    });
+  }
+
+  /* ============================================================
+     8) RENDU — TABLEAU (desktop)
+     ============================================================ */
+  function renderTable(rows){
+    const thead = '<thead><tr>' +
+      '<th data-key="name" class="'+(sortKey==='name'?'sorted':'')+'">Formation' +
+      '<span class="arrow">'+(sortKey==='name'?(sortAsc?'▲':'▼'):'▲')+'</span></th>' +
+      DATA.indicators.map((h, i) => {
+        const k = 'col'+i;
+        const cls = sortKey===k ? 'sorted' : '';
+        const arr = sortKey===k ? (sortAsc?'▲':'▼') : '▲';
+        return '<th data-key="'+k+'" class="'+cls+'">'+esc(h)+
+               '<span class="arrow">'+arr+'</span></th>';
+      }).join('') +
+      '<th>Suggestions</th>' +
+      '</tr></thead>';
+
+    const tbody = '<tbody>' + rows.map(r => {
+      const sugs = SUGGESTIONS[r.name] || [];
+      const sugsHtml = sugs.length
+        ? sugs.map(s => '• ' + esc(s)).join('<br>')
+        : '<span style="color:#98a2b3;font-style:italic">—</span>';
+      return '<tr><td>'+esc(r.name)+'</td>' +
+        r.cells.map(c => '<td class="'+(c.empty?'empty':'')+'">'+esc(c.value)+'</td>').join('') +
+        '<td class="suggestion">'+sugsHtml+'</td>' +
+        '</tr>';
+    }).join('') + '</tbody>';
+
+    const $table = document.getElementById('table');
+    $table.innerHTML = thead + tbody;
+
+    $table.querySelectorAll('thead th').forEach(th => {
+      if (th.textContent.trim() === 'Suggestions') return;
+      th.addEventListener('click', () => {
+        const k = th.dataset.key;
+        if (!k) return;
+        if (k === sortKey) sortAsc = !sortAsc;
+        else { sortKey = k; sortAsc = true; }
+        render();
+      });
+    });
+  }
+
+  /* ============================================================
+     9) RENDU — CARTES (mobile)
+     ============================================================ */
+  function renderCards(rows){
+    document.getElementById('cards').innerHTML = rows.map(r => {
+      const rowsHtml = DATA.indicators.map((label, i) => {
+        const c = r.cells[i];
+        return '<div class="row"><span class="k">'+esc(label)+'</span>' +
+               '<span class="v'+(c.empty?' empty':'')+'">'+esc(c.value)+'</span></div>';
+      }).join('');
+
+      const sugs = SUGGESTIONS[r.name] || [];
+      let sugsBlock = '';
+      if (sugs.length){
+        sugsBlock = '<div class="suggestions-block">' +
+          '<div class="title">💬 Suggestions ('+sugs.length+')</div>' +
+          '<ul>' + sugs.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul>' +
+          '</div>';
+      } else {
+        sugsBlock = '<div class="suggestions-block">' +
+          '<div class="title">💬 Suggestions</div>' +
+          '<div class="none">Aucune remarque</div>' +
+          '</div>';
+      }
+
+      return '<div class="card"><h3>'+esc(r.name)+'</h3>' +
+             rowsHtml + sugsBlock + '</div>';
+    }).join('');
+  }
+
+  /* ============================================================
+     10) RENDU GLOBAL
+     ============================================================ */
+  function render(){
+    if (!DATA.rows.length){
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('empty').style.display = 'block';
+      return;
+    }
+    const rows = sortRows(DATA.rows);
+    renderTable(rows);
+    renderCards(rows);
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('tableWrap').style.display = 'block';
+    document.getElementById('cards').style.display = 'grid';
+    document.getElementById('empty').style.display = 'none';
+
+    // Ajuster selon layout
+    const w = Math.min(window.innerWidth||9999, screen.width||9999);
+    if (w < 900){
+      document.getElementById('tableWrap').style.display = 'none';
+    }
+  }
+
+  /* ============================================================
+     11) DATE
+     ============================================================ */
+  async function chargerDate(){
+    try {
+      const r = await fetch(DATE_FILE + '?t=' + Date.now(), { cache: 'no-store' });
+      if (!r.ok) return;
+      const txt = (await r.text()).trim();
+      const d = new Date(txt);
+      if (isNaN(d)) return;
+      const opts = { day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' };
+      document.getElementById('updated-date').textContent = d.toLocaleString('fr-FR', opts);
+      document.getElementById('updated').style.display = 'inline-flex';
+    } catch(e){}
+  }
+
+  chargerTout();
+</script>
+</body>
+</html>
