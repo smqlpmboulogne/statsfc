@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Évaluation complète — Lycée Maritime Boulogne</title>
+<title>Détail de la formation — Lycée Maritime Boulogne</title>
 <link rel="icon" href="data:,">
 <style>
   :root{
@@ -13,7 +13,6 @@
     --card:#ffffff;--text:#1a2a3a;--muted:#7a8fa6;--border:#d8e3ed;
     --radius:10px;
     --shadow:0 1px 2px rgba(30,58,95,.06), 0 6px 16px rgba(30,58,95,.08);
-    --shadow-hover:0 6px 12px rgba(30,58,95,.10), 0 16px 32px rgba(30,58,95,.12);
     --success:#5fa02c;--success-2:#4a8a1f;
     --warning:#e8a63c;--warning-2:#c88a1c;
     --danger:#c93e3e;--danger-2:#a52f2f;
@@ -28,7 +27,7 @@
     width:100%; max-width:100%; overflow-x:hidden;
     min-height:100vh;
   }
-  .wrap{width:100%;max-width:1600px;margin:0 auto;padding:12px;overflow-x:hidden}
+  .wrap{width:100%;max-width:800px;margin:0 auto;padding:12px;overflow-x:hidden}
 
   .header{
     background: linear-gradient(135deg, var(--marine) 0%, var(--ocean) 100%);
@@ -37,40 +36,26 @@
     box-shadow:0 8px 24px rgba(30,58,95,.20);
     padding:14px 16px;margin-bottom:14px;text-align:center;
   }
-  .header .banner{display:block;margin:0 auto 6px;max-width:260px;width:100%;height:auto}
-  .header h1{margin:0;font-size:16px;font-weight:700;line-height:1.3;color:#fff}
-  .header .subtitle{margin:4px 0 0;font-size:13px;color:#b8d2e8;font-weight:500}
-  .header .updated{
-    margin-top:8px;font-size:11.5px;color:#d0e0ee;
+  .header .banner{display:block;margin:0 auto 6px;max-width:220px;width:100%;height:auto}
+  .header h1{margin:0;font-size:15px;font-weight:700;line-height:1.3;color:#fff}
+  .header .subtitle{margin:4px 0 0;font-size:12.5px;color:#b8d2e8;font-weight:500}
+
+  /* Lien retour */
+  .back-link{
     display:inline-flex;align-items:center;gap:6px;
-    padding:3px 10px;background:rgba(255,255,255,.12);
-    border-radius:14px;
-  }
-  .header .updated .dot{
-    display:inline-block;width:6px;height:6px;border-radius:50%;
-    background:var(--anis);box-shadow:0 0 0 3px rgba(164,198,57,.30);
-  }
-
-  /* Onglets */
-  .tabs{
-    display:flex;gap:4px;margin-bottom:16px;
+    margin-bottom:14px;
+    padding:8px 14px;
     background:var(--card);border:1px solid var(--border);
-    border-radius:12px;padding:4px;box-shadow:var(--shadow);
-    overflow-x:auto;-webkit-overflow-scrolling:touch;
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    color:var(--marine);text-decoration:none;font-size:13px;font-weight:600;
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
   }
-  .tab{
-    flex:1 1 auto;min-width:max-content;
-    padding:10px 16px;border:none;background:transparent;
-    font-size:14px;font-weight:600;color:var(--muted);
-    border-radius:8px;cursor:pointer;white-space:nowrap;
-    transition:background .15s,color .15s;
-    font-family:inherit;
+  .back-link:hover{
+    transform:translateX(-3px);
+    box-shadow:0 6px 12px rgba(30,58,95,.10);
+    border-color:var(--azur-clair);
   }
-  .tab:hover{background:#f0f4f9;color:var(--marine)}
-  .tab.active{background:var(--marine);color:#fff}
-
-  .panel{display:none}
-  .panel.active{display:block}
+  .back-link .arrow{color:var(--azur);font-weight:700}
 
   .loading{
     text-align:center;padding:50px 16px;color:var(--muted);font-size:15px;
@@ -83,113 +68,46 @@
   }
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* Tableau */
-  .table-wrap{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:var(--radius);box-shadow:var(--shadow);
-    overflow-x:auto;-webkit-overflow-scrolling:touch;
-  }
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  thead th{
-    position:sticky;top:0;background:var(--marine);color:#fff;
-    text-align:left;padding:11px 10px;font-weight:600;
-    white-space:nowrap;cursor:pointer;user-select:none;
-    transition:background .15s;
-  }
-  thead th:hover{background:var(--ocean)}
-  thead th:not(:first-child){text-align:right}
-  thead th .arrow{display:inline-block;margin-left:5px;opacity:.4;font-size:10px}
-  thead th.sorted .arrow{opacity:1}
-  tbody td{
-    padding:10px;border-top:1px solid var(--border);
-    vertical-align:top;word-break:break-word;
-  }
-  tbody td:first-child{font-weight:600;color:var(--marine)}
-  tbody td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
-  tbody td.taux{font-weight:700;font-size:14px}
-  tbody td.taux.high{color:var(--success)}
-  tbody td.taux.mid{color:var(--warning)}
-  tbody td.taux.low{color:var(--danger)}
-  tbody td.empty{color:var(--muted);font-weight:400}
-  tbody tr:nth-child(even){background:#fafbfd}
-  tbody tr:hover{background:#eef4ff}
-
-  /* Cartes */
-  .cards{display:grid;grid-template-columns:1fr;gap:12px}
-
-  /* Modal de focus */
-  .modal-overlay{
-    position:fixed;inset:0;background:rgba(30,58,95,.65);
-    backdrop-filter:blur(4px);
-    display:none;align-items:center;justify-content:center;
-    padding:20px;z-index:1000;
-    animation:fadeIn .2s ease;
-  }
-  .modal-overlay.active{display:flex}
-  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
-  .modal-content{
-    background:var(--card);border-radius:var(--radius);
-    box-shadow:0 20px 60px rgba(0,0,0,.30);
-    max-width:600px;width:100%;max-height:90vh;
-    overflow-y:auto;padding:24px;
-    position:relative;
-    animation:slideUp .25s ease;
-  }
-  @keyframes slideUp{
-    from{opacity:0;transform:translateY(20px)}
-    to{opacity:1;transform:translateY(0)}
-  }
-  .modal-close{
-    position:absolute;top:12px;right:12px;
-    width:32px;height:32px;border-radius:50%;
-    background:var(--ecume);border:none;cursor:pointer;
-    font-size:18px;color:var(--muted);
-    display:flex;align-items:center;justify-content:center;
-    transition:background .15s,color .15s;
-    font-family:inherit;
-  }
-  .modal-close:hover{background:var(--ecume-2);color:var(--marine)}
-
-  /* Carte */
+  /* Carte détaillée */
   .card{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
-    padding:16px 18px;
+    padding:24px 24px;
     position:relative;overflow:hidden;
-    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-    cursor:pointer;
-  }
-  .card:hover{
-    transform:translateY(-3px);
-    box-shadow:var(--shadow-hover);
-    border-color:var(--azur-clair);
   }
   .card::before{
-    content:'';position:absolute;top:0;left:0;bottom:0;width:4px;
+    content:'';position:absolute;top:0;left:0;bottom:0;width:5px;
     background:var(--azur);
   }
   .card.high::before{background:var(--success)}
   .card.mid::before{background:var(--warning)}
   .card.low::before{background:var(--danger)}
 
-  .card h3{
-    margin:0 0 12px;font-size:16px;font-weight:600;color:var(--marine);
-    word-break:break-word;padding-bottom:10px;border-bottom:1px solid var(--border);
+  .card h2{
+    margin:0 0 6px;font-size:22px;font-weight:700;color:var(--marine);
+    word-break:break-word;line-height:1.3;
   }
-  .card .taux-big{
-    font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;
-    letter-spacing:-0.5px;color:var(--azur);margin-bottom:6px;
+
+  .taux-big{
+    font-size:48px;font-weight:700;font-variant-numeric:tabular-nums;
+    letter-spacing:-1.5px;color:var(--azur);margin:12px 0 8px;
+    line-height:1;
   }
   .card.high .taux-big{color:var(--success)}
   .card.mid .taux-big{color:var(--warning)}
   .card.low .taux-big{color:var(--danger)}
-  .card .bar{
-    width:100%;height:6px;background:var(--ecume-2);border-radius:3px;
-    overflow:hidden;margin-bottom:12px;
+
+  .taux-label{
+    font-size:12.5px;color:var(--muted);font-weight:500;
+    text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;
   }
-  .card .bar span{
-    display:block;height:100%;border-radius:3px;
+
+  .bar{
+    width:100%;height:8px;background:var(--ecume-2);border-radius:4px;
+    overflow:hidden;margin:12px 0 20px;
+  }
+  .bar span{
+    display:block;height:100%;border-radius:4px;
     background:linear-gradient(90deg, var(--azur), var(--ocean));
     transition:width .6s ease;
   }
@@ -197,47 +115,56 @@
   .card.mid .bar span{background:linear-gradient(90deg, #f0c060, var(--warning-2))}
   .card.low .bar span{background:linear-gradient(90deg, #e06060, var(--danger-2))}
 
-  .card .row{
+  .indicators{
+    display:flex;flex-direction:column;gap:2px;
+    margin-top:8px;
+  }
+  .row{
     display:grid;grid-template-columns:1fr auto;align-items:center;
-    gap:12px;padding:7px 0;border-bottom:1px dashed var(--border);
-    font-size:13.5px;
+    gap:14px;padding:11px 0;border-bottom:1px dashed var(--border);
+    font-size:14.5px;
   }
-  .card .row:last-of-type{border-bottom:none}
-  .card .row .k{color:#475467;min-width:0;word-break:break-word}
-  .card .row .v{
+  .row:last-child{border-bottom:none}
+  .row .k{color:#475467;font-weight:500;min-width:0;word-break:break-word}
+  .row .v{
     text-align:right;font-weight:700;color:var(--azur);
-    font-variant-numeric:tabular-nums;white-space:nowrap;
+    font-variant-numeric:tabular-nums;white-space:nowrap;font-size:16px;
   }
-  .card .row .v.empty{color:var(--muted);font-weight:500}
+  .row .v.empty{color:var(--muted);font-weight:500}
 
-  .card .sugg-block{
-    margin-top:14px;padding-top:12px;border-top:1px solid var(--border);
+  .sugg-block{
+    margin-top:22px;padding-top:18px;border-top:2px solid var(--ecume-2);
   }
-  .card .sugg-block .title{
-    font-size:13px;font-weight:600;color:var(--marine);margin-bottom:8px;
-    display:flex;align-items:center;gap:6px;
+  .sugg-block .title{
+    font-size:15px;font-weight:700;color:var(--marine);margin-bottom:12px;
+    display:flex;align-items:center;gap:8px;
   }
-  .card .sugg-block ul{
-    margin:0;padding-left:18px;list-style:disc;color:#475467;
-    font-size:13px;line-height:1.5;
+  .sugg-block .title .count{
+    background:var(--ecume);color:var(--muted);
+    font-size:12px;font-weight:600;
+    padding:2px 8px;border-radius:10px;
   }
-  .card .sugg-block li{margin-bottom:6px}
-  .card .sugg-block li:last-child{margin-bottom:0}
-  .card .sugg-block .none{
-    color:var(--muted);font-style:italic;font-size:13px;
+  .sugg-block ul{
+    margin:0;padding-left:20px;list-style:disc;color:#475467;
+    font-size:14px;line-height:1.6;
   }
-
-  .card .hint{
-    margin-top:12px;padding-top:10px;
-    border-top:1px dashed var(--border);
-    font-size:11.5px;color:var(--muted);text-align:center;
-    font-style:italic;
+  .sugg-block li{margin-bottom:10px;padding-left:4px}
+  .sugg-block li:last-child{margin-bottom:0}
+  .sugg-block .none{
+    color:var(--muted);font-style:italic;font-size:14px;
   }
 
-  .empty-msg{text-align:center;padding:50px;color:var(--muted);font-size:14px}
+  .error-box{
+    text-align:center;padding:40px 20px;
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    color:var(--muted);
+  }
+  .error-box h3{color:var(--marine);margin:0 0 8px;font-size:18px}
+  .error-box p{margin:0;font-size:14px}
 
   footer.foot{
-    text-align:center;padding:16px 16px 12px;font-size:12px;
+    text-align:center;padding:24px 16px 12px;font-size:12px;
     color:var(--muted);line-height:1.4;
   }
   footer.foot p{margin:0}
@@ -247,17 +174,12 @@
   footer.foot .mention{font-style:italic;font-size:11px;color:var(--muted);opacity:.85}
 
   @media (min-width:600px){
-    .cards{grid-template-columns:repeat(2,1fr);gap:14px}
-  }
-  @media (min-width:900px){
     .wrap{padding:20px}
-    .header{padding:16px 24px;margin-bottom:16px}
+    .header{padding:18px 24px}
     .header .banner{max-width:260px}
-    .header h1{font-size:20px}
-    .tab{font-size:15px;padding:12px 20px}
-  }
-  @media (min-width:1200px){
-    .cards{grid-template-columns:repeat(3,1fr);gap:16px}
+    .header h1{font-size:17px}
+    .card{padding:32px 32px}
+    .taux-big{font-size:56px}
   }
 </style>
 </head>
@@ -268,38 +190,21 @@
     <img class="banner"
       src="https://www.lyceemaritime-boulogne.com/application/themes/theme_simpleo_coteo/images/logo-lycee-maritime-boulogne.jpg"
       alt="Lycée Maritime Boulogne">
-    <h1>Évaluation complète des formations</h1>
+    <h1>Détail de la formation</h1>
     <p class="subtitle">Lycée Professionnel Maritime Boulogne - Le Portel</p>
-    <div class="updated" id="updated" style="display:none">
-      <span class="dot"></span>
-      <span>Données mises à jour le <span id="updated-date">…</span></span>
-    </div>
   </header>
 
-  <div class="tabs" role="tablist">
-    <button class="tab active" data-tab="board" role="tab">Tableau de bord</button>
-    <button class="tab" data-tab="detail" role="tab">Détail, suggestions & remarques</button>
+  <a class="back-link" href="index.html">
+    <span class="arrow">←</span>
+    Retour au tableau de bord
+  </a>
+
+  <div class="loading" id="loading">
+    <div class="spin"></div>
+    <div>Chargement des données…</div>
   </div>
 
-  <div class="panel active" id="panel-board">
-    <div class="loading" id="loading-board">
-      <div class="spin"></div>
-      <div>Chargement des données…</div>
-    </div>
-    <div class="table-wrap" id="tableWrap" style="display:none">
-      <table id="table"></table>
-    </div>
-    <div class="empty-msg" id="empty-board" style="display:none">Aucune donnée disponible</div>
-  </div>
-
-  <div class="panel" id="panel-detail">
-    <div class="loading" id="loading-detail">
-      <div class="spin"></div>
-      <div>Chargement du détail…</div>
-    </div>
-    <div class="cards" id="cards" style="display:none"></div>
-    <div class="empty-msg" id="empty-detail" style="display:none">Aucune donnée détaillée disponible</div>
-  </div>
+  <div id="content" style="display:none"></div>
 
   <footer class="foot">
     <p>
@@ -311,23 +216,14 @@
   </footer>
 </div>
 
-<!-- MODAL pour focus carte -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-content" id="modalContent"></div>
-</div>
-
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
 
   const BASE = "https://smqlpmboulogne.github.io/satisfactionfc/";
   const CSV_RESULTATS = BASE + "formations.csv";
   const CSV_SUGGESTIONS = BASE + "suggestions.csv";
-  const DATE_FILE = BASE + "last-update.txt";
 
-  let DATA = { rows: [] };
   let SUGGESTIONS = {};
-  let sortKey = 'name';
-  let sortAsc = true;
 
   function esc(s){
     return String(s).replace(/[&<>"']/g, c => ({
@@ -378,6 +274,14 @@
   }
 
   async function chargerTout(){
+    const params = new URLSearchParams(location.search);
+    const formation = params.get('formation');
+
+    if (!formation){
+      showError("Aucune formation spécifiée", "Le lien est incomplet. Veuillez retourner au tableau de bord.");
+      return;
+    }
+
     try {
       const [resFormations, resSuggestions] = await Promise.all([
         fetch(CSV_RESULTATS + '?t=' + Date.now(), { cache: 'no-store' }),
@@ -387,273 +291,115 @@
       const rowsF = parseCSV(await resFormations.text());
       const rowsS = parseCSV(await resSuggestions.text());
 
-      if (rowsF.length >= 2){
-        const allHeaders = rowsF[0].map(h => h.trim());
+      // Suggestions
+      rowsS.slice(1).forEach(r => {
+        const f = (r[1] || '').trim();
+        const s = (r[2] || '').trim();
+        if (!f || !s) return;
+        if (!SUGGESTIONS[f]) SUGGESTIONS[f] = [];
+        SUGGESTIONS[f].push(s);
+      });
 
-        let cutoff = allHeaders.length;
-        for (let i = 1; i < allHeaders.length; i++){
-          if (allHeaders[i] === ''){ cutoff = i; break; }
-        }
-        const headers = allHeaders.slice(0, cutoff);
-
-        const iReponses = headers.findIndex(h => /^Réponses?$/i.test(h));
-        const iRep = headers.findIndex(h => /réponse aux attentes/i.test(h));
-        const iObj = headers.findIndex(h => /atteinte des objectifs/i.test(h));
-        const iUti = headers.findIndex(h => /utilisation compétences/i.test(h));
-        const iQua = headers.findIndex(h => /qualité.*animation/i.test(h));
-
-        DATA.rows = rowsF.slice(1)
-          .filter(r => r[0] && r[0].trim() !== '')
-          .map(r => {
-            const name = r[0].trim();
-            const getNum = (i) => {
-              if (i < 0) return null;
-              const raw = (r[i] || '').trim();
-              if (raw === '' || raw === '—') return null;
-              return toPercent(raw);
-            };
-            const reponses = iReponses >= 0 ? (parseInt(r[iReponses], 10) || null) : null;
-            const pRep = getNum(iRep);
-            const pObj = getNum(iObj);
-            const pUti = getNum(iUti);
-            const pQua = getNum(iQua);
-
-            const vals = [pRep, pObj, pUti, pQua].filter(v => v != null);
-            const satisfaction = vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : null;
-
-            return { name, satisfaction, reponses, pRep, pObj, pUti, pQua, refus: null };
-          });
+      // Trouver la formation demandée
+      const row = rowsF.slice(1).find(r => (r[0] || '').trim() === formation);
+      if (!row){
+        showError("Formation introuvable", "La formation « " + formation + " » n'existe pas dans les données.");
+        return;
       }
 
-      if (rowsS.length >= 2){
-        rowsS.slice(1).forEach(r => {
-          const formation = (r[1] || '').trim();
-          const suggestion = (r[2] || '').trim();
-          if (!formation || !suggestion) return;
-          if (!SUGGESTIONS[formation]) SUGGESTIONS[formation] = [];
-          SUGGESTIONS[formation].push(suggestion);
-        });
+      const allHeaders = rowsF[0].map(h => h.trim());
+      let cutoff = allHeaders.length;
+      for (let i = 1; i < allHeaders.length; i++){
+        if (allHeaders[i] === ''){ cutoff = i; break; }
       }
+      const headers = allHeaders.slice(0, cutoff);
 
-      render();
-      chargerDate();
+      const iReponses = headers.findIndex(h => /^Réponses?$/i.test(h));
+      const iRep = headers.findIndex(h => /réponse aux attentes/i.test(h));
+      const iObj = headers.findIndex(h => /atteinte des objectifs/i.test(h));
+      const iUti = headers.findIndex(h => /utilisation compétences/i.test(h));
+      const iQua = headers.findIndex(h => /qualité.*animation/i.test(h));
+
+      const getNum = (i) => {
+        if (i < 0) return null;
+        const raw = (row[i] || '').trim();
+        if (raw === '' || raw === '—') return null;
+        return toPercent(raw);
+      };
+
+      const reponses = iReponses >= 0 ? (parseInt(row[iReponses], 10) || null) : null;
+      const pRep = getNum(iRep);
+      const pObj = getNum(iObj);
+      const pUti = getNum(iUti);
+      const pQua = getNum(iQua);
+
+      const vals = [pRep, pObj, pUti, pQua].filter(v => v != null);
+      const satisfaction = vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : null;
+
+      render({
+        name: formation,
+        satisfaction,
+        reponses,
+        pRep, pObj, pUti, pQua,
+        suggestions: SUGGESTIONS[formation] || []
+      });
 
     } catch (e) {
       console.error("Erreur chargement:", e);
-      document.getElementById('loading-board').style.display = 'none';
-      document.getElementById('loading-detail').style.display = 'none';
-      document.getElementById('empty-board').textContent = "Impossible de charger : " + e.message;
-      document.getElementById('empty-board').style.display = 'block';
-      document.getElementById('empty-detail').textContent = "Impossible de charger : " + e.message;
-      document.getElementById('empty-detail').style.display = 'block';
+      showError("Erreur de chargement", e.message);
     }
   }
 
-  function getValue(row, key){
-    if (key === 'name') return row.name.toLowerCase();
-    if (key === 'satisfaction') return row.satisfaction;
-    if (key === 'reponses') return row.reponses;
-    if (key === 'refus') return row.refus;
-    return row[key] != null ? row[key] : null;
-  }
-  function sortRows(rows){
-    return rows.slice().sort((a, b) => {
-      const va = getValue(a, sortKey), vb = getValue(b, sortKey);
-      if (va === null && vb === null) return 0;
-      if (va === null) return 1;
-      if (vb === null) return -1;
-      if (typeof va === 'number' && typeof vb === 'number'){
-        return sortAsc ? va - vb : vb - va;
-      }
-      const sa = String(va), sb = String(vb);
-      return sortAsc ? sa.localeCompare(sb,'fr') : sb.localeCompare(sa,'fr');
-    });
-  }
-
-  function renderTable(rows){
-    const columns = [
-      { key:'name',         label:'Formation' },
-      { key:'satisfaction', label:'Taux de satisfaction' },
-      { key:'pRep',         label:'Réponse aux attentes' },
-      { key:'pObj',         label:'Atteinte des objectifs' },
-      { key:'pUti',         label:'Utilisation compétences' },
-      { key:'pQua',         label:'Qualité animation' },
-      { key:'reponses',     label:'Réponses' },
-      { key:'refus',        label:'Refus' }
-    ];
-
-    const thead = '<thead><tr>' + columns.map(c => {
-      const isSorted = sortKey === c.key;
-      const cls = isSorted ? 'sorted' : '';
-      const arr = isSorted ? (sortAsc ? '▲' : '▼') : '▲';
-      return '<th data-key="'+c.key+'" class="'+cls+'">'+esc(c.label)+
-             '<span class="arrow">'+arr+'</span></th>';
-    }).join('') + '</tr></thead>';
-
-    const tbody = '<tbody>' + rows.map(r => {
-      const lvl = level(r.satisfaction);
-      return '<tr>' +
-        '<td>'+esc(r.name)+'</td>' +
-        '<td class="taux '+lvl+'">'+fmtPct(r.satisfaction)+'</td>' +
-        '<td class="'+(r.pRep == null ? 'empty' : '')+'">'+fmtPct(r.pRep)+'</td>' +
-        '<td class="'+(r.pObj == null ? 'empty' : '')+'">'+fmtPct(r.pObj)+'</td>' +
-        '<td class="'+(r.pUti == null ? 'empty' : '')+'">'+fmtPct(r.pUti)+'</td>' +
-        '<td class="'+(r.pQua == null ? 'empty' : '')+'">'+fmtPct(r.pQua)+'</td>' +
-        '<td class="'+(r.reponses == null ? 'empty' : '')+'">'+(r.reponses != null ? r.reponses : '—')+'</td>' +
-        '<td class="empty">—</td>' +
-        '</tr>';
-    }).join('') + '</tbody>';
-
-    const $table = document.getElementById('table');
-    $table.innerHTML = thead + tbody;
-
-    $table.querySelectorAll('thead th').forEach(th => {
-      th.addEventListener('click', () => {
-        const k = th.dataset.key;
-        if (!k) return;
-        if (k === sortKey) sortAsc = !sortAsc;
-        else { sortKey = k; sortAsc = true; }
-        render();
-      });
-    });
-  }
-
-  /* ============================================================
-     CARTE — fonction pour générer le HTML (utilisée pour l'affichage ET la modale)
-     ============================================================ */
-  function carteHTML(r, pourModale){
+  function render(r){
     const lvl = level(r.satisfaction);
     const pct = r.satisfaction != null ? Math.max(0, Math.min(100, r.satisfaction)) : 0;
-    const sugs = SUGGESTIONS[r.name] || [];
 
-    const sugsBlock = sugs.length
-      ? '<div class="sugg-block"><div class="title">💬 Suggestions & remarques ('+sugs.length+')</div>' +
-        '<ul>' + sugs.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul></div>'
-      : '<div class="sugg-block"><div class="title">💬 Suggestions & remarques</div>' +
-        '<div class="none">Aucune remarque</div></div>';
+    const sugsBlock = r.suggestions.length
+      ? '<div class="sugg-block">' +
+        '<div class="title">💬 Suggestions & remarques <span class="count">'+r.suggestions.length+'</span></div>' +
+        '<ul>' + r.suggestions.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul>' +
+        '</div>'
+      : '<div class="sugg-block">' +
+        '<div class="title">💬 Suggestions & remarques</div>' +
+        '<div class="none">Aucune remarque pour cette formation.</div>' +
+        '</div>';
 
-    const hint = pourModale ? '' :
-      '<div class="hint">💡 Cliquez pour agrandir</div>';
+    document.getElementById('content').innerHTML =
+      '<div class="card '+lvl+'">' +
+        '<h2>'+esc(r.name)+'</h2>' +
+        '<div class="taux-label">Taux de satisfaction global</div>' +
+        '<div class="taux-big">'+fmtPct(r.satisfaction)+'</div>' +
+        '<div class="bar"><span style="width:'+pct+'%"></span></div>' +
 
-    return '<div class="card '+lvl+'" data-name="'+esc(r.name)+'">' +
-      '<h3>'+esc(r.name)+'</h3>' +
-      '<div class="taux-big">'+fmtPct(r.satisfaction)+'</div>' +
-      '<div class="bar"><span style="width:'+pct+'%"></span></div>' +
-      '<div class="row"><span class="k">Réponse aux attentes</span>' +
-        '<span class="v'+(r.pRep == null ? ' empty' : '')+'">'+fmtPct(r.pRep)+'</span></div>' +
-      '<div class="row"><span class="k">Atteinte des objectifs</span>' +
-        '<span class="v'+(r.pObj == null ? ' empty' : '')+'">'+fmtPct(r.pObj)+'</span></div>' +
-      '<div class="row"><span class="k">Utilisation compétences</span>' +
-        '<span class="v'+(r.pUti == null ? ' empty' : '')+'">'+fmtPct(r.pUti)+'</span></div>' +
-      '<div class="row"><span class="k">Qualité animation</span>' +
-        '<span class="v'+(r.pQua == null ? ' empty' : '')+'">'+fmtPct(r.pQua)+'</span></div>' +
-      '<div class="row"><span class="k">Réponses</span>' +
-        '<span class="v'+(r.reponses == null ? ' empty' : '')+'">'+(r.reponses != null ? r.reponses : '—')+'</span></div>' +
-      '<div class="row"><span class="k">Refus</span>' +
-        '<span class="v empty">—</span></div>' +
-      sugsBlock +
-      hint +
+        '<div class="indicators">' +
+          '<div class="row"><span class="k">Réponse aux attentes</span>' +
+            '<span class="v'+(r.pRep == null ? ' empty' : '')+'">'+fmtPct(r.pRep)+'</span></div>' +
+          '<div class="row"><span class="k">Atteinte des objectifs</span>' +
+            '<span class="v'+(r.pObj == null ? ' empty' : '')+'">'+fmtPct(r.pObj)+'</span></div>' +
+          '<div class="row"><span class="k">Utilisation compétences</span>' +
+            '<span class="v'+(r.pUti == null ? ' empty' : '')+'">'+fmtPct(r.pUti)+'</span></div>' +
+          '<div class="row"><span class="k">Qualité animation</span>' +
+            '<span class="v'+(r.pQua == null ? ' empty' : '')+'">'+fmtPct(r.pQua)+'</span></div>' +
+          '<div class="row"><span class="k">Réponses</span>' +
+            '<span class="v'+(r.reponses == null ? ' empty' : '')+'">'+(r.reponses != null ? r.reponses : '—')+'</span></div>' +
+          '<div class="row"><span class="k">Refus</span>' +
+            '<span class="v empty">—</span></div>' +
+        '</div>' +
+
+        sugsBlock +
       '</div>';
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+
+    document.title = r.name + ' — Évaluation complète';
   }
 
-  function renderCards(rows){
-    document.getElementById('cards').innerHTML = rows.map(r => carteHTML(r, false)).join('');
-
-    // Rendre les cartes cliquables
-    document.querySelectorAll('#cards .card').forEach(card => {
-      card.addEventListener('click', () => {
-        const name = card.dataset.name;
-        const r = DATA.rows.find(x => x.name === name);
-        if (!r) return;
-        ouvrirModale(r);
-      });
-    });
-  }
-
-  /* ============================================================
-     MODALE — focus sur une carte
-     ============================================================ */
-  function ouvrirModale(r){
-    const modal = document.getElementById('modalOverlay');
-    const content = document.getElementById('modalContent');
-
-    content.innerHTML =
-      '<button class="modal-close" aria-label="Fermer">✕</button>' +
-      carteHTML(r, true);
-
-    // Retirer le curseur sur la carte dans la modale
-    content.querySelector('.card').style.cursor = 'default';
-    content.querySelector('.card').style.transform = 'none';
-    content.querySelector('.card').style.boxShadow = 'none';
-    content.querySelector('.card').style.border = 'none';
-    content.querySelector('.card').style.padding = '0';
-
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-
-    content.querySelector('.modal-close').addEventListener('click', fermerModale);
-    modal.addEventListener('click', e => {
-      if (e.target === modal) fermerModale();
-    });
-  }
-
-  function fermerModale(){
-    document.getElementById('modalOverlay').classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') fermerModale();
-  });
-
-  /* ============================================================
-     RENDU GLOBAL
-     ============================================================ */
-  function render(){
-    if (!DATA.rows.length){
-      document.getElementById('loading-board').style.display = 'none';
-      document.getElementById('loading-detail').style.display = 'none';
-      document.getElementById('empty-board').style.display = 'block';
-      document.getElementById('empty-detail').style.display = 'block';
-      return;
-    }
-    const rows = sortRows(DATA.rows);
-    renderTable(rows);
-    renderCards(rows);
-
-    document.getElementById('loading-board').style.display = 'none';
-    document.getElementById('loading-detail').style.display = 'none';
-    document.getElementById('tableWrap').style.display = 'block';
-    document.getElementById('cards').style.display = 'grid';
-    document.getElementById('empty-board').style.display = 'none';
-    document.getElementById('empty-detail').style.display = 'none';
-  }
-
-  /* ============================================================
-     ONGLETS
-     ============================================================ */
-  document.querySelectorAll('.tab').forEach(t => {
-    t.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
-      document.querySelectorAll('.panel').forEach(p =>
-        p.classList.toggle('active', p.id === 'panel-' + t.dataset.tab));
-    });
-  });
-
-  /* ============================================================
-     DATE
-     ============================================================ */
-  async function chargerDate(){
-    try {
-      const r = await fetch(DATE_FILE + '?t=' + Date.now(), { cache: 'no-store' });
-      if (!r.ok) return;
-      const txt = (await r.text()).trim();
-      const d = new Date(txt);
-      if (isNaN(d)) return;
-      const opts = { day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' };
-      document.getElementById('updated-date').textContent = d.toLocaleString('fr-FR', opts);
-      document.getElementById('updated').style.display = 'inline-flex';
-    } catch(e){}
+  function showError(title, msg){
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').innerHTML =
+      '<div class="error-box"><h3>'+esc(title)+'</h3><p>'+esc(msg)+'</p></div>';
+    document.getElementById('content').style.display = 'block';
   }
 
   chargerTout();
