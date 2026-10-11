@@ -49,7 +49,6 @@
     background:var(--anis);box-shadow:0 0 0 3px rgba(164,198,57,.30);
   }
 
-  /* Barre d'actions (bouton prompt) */
   .top-actions{
     display:flex;justify-content:flex-end;
     margin-bottom:12px;
@@ -71,7 +70,6 @@
   }
   .btn-prompt:active{transform:translateY(0)}
 
-  /* Onglets */
   .tabs{
     display:flex;gap:4px;margin-bottom:16px;
     background:var(--card);border:1px solid var(--border);
@@ -103,7 +101,6 @@
   }
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* Tableau */
   .table-wrap{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
@@ -144,7 +141,6 @@
   .formation-link .ext{font-size:11px;opacity:.5;transition:opacity .15s}
   .formation-link:hover .ext{opacity:1}
 
-  /* Cartes (onglet détail) */
   .cards{display:grid;grid-template-columns:1fr;gap:12px}
   .card{
     background:var(--card);border:1px solid var(--border);
@@ -153,10 +149,7 @@
     position:relative;overflow:hidden;
     transition:transform .2s ease, box-shadow .2s ease;
   }
-  .card:hover{
-    transform:translateY(-2px);
-    box-shadow:var(--shadow-hover);
-  }
+  .card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
   .card::before{
     content:'';position:absolute;top:0;left:0;bottom:0;width:4px;
     background:var(--azur);
@@ -223,7 +216,6 @@
   }
   .card .hint a:hover{text-decoration:underline}
 
-  /* Cartes synthèses IA */
   .synthese-grid{
     display:grid;grid-template-columns:1fr;gap:16px;
   }
@@ -309,7 +301,6 @@
     <button class="tab" data-tab="synth" role="tab">Synthèse IA</button>
   </div>
 
-  <!-- Onglet 1 : Tableau de bord -->
   <div class="panel active" id="panel-board">
     <div class="loading" id="loading-board">
       <div class="spin"></div>
@@ -321,7 +312,6 @@
     <div class="empty-msg" id="empty-board" style="display:none">Aucune donnée disponible</div>
   </div>
 
-  <!-- Onglet 2 : Détail -->
   <div class="panel" id="panel-detail">
     <div class="loading" id="loading-detail">
       <div class="spin"></div>
@@ -331,7 +321,6 @@
     <div class="empty-msg" id="empty-detail" style="display:none">Aucune donnée détaillée disponible</div>
   </div>
 
-  <!-- Onglet 3 : Synthèse IA -->
   <div class="panel" id="panel-synth">
     <div class="loading" id="loading-synth">
       <div class="spin"></div>
@@ -352,14 +341,8 @@
 </div>
 
 <script>
-  /* ============================================================
-     ANNÉE EN COURS
-     ============================================================ */
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  /* ============================================================
-     URLs DES CSV
-     ============================================================ */
   const BASE = "https://smqlpmboulogne.github.io/satisfactionfc/";
   const CSV_RESULTATS = BASE + "formations.csv";
   const CSV_REFUS = BASE + "refus.csv";
@@ -367,18 +350,12 @@
   const CSV_SYNTHESE = BASE + "synthese.csv";
   const DATE_FILE = BASE + "last-update.txt";
 
-  /* ============================================================
-     ÉTAT GLOBAL
-     ============================================================ */
   let DATA = { rows: [] };
   let SUGGESTIONS = {};
   let SYNTHESES = {};
   let sortKey = 'name';
   let sortAsc = true;
 
-  /* ============================================================
-     UTILITAIRES
-     ============================================================ */
   function esc(s){
     return String(s).replace(/[&<>"']/g, c => ({
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -427,9 +404,6 @@
     return v.toFixed(1).replace('.',',') + ' %';
   }
 
-  /* ============================================================
-     CHARGEMENT DES DONNÉES
-     ============================================================ */
   async function chargerTout(){
     try {
       const [rF, rR, rSug, rSyn] = await Promise.all([
@@ -444,18 +418,13 @@
       const rowsS = parseCSV(await rSug.text());
       const rowsSyn = parseCSV(await rSyn.text());
 
-      // REFUS
       const refusMap = {};
       rowsR.slice(1).forEach(r => {
         const f = (r[0] || '').trim();
         if (!f) return;
-        refusMap[f] = {
-          refus: parseInt(r[1], 10) || 0,
-          taux: toPercent(r[3])
-        };
+        refusMap[f] = { refus: parseInt(r[1], 10) || 0, taux: toPercent(r[3]) };
       });
 
-      // SUGGESTIONS (structure : Date | Formation | Suggestion)
       rowsS.slice(1).forEach(r => {
         const f = (r[1] || '').trim();
         const s = (r[2] || '').trim();
@@ -464,17 +433,12 @@
         SUGGESTIONS[f].push(s);
       });
 
-      // SYNTHESES (structure : Formation | Nb | Synthèse)
       rowsSyn.slice(1).forEach(r => {
         const f = (r[0] || '').trim();
         if (!f) return;
-        SYNTHESES[f] = {
-          nb: parseInt(r[1], 10) || 0,
-          texte: (r[2] || '').trim()
-        };
+        SYNTHESES[f] = { nb: parseInt(r[1], 10) || 0, texte: (r[2] || '').trim() };
       });
 
-      // RESULTATS
       if (rowsF.length >= 2){
         const allHeaders = rowsF[0].map(h => h.trim());
         let cutoff = allHeaders.length;
@@ -504,12 +468,9 @@
             const pObj = getNum(iObj);
             const pUti = getNum(iUti);
             const pQua = getNum(iQua);
-
             const vals = [pRep, pObj, pUti, pQua].filter(v => v != null);
             const satisfaction = vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : null;
-
             const refusInfo = refusMap[name] || { refus: null, taux: null };
-
             return {
               name, satisfaction, reponses,
               pRep, pObj, pUti, pQua,
@@ -532,9 +493,6 @@
     }
   }
 
-  /* ============================================================
-     TRI
-     ============================================================ */
   function getValue(row, key){
     if (key === 'name') return row.name.toLowerCase();
     return row[key] != null ? row[key] : null;
@@ -553,9 +511,6 @@
     });
   }
 
-  /* ============================================================
-     RENDU — TABLEAU (onglet 1)
-     ============================================================ */
   function renderTable(rows){
     const columns = [
       { key:'name',         label:'Formation' },
@@ -581,11 +536,8 @@
       const lvl = level(r.satisfaction);
       const urlDetail = 'detail.html?formation=' + encodeURIComponent(r.name);
       return '<tr>' +
-        '<td>' +
-          '<a class="formation-link" href="'+urlDetail+'" target="_blank" rel="noopener">' +
-            esc(r.name) + '<span class="ext">↗</span>' +
-          '</a>' +
-        '</td>' +
+        '<td><a class="formation-link" href="'+urlDetail+'" target="_blank" rel="noopener">' +
+          esc(r.name) + '<span class="ext">↗</span></a></td>' +
         '<td class="taux '+lvl+'">'+fmtPct(r.satisfaction)+'</td>' +
         '<td class="'+(r.pRep == null ? 'empty' : '')+'">'+fmtPct(r.pRep)+'</td>' +
         '<td class="'+(r.pObj == null ? 'empty' : '')+'">'+fmtPct(r.pObj)+'</td>' +
@@ -611,9 +563,6 @@
     });
   }
 
-  /* ============================================================
-     RENDU — CARTES (onglet 2)
-     ============================================================ */
   function renderCards(rows){
     document.getElementById('cards').innerHTML = rows.map(r => {
       const lvl = level(r.satisfaction);
@@ -649,9 +598,6 @@
     }).join('');
   }
 
-  /* ============================================================
-     RENDU — SYNTHESES IA (onglet 3)
-     ============================================================ */
   function renderSyntheses(rows){
     const html = rows
       .filter(r => SYNTHESES[r.name] && SYNTHESES[r.name].texte)
@@ -676,9 +622,6 @@
     }
   }
 
-  /* ============================================================
-     RENDU GLOBAL
-     ============================================================ */
   function render(){
     if (!DATA.rows.length){
       document.getElementById('loading-board').style.display = 'none';
@@ -700,9 +643,6 @@
     document.getElementById('empty-detail').style.display = 'none';
   }
 
-  /* ============================================================
-     ONGLETS
-     ============================================================ */
   document.querySelectorAll('.tab').forEach(t => {
     t.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
@@ -711,9 +651,6 @@
     });
   });
 
-  /* ============================================================
-     DATE
-     ============================================================ */
   async function chargerDate(){
     try {
       const r = await fetch(DATE_FILE + '?t=' + Date.now(), { cache: 'no-store' });
@@ -729,6 +666,7 @@
 
   /* ============================================================
      GÉNÉRATION DU FICHIER PROMPT (.txt)
+     Avec le prompt Qualiopi complet
      ============================================================ */
   function genererPrompt(){
     if (!SUGGESTIONS || !Object.keys(SUGGESTIONS).length){
@@ -741,7 +679,7 @@
 
     formations.forEach(formation => {
       const remarques = SUGGESTIONS[formation];
-      texteConcatene += "### " + formation + " (" + remarques.length + " remarque(s))\n";
+      texteConcatene += "=== " + formation + " ===\n";
       remarques.forEach(r => {
         texteConcatene += "- " + r + "\n";
       });
@@ -754,57 +692,73 @@
       hour:'2-digit', minute:'2-digit'
     });
 
+    // Prompt Qualiopi complet
+    const promptQualiopi = 
+      "Tu es responsable qualité dans un organisme de formation professionnelle maritime certifié Qualiopi.\n\n" +
+      "Ta mission consiste à analyser les verbatims libres des stagiaires et à produire une synthèse qualité objective, fidèle aux retours exprimés et exploitable dans le cadre de l'amélioration continue.\n\n" +
+      "CONSIGNES D'ANALYSE\n\n" +
+      "- Utiliser exclusivement les remarques fournies.\n" +
+      "- Ne jamais inventer d'informations.\n" +
+      "- Ne jamais extrapoler au-delà des commentaires.\n" +
+      "- Regrouper les remarques similaires en une idée synthétique.\n" +
+      "- Corriger mentalement les fautes d'orthographe évidentes sans les mentionner.\n" +
+      "- Ignorer totalement les suites de caractères, tests de clavier, réponses vides, commentaires incompréhensibles ou non exploitables (exemples : « aaaaaaa », « fffffff », « test », « ras », « . », « ok », etc.).\n" +
+      "- Lorsqu'une remarque est négative mais imprécise, la signaler comme une insatisfaction exprimée sans en déduire la cause.\n" +
+      "- N'interpréter aucun élément non explicitement mentionné.\n" +
+      "- Employer un ton neutre, factuel, professionnel et conforme à une démarche qualité.\n" +
+      "- Ne jamais attribuer une opinion à l'ensemble des stagiaires lorsqu'elle provient d'un seul commentaire.\n" +
+      "- Les recommandations doivent être concrètes, réalistes et directement actionnables.\n\n" +
+      "TRAITEMENT DES DONNÉES\n\n" +
+      "Pour chaque formation :\n\n" +
+      "1. Identifier les points positifs réellement exprimés.\n" +
+      "2. Identifier les axes d'amélioration réellement exprimés.\n" +
+      "3. Rédiger une recommandation d'amélioration adaptée aux remarques recueillies.\n\n" +
+      "CAS PARTICULIERS\n\n" +
+      "- Si aucun point positif exploitable n'est présent :\n" +
+      "  « Aucun point positif exploitable n'a été identifié dans les commentaires recueillis. »\n\n" +
+      "- Si aucun axe d'amélioration exploitable n'est présent :\n" +
+      "  « Aucun axe d'amélioration exploitable n'a été identifié dans les commentaires recueillis. »\n\n" +
+      "- Si l'ensemble des commentaires est inexploitable :\n" +
+      "  « Les commentaires recueillis ne contiennent pas d'informations suffisamment exploitables pour réaliser une analyse qualitative. »\n\n" +
+      "FORMAT DE SORTIE À RESPECTER STRICTEMENT\n\n" +
+      "=== NOM DE LA FORMATION ===\n\n" +
+      "[Synthèse des points positifs en 1 à 3 phrases maximum.]\n\n" +
+      "[Synthèse des axes d'amélioration en 1 à 3 phrases maximum.]\n\n" +
+      "[Une seule phrase de recommandation commençant impérativement par un verbe d'action : Maintenir, Renforcer, Développer, Adapter, Vérifier, Améliorer, Poursuivre, Mettre en place, etc.]\n\n" +
+      "RÈGLES DE MISE EN FORME\n\n" +
+      "- Répondre uniquement en français.\n" +
+      "- Utiliser exactement le séparateur :\n" +
+      "  === NOM DE LA FORMATION ===\n" +
+      "- Aucun tableau.\n" +
+      "- Aucune liste à puces.\n" +
+      "- Aucun titre supplémentaire.\n" +
+      "- Trois paragraphes uniquement par formation.\n" +
+      "- Style synthétique et professionnel.\n" +
+      "- Formulation adaptée à un rapport qualité Qualiopi.\n\n" +
+      "DONNÉES À ANALYSER :\n\n" +
+      texteConcatene;
+
     const contenu = 
       "================================================================\n" +
-      "PROMPT À ENVOYER À L'IA (Gemini, ChatGPT, Claude, etc.)\n" +
+      "PROMPT QUALIOPI À ENVOYER À L'IA\n" +
       "Généré le " + dateStr + "\n" +
       "================================================================\n\n" +
-      "Tu es analyste qualité dans un centre de formation professionnelle maritime française (démarche Qualiopi).\n\n" +
-      "Voici les remarques et suggestions de stagiaires pour plusieurs formations :\n\n" +
-      texteConcatene + "\n" +
-      "Pour CHAQUE formation listée ci-dessus, rédige une synthèse en 3 paragraphes distincts :\n" +
-      "1. Points positifs (aspects appréciés)\n" +
-      "2. Axes d'amélioration (critiques et suggestions)\n" +
-      "3. Recommandation (une phrase actionnable pour le responsable pédagogique)\n\n" +
-      "FORMAT DE RÉPONSE ATTENDU (à respecter STRICTEMENT) :\n\n" +
-      "=== NOM DE LA FORMATION 1 ===\n" +
-      "[Paragraphe 1 : points positifs]\n" +
-      "[Paragraphe 2 : axes d'amélioration]\n" +
-      "[Paragraphe 3 : recommandation]\n\n" +
-      "=== NOM DE LA FORMATION 2 ===\n" +
-      "[Paragraphe 1]\n" +
-      "[Paragraphe 2]\n" +
-      "[Paragraphe 3]\n\n" +
-      "(et ainsi de suite pour chaque formation)\n\n" +
-      "RÈGLES ABSOLUES :\n" +
-      "- Réponds UNIQUEMENT en français\n" +
-      "- Utilise exactement le format « === NOM DE LA FORMATION === » pour séparer les formations\n" +
-      "- Base-toi UNIQUEMENT sur les remarques fournies\n" +
-      "- N'invente AUCUNE information\n" +
-      "- Ne mets pas de titres ni de puces, uniquement les 3 paragraphes séparés par un retour à la ligne\n" +
-      "- Ton neutre, factuel, professionnel\n" +
-      "- Si une formation n'a aucune remarque exploitable, indique-le clairement\n\n" +
-      "================================================================\n" +
-      "FIN DU PROMPT\n" +
-      "================================================================\n";
+      promptQualiopi;
 
     const blob = new Blob([contenu], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'Prompt_Syntheses_' + maintenant.toISOString().slice(0, 10) + '.txt';
+    a.download = 'Prompt_Qualiopi_' + maintenant.toISOString().slice(0, 10) + '.txt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    console.log("Prompt généré — " + formations.length + " formations, " +
+    console.log("Prompt Qualiopi généré — " + formations.length + " formations, " +
                 formations.reduce((sum, f) => sum + SUGGESTIONS[f].length, 0) + " remarques");
   }
 
-  /* ============================================================
-     LANCEMENT
-     ============================================================ */
   chargerTout();
 </script>
 </body>
