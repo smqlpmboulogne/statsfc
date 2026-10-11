@@ -52,6 +52,27 @@
     background:var(--anis);box-shadow:0 0 0 3px rgba(164,198,57,.30);
   }
 
+  /* Onglets */
+  .tabs{
+    display:flex;gap:4px;margin-bottom:16px;
+    background:var(--card);border:1px solid var(--border);
+    border-radius:12px;padding:4px;box-shadow:var(--shadow);
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+  }
+  .tab{
+    flex:1 1 auto;min-width:max-content;
+    padding:10px 16px;border:none;background:transparent;
+    font-size:14px;font-weight:600;color:var(--muted);
+    border-radius:8px;cursor:pointer;white-space:nowrap;
+    transition:background .15s,color .15s;
+    font-family:inherit;
+  }
+  .tab:hover{background:#f0f4f9;color:var(--marine)}
+  .tab.active{background:var(--marine);color:#fff}
+
+  .panel{display:none}
+  .panel.active{display:block}
+
   /* Loader */
   .loading{
     text-align:center;padding:50px 16px;color:var(--muted);font-size:15px;
@@ -64,16 +85,20 @@
   }
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* Tableau (desktop) */
-  .table-wrap{display:none}
+  /* ============================================================
+     TABLEAU (onglet 1)
+     ============================================================ */
+  .table-wrap{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+  }
   table{
     width:100%;border-collapse:collapse;font-size:13px;
-    background:var(--card);border-radius:var(--radius);
-    overflow:hidden;box-shadow:var(--shadow);
   }
   thead th{
     position:sticky;top:0;background:var(--marine);color:#fff;
-    text-align:left;padding:10px 10px;font-weight:600;
+    text-align:left;padding:11px 10px;font-weight:600;
     white-space:nowrap;cursor:pointer;user-select:none;
     transition:background .15s;
   }
@@ -82,15 +107,11 @@
   thead th .arrow{display:inline-block;margin-left:5px;opacity:.4;font-size:10px}
   thead th.sorted .arrow{opacity:1}
   tbody td{
-    padding:9px 10px;border-top:1px solid var(--border);
+    padding:10px;border-top:1px solid var(--border);
     vertical-align:top;word-break:break-word;
   }
   tbody td:first-child{font-weight:600;color:var(--marine)}
   tbody td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
-  tbody td.suggestion{
-    text-align:left;font-weight:400;color:#475467;
-    font-size:12.5px;max-width:350px;line-height:1.4;
-  }
   tbody td.taux{font-weight:700;font-size:14px}
   tbody td.taux.high{color:var(--success)}
   tbody td.taux.mid{color:var(--warning)}
@@ -99,13 +120,22 @@
   tbody tr:nth-child(even){background:#fafbfd}
   tbody tr:hover{background:#eef4ff}
 
-  /* Cartes (mobile) */
-  .cards{display:grid;grid-template-columns:1fr;gap:12px}
+  /* ============================================================
+     CARTES (onglet 2)
+     ============================================================ */
+  .cards{
+    display:grid;grid-template-columns:1fr;gap:12px;
+  }
   .card{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
     padding:16px 18px;
     position:relative;overflow:hidden;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .card:hover{
+    transform:translateY(-3px);
+    box-shadow:var(--shadow-hover);
   }
   .card::before{
     content:'';position:absolute;top:0;left:0;bottom:0;width:4px;
@@ -114,6 +144,7 @@
   .card.high::before{background:var(--success)}
   .card.mid::before{background:var(--warning)}
   .card.low::before{background:var(--danger)}
+
   .card h3{
     margin:0 0 12px;font-size:16px;font-weight:600;color:var(--marine);
     word-break:break-word;padding-bottom:10px;border-bottom:1px solid var(--border);
@@ -152,10 +183,11 @@
   .card .row .v.empty{color:var(--muted);font-weight:500}
 
   .card .sugg-block{
-    margin-top:12px;padding-top:12px;border-top:1px solid var(--border);
+    margin-top:14px;padding-top:12px;border-top:1px solid var(--border);
   }
   .card .sugg-block .title{
-    font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:8px;
+    font-size:13px;font-weight:600;color:var(--marine);margin-bottom:8px;
+    display:flex;align-items:center;gap:6px;
   }
   .card .sugg-block ul{
     margin:0;padding-left:18px;list-style:disc;color:#475467;
@@ -181,13 +213,18 @@
   footer.foot .mention{font-style:italic;font-size:11px;color:var(--muted);opacity:.85}
 
   /* RESPONSIVE */
+  @media (min-width:600px){
+    .cards{grid-template-columns:repeat(2,1fr);gap:14px}
+  }
   @media (min-width:900px){
     .wrap{padding:20px}
-    .cards{display:none}
-    .table-wrap{display:block}
     .header{padding:16px 24px;margin-bottom:16px}
     .header .banner{max-width:260px}
     .header h1{font-size:20px}
+    .tab{font-size:15px;padding:12px 20px}
+  }
+  @media (min-width:1200px){
+    .cards{grid-template-columns:repeat(3,1fr);gap:16px}
   }
 </style>
 </head>
@@ -206,18 +243,30 @@
     </div>
   </header>
 
-  <div class="loading" id="loading">
-    <div class="spin"></div>
-    <div>Chargement des données…</div>
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-tab="board" role="tab">Tableau de bord</button>
+    <button class="tab" data-tab="detail" role="tab">Détail & Remarques</button>
   </div>
 
-  <div class="table-wrap" id="tableWrap" style="display:none">
-    <table id="table"></table>
+  <div class="panel active" id="panel-board">
+    <div class="loading" id="loading-board">
+      <div class="spin"></div>
+      <div>Chargement des données…</div>
+    </div>
+    <div class="table-wrap" id="tableWrap" style="display:none">
+      <table id="table"></table>
+    </div>
+    <div class="empty-msg" id="empty-board" style="display:none">Aucune donnée disponible</div>
   </div>
 
-  <div class="cards" id="cards" style="display:none"></div>
-
-  <div class="empty-msg" id="empty" style="display:none">Aucune donnée disponible</div>
+  <div class="panel" id="panel-detail">
+    <div class="loading" id="loading-detail">
+      <div class="spin"></div>
+      <div>Chargement du détail…</div>
+    </div>
+    <div class="cards" id="cards" style="display:none"></div>
+    <div class="empty-msg" id="empty-detail" style="display:none">Aucune donnée détaillée disponible</div>
+  </div>
 
   <footer class="foot">
     <p>
@@ -297,6 +346,11 @@
     return 'low';
   }
 
+  function fmtPct(v){
+    if (v == null) return '—';
+    return v.toFixed(1).replace('.',',') + ' %';
+  }
+
   /* ============================================================
      5) CHARGEMENT
      ============================================================ */
@@ -307,66 +361,50 @@
         fetch(CSV_SUGGESTIONS + '?t=' + Date.now(), { cache: 'no-store' })
       ]);
 
-      const csvFormations = await resFormations.text();
-      const csvSuggestions = await resSuggestions.text();
+      const rowsF = parseCSV(await resFormations.text());
+      const rowsS = parseCSV(await resSuggestions.text());
 
-      const rowsF = parseCSV(csvFormations);
-      const rowsS = parseCSV(csvSuggestions);
-
-      /* --- Construire DATA depuis formations.csv --- */
+      /* --- DATA depuis formations.csv --- */
       if (rowsF.length >= 2){
         const allHeaders = rowsF[0].map(h => h.trim());
 
-        // Couper après les 4 indicateurs (ignorer les colonnes de refus au-delà)
-        // On cherche la première colonne vide après l'index 0
+        // Couper après la première colonne vide (séparateur avec le tableau refus)
         let cutoff = allHeaders.length;
         for (let i = 1; i < allHeaders.length; i++){
-          if (allHeaders[i] === ''){
-            cutoff = i;
-            break;
-          }
+          if (allHeaders[i] === ''){ cutoff = i; break; }
         }
-
         const headers = allHeaders.slice(0, cutoff);
+
+        const iReponses = headers.findIndex(h => /^Réponses?$/i.test(h));
+        const iRep = headers.findIndex(h => /réponse aux attentes/i.test(h));
+        const iObj = headers.findIndex(h => /atteinte des objectifs/i.test(h));
+        const iUti = headers.findIndex(h => /utilisation compétences/i.test(h));
+        const iQua = headers.findIndex(h => /qualité.*animation/i.test(h));
 
         DATA.rows = rowsF.slice(1)
           .filter(r => r[0] && r[0].trim() !== '')
           .map(r => {
             const name = r[0].trim();
-            // Index des colonnes utiles
-            const iReponses = headers.findIndex(h => /^Réponses?$/i.test(h));
-            const iRep = headers.findIndex(h => /réponse aux attentes/i.test(h));
-            const iObj = headers.findIndex(h => /atteinte des objectifs/i.test(h));
-            const iUti = headers.findIndex(h => /utilisation compétences/i.test(h));
-            const iQua = headers.findIndex(h => /qualité.*animation/i.test(h));
-
             const getNum = (i) => {
               if (i < 0) return null;
               const raw = (r[i] || '').trim();
               if (raw === '' || raw === '—') return null;
-              const v = toPercent(raw);
-              return v;
+              return toPercent(raw);
             };
-
-            const reponses = iReponses >= 0 ? parseInt(r[iReponses], 10) || null : null;
+            const reponses = iReponses >= 0 ? (parseInt(r[iReponses], 10) || null) : null;
             const pRep = getNum(iRep);
             const pObj = getNum(iObj);
             const pUti = getNum(iUti);
             const pQua = getNum(iQua);
 
             const vals = [pRep, pObj, pUti, pQua].filter(v => v != null);
-            const satisfaction = vals.length ? vals.reduce((a,b) => a+b,0) / vals.length : null;
+            const satisfaction = vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : null;
 
-            return {
-              name,
-              satisfaction,
-              reponses,
-              pRep, pObj, pUti, pQua
-            };
+            return { name, satisfaction, reponses, pRep, pObj, pUti, pQua, refus: null };
           });
       }
 
-      /* --- Construire SUGGESTIONS depuis suggestions.csv --- */
+      /* --- SUGGESTIONS depuis suggestions.csv --- */
       // Structure : Date | Formation | Suggestion
       if (rowsS.length >= 2){
         rowsS.slice(1).forEach(r => {
@@ -383,9 +421,12 @@
 
     } catch (e) {
       console.error("Erreur chargement:", e);
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('empty').textContent = "Impossible de charger les données : " + e.message;
-      document.getElementById('empty').style.display = 'block';
+      document.getElementById('loading-board').style.display = 'none';
+      document.getElementById('loading-detail').style.display = 'none';
+      document.getElementById('empty-board').textContent = "Impossible de charger : " + e.message;
+      document.getElementById('empty-board').style.display = 'block';
+      document.getElementById('empty-detail').textContent = "Impossible de charger : " + e.message;
+      document.getElementById('empty-detail').style.display = 'block';
     }
   }
 
@@ -396,11 +437,8 @@
     if (key === 'name') return row.name.toLowerCase();
     if (key === 'satisfaction') return row.satisfaction;
     if (key === 'reponses') return row.reponses;
-    if (key === 'pRep') return row.pRep;
-    if (key === 'pObj') return row.pObj;
-    if (key === 'pUti') return row.pUti;
-    if (key === 'pQua') return row.pQua;
-    return null;
+    if (key === 'refus') return row.refus;
+    return row[key] != null ? row[key] : null;
   }
   function sortRows(rows){
     return rows.slice().sort((a, b) => {
@@ -417,25 +455,18 @@
   }
 
   /* ============================================================
-     7) RENDU TABLEAU
+     7) RENDU TABLEAU (onglet 1)
      ============================================================ */
-  function fmtPct(v){
-    if (v == null) return '—';
-    return v.toFixed(1).replace('.',',') + ' %';
-  }
-
   function renderTable(rows){
-    // Colonnes : Formation | Taux | Rép. att. | Atteinte | Utilis. | Qualité | Suggestions | Réponses | Refus
     const columns = [
-      { key:'name',         label:'Formation',              align:'left' },
-      { key:'satisfaction', label:'Taux de satisfaction',   align:'right' },
-      { key:'pRep',         label:'Réponse aux attentes',   align:'right' },
-      { key:'pObj',         label:'Atteinte des objectifs', align:'right' },
-      { key:'pUti',         label:'Utilisation compétences',align:'right' },
-      { key:'pQua',         label:'Qualité animation',      align:'right' },
-      { key:'sugg',         label:'Suggestions',            align:'left' },
-      { key:'reponses',     label:'Réponses',               align:'right' },
-      { key:'refus',        label:'Refus',                  align:'right' }
+      { key:'name',         label:'Formation' },
+      { key:'satisfaction', label:'Taux de satisfaction' },
+      { key:'pRep',         label:'Réponse aux attentes' },
+      { key:'pObj',         label:'Atteinte des objectifs' },
+      { key:'pUti',         label:'Utilisation compétences' },
+      { key:'pQua',         label:'Qualité animation' },
+      { key:'reponses',     label:'Réponses' },
+      { key:'refus',        label:'Refus' }
     ];
 
     const thead = '<thead><tr>' + columns.map(c => {
@@ -447,13 +478,7 @@
     }).join('') + '</tr></thead>';
 
     const tbody = '<tbody>' + rows.map(r => {
-      const sugs = SUGGESTIONS[r.name] || [];
-      const sugsHtml = sugs.length
-        ? sugs.map(s => '• ' + esc(s)).join('<br>')
-        : '<span style="color:#98a2b3;font-style:italic">—</span>';
-
       const lvl = level(r.satisfaction);
-
       return '<tr>' +
         '<td>'+esc(r.name)+'</td>' +
         '<td class="taux '+lvl+'">'+fmtPct(r.satisfaction)+'</td>' +
@@ -461,7 +486,6 @@
         '<td class="'+(r.pObj == null ? 'empty' : '')+'">'+fmtPct(r.pObj)+'</td>' +
         '<td class="'+(r.pUti == null ? 'empty' : '')+'">'+fmtPct(r.pUti)+'</td>' +
         '<td class="'+(r.pQua == null ? 'empty' : '')+'">'+fmtPct(r.pQua)+'</td>' +
-        '<td class="suggestion">'+sugsHtml+'</td>' +
         '<td class="'+(r.reponses == null ? 'empty' : '')+'">'+(r.reponses != null ? r.reponses : '—')+'</td>' +
         '<td class="empty">—</td>' +
         '</tr>';
@@ -482,14 +506,14 @@
   }
 
   /* ============================================================
-     8) RENDU CARTES (mobile)
+     8) RENDU CARTES (onglet 2)
      ============================================================ */
   function renderCards(rows){
     document.getElementById('cards').innerHTML = rows.map(r => {
       const lvl = level(r.satisfaction);
       const pct = r.satisfaction != null ? Math.max(0, Math.min(100, r.satisfaction)) : 0;
-
       const sugs = SUGGESTIONS[r.name] || [];
+
       const sugsBlock = sugs.length
         ? '<div class="sugg-block"><div class="title">💬 Suggestions ('+sugs.length+')</div>' +
           '<ul>' + sugs.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul></div>'
@@ -522,22 +546,37 @@
      ============================================================ */
   function render(){
     if (!DATA.rows.length){
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('empty').style.display = 'block';
+      document.getElementById('loading-board').style.display = 'none';
+      document.getElementById('loading-detail').style.display = 'none';
+      document.getElementById('empty-board').style.display = 'block';
+      document.getElementById('empty-detail').style.display = 'block';
       return;
     }
     const rows = sortRows(DATA.rows);
     renderTable(rows);
     renderCards(rows);
 
-    document.getElementById('loading').style.display = 'none';
+    document.getElementById('loading-board').style.display = 'none';
+    document.getElementById('loading-detail').style.display = 'none';
     document.getElementById('tableWrap').style.display = 'block';
     document.getElementById('cards').style.display = 'grid';
-    document.getElementById('empty').style.display = 'none';
+    document.getElementById('empty-board').style.display = 'none';
+    document.getElementById('empty-detail').style.display = 'none';
   }
 
   /* ============================================================
-     10) DATE
+     10) ONGLETS
+     ============================================================ */
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+      document.querySelectorAll('.panel').forEach(p =>
+        p.classList.toggle('active', p.id === 'panel-' + t.dataset.tab));
+    });
+  });
+
+  /* ============================================================
+     11) DATE
      ============================================================ */
   async function chargerDate(){
     try {
