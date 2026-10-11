@@ -1,1 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Détail de la formation — Lycée Maritime Boulogne</title>
+<link rel="icon" href="data:,">
+<style>
+  :root{
+    --marine:#1e3a5f;--marine-fonce:#152a45;--ocean:#2c5a8c;
+    --azur:#4a90c4;--azur-clair:#7fb3d9;--anis:#a4c639;
+    --ecume:#f0f5fa;--ecume-2:#e3edf5;
+    --card:#ffffff;--text:#1a2a3a;--muted:#7a8fa6;--border:#d8e3ed;
+    --radius:10px;
+    --shadow:0 1px 2px rgba(30,58,95,.06), 0 6px 16px rgba(30,58,95,.08);
+    --success:#5fa02c;--success-2:#4a8a1f;
+    --warning:#e8a63c;--warning-2:#c88a1c;
+    --danger:#c93e3e;--danger-2:#a52f2f;
+  }
+  *{box-sizing:border-box}
+  html, body {
+    margin:0; padding:0;
+    background: linear-gradient(180deg, #e8f1f9 0%, #f0f5fa 400px, #f5f9fc 100%);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    width:100%; max-width:100%; overflow-x:hidden;
+    min-height:100vh;
+  }
+  .wrap{width:100%;max-width:800px;margin:0 auto;padding:12px;overflow-x:hidden}
 
+  .header{
+    background: linear-gradient(135deg, var(--marine) 0%, var(--ocean) 100%);
+    border:1px solid var(--marine-fonce);
+    border-radius:var(--radius);
+    box-shadow:0 8px 24px rgba(30,58,95,.20);
+    padding:14px 16px;margin-bottom:14px;text-align:center;
+  }
+  .header .banner{display:block;margin:0 auto 6px;max-width:220px;width:100%;height:auto}
+  .header h1{margin:0;font-size:15px;font-weight:700;line-height:1.3;color:#fff}
+  .header .subtitle{margin:4px 0 0;font-size:12.5px;color:#b8d2e8;font-weight:500}
+
+  /* Lien retour */
+  .back-link{
+    display:inline-flex;align-items:center;gap:6px;
+    margin-bottom:14px;
+    padding:8px 14px;
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    color:var(--marine);text-decoration:none;font-size:13px;font-weight:600;
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .back-link:hover{
+    transform:translateX(-3px);
+    box-shadow:0 6px 12px rgba(30,58,95,.10);
+    border-color:var(--azur-clair);
+  }
+  .back-link .arrow{color:var(--azur);font-weight:700}
+
+  .loading{
+    text-align:center;padding:50px 16px;color:var(--muted);font-size:15px;
+    display:flex;align-items:center;justify-content:center;gap:12px;
+  }
+  .loading .spin{
+    width:22px;height:22px;border:2px solid var(--border);
+    border-top-color:var(--azur);border-radius:50%;
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* Carte détaillée */
+  .card{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:24px 24px;
+    position:relative;overflow:hidden;
+  }
+  .card::before{
+    content:'';position:absolute;top:0;left:0;bottom:0;width:5px;
+    background:var(--azur);
+  }
+  .card.high::before{background:var(--success)}
+  .card.mid::before{background:var(--warning)}
+  .card.low::before{background:var(--danger)}
+
+  .card h2{
+    margin:0 0 6px;font-size:22px;font-weight:700;color:var(--marine);
+    word-break:break-word;line-height:1.3;
+  }
+
+  .taux-big{
+    font-size:48px;font-weight:700;font-variant-numeric:tabular-nums;
+    letter-spacing:-1.5px;color:var(--azur);margin:12px 0 8px;
+    line-height:1;
+  }
+  .card.high .taux-big{color:var(--success)}
+  .card.mid .taux-big{color:var(--warning)}
+  .card.low .taux-big{color:var(--danger)}
+
+  .taux-label{
+    font-size:12.5px;color:var(--muted);font-weight:500;
+    text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;
+  }
+
+  .bar{
+    width:100%;height:8px;background:var(--ecume-2);border-radius:4px;
+    overflow:hidden;margin:12px 0 20px;
+  }
+  .bar span{
+    display:block;height:100%;border-radius:4px;
+    background:linear-gradient(90deg, var(--azur), var(--ocean));
+    transition:width .6s ease;
+  }
+  .card.high .bar span{background:linear-gradient(90deg, var(--anis), var(--success-2))}
+  .card.mid .bar span{background:linear-gradient(90deg, #f0c060, var(--warning-2))}
+  .card.low .bar span{background:linear-gradient(90deg, #e06060, var(--danger-2))}
+
+  .indicators{
+    display:flex;flex-direction:column;gap:2px;
+    margin-top:8px;
+  }
+  .row{
+    display:grid;grid-template-columns:1fr auto;align-items:center;
+    gap:14px;padding:11px 0;border-bottom:1px dashed var(--border);
+    font-size:14.5px;
+  }
+  .row:last-child{border-bottom:none}
+  .row .k{color:#475467;font-weight:500;min-width:0;word-break:break-word}
+  .row .v{
+    text-align:right;font-weight:700;color:var(--azur);
+    font-variant-numeric:tabular-nums;white-space:nowrap;font-size:16px;
+  }
+  .row .v.empty{color:var(--muted);font-weight:500}
+
+  .sugg-block{
+    margin-top:22px;padding-top:18px;border-top:2px solid var(--ecume-2);
+  }
+  .sugg-block .title{
+    font-size:15px;font-weight:700;color:var(--marine);margin-bottom:12px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .sugg-block .title .count{
+    background:var(--ecume);color:var(--muted);
+    font-size:12px;font-weight:600;
+    padding:2px 8px;border-radius:10px;
+  }
+  .sugg-block ul{
+    margin:0;padding-left:20px;list-style:disc;color:#475467;
+    font-size:14px;line-height:1.6;
+  }
+  .sugg-block li{margin-bottom:10px;padding-left:4px}
+  .sugg-block li:last-child{margin-bottom:0}
+  .sugg-block .none{
+    color:var(--muted);font-style:italic;font-size:14px;
+  }
+
+  .error-box{
+    text-align:center;padding:40px 20px;
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    color:var(--muted);
+  }
+  .error-box h3{color:var(--marine);margin:0 0 8px;font-size:18px}
+  .error-box p{margin:0;font-size:14px}
+
+  footer.foot{
+    text-align:center;padding:24px 16px 12px;font-size:12px;
+    color:var(--muted);line-height:1.4;
+  }
+  footer.foot p{margin:0}
+  footer.foot p + p{margin-top:3px}
+  footer.foot .brand{color:var(--marine);font-weight:600;letter-spacing:.3px}
+  footer.foot .sep{display:inline-block;margin:0 5px;color:var(--azur-clair)}
+  footer.foot .mention{font-style:italic;font-size:11px;color:var(--muted);opacity:.85}
+
+  @media (min-width:600px){
+    .wrap{padding:20px}
+    .header{padding:18px 24px}
+    .header .banner{max-width:260px}
+    .header h1{font-size:17px}
+    .card{padding:32px 32px}
+    .taux-big{font-size:56px}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="header">
+    <img class="banner"
+      src="https://www.lyceemaritime-boulogne.com/application/themes/theme_simpleo_coteo/images/logo-lycee-maritime-boulogne.jpg"
+      alt="Lycée Maritime Boulogne">
+    <h1>Détail de la formation</h1>
+    <p class="subtitle">Lycée Professionnel Maritime Boulogne - Le Portel</p>
+  </header>
+
+  <a class="back-link" href="index.html">
+    <span class="arrow">←</span>
+    Retour au tableau de bord
+  </a>
+
+  <div class="loading" id="loading">
+    <div class="spin"></div>
+    <div>Chargement des données…</div>
+  </div>
+
+  <div id="content" style="display:none"></div>
+
+  <footer class="foot">
+    <p>
+      Conception et réalisation : <span class="brand">ZEG</span>
+      <span class="sep">—</span>
+      Lycée Maritime Boulogne, <span id="year">2026</span>
+    </p>
+    <p class="mention">Projet réalisé dans le cadre du pacte enseignant</p>
+  </footer>
+</div>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const BASE = "https://smqlpmboulogne.github.io/satisfactionfc/";
+  const CSV_RESULTATS = BASE + "formations.csv";
+  const CSV_SUGGESTIONS = BASE + "suggestions.csv";
+
+  let SUGGESTIONS = {};
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function parseCSV(text){
+    const rows = [];
+    let cur = [], field = '', inQuotes = false;
+    for (let i = 0; i < text.length; i++){
+      const c = text[i];
+      if (inQuotes){
+        if (c === '"'){
+          if (text[i+1] === '"'){ field += '"'; i++; }
+          else inQuotes = false;
+        } else field += c;
+      } else {
+        if (c === '"') inQuotes = true;
+        else if (c === ','){ cur.push(field); field = ''; }
+        else if (c === '\n'){ cur.push(field); rows.push(cur); cur = []; field = ''; }
+        else if (c === '\r'){ }
+        else field += c;
+      }
+    }
+    if (field !== '' || cur.length){ cur.push(field); rows.push(cur); }
+    return rows.filter(r => r.some(c => c.trim() !== ''));
+  }
+
+  function toPercent(v){
+    if (!v) return null;
+    const s = String(v).trim().replace('%','').replace(',','.');
+    const n = parseFloat(s);
+    if (isNaN(n)) return null;
+    return n <= 1 ? n * 100 : n;
+  }
+
+  function level(n){
+    if (n == null) return 'unknown';
+    if (n >= 75) return 'high';
+    if (n >= 50) return 'mid';
+    return 'low';
+  }
+
+  function fmtPct(v){
+    if (v == null) return '—';
+    return v.toFixed(1).replace('.',',') + ' %';
+  }
+
+  async function chargerTout(){
+    const params = new URLSearchParams(location.search);
+    const formation = params.get('formation');
+
+    if (!formation){
+      showError("Aucune formation spécifiée", "Le lien est incomplet. Veuillez retourner au tableau de bord.");
+      return;
+    }
+
+    try {
+      const [resFormations, resSuggestions] = await Promise.all([
+        fetch(CSV_RESULTATS + '?t=' + Date.now(), { cache: 'no-store' }),
+        fetch(CSV_SUGGESTIONS + '?t=' + Date.now(), { cache: 'no-store' })
+      ]);
+
+      const rowsF = parseCSV(await resFormations.text());
+      const rowsS = parseCSV(await resSuggestions.text());
+
+      // Suggestions
+      rowsS.slice(1).forEach(r => {
+        const f = (r[1] || '').trim();
+        const s = (r[2] || '').trim();
+        if (!f || !s) return;
+        if (!SUGGESTIONS[f]) SUGGESTIONS[f] = [];
+        SUGGESTIONS[f].push(s);
+      });
+
+      // Trouver la formation demandée
+      const row = rowsF.slice(1).find(r => (r[0] || '').trim() === formation);
+      if (!row){
+        showError("Formation introuvable", "La formation « " + formation + " » n'existe pas dans les données.");
+        return;
+      }
+
+      const allHeaders = rowsF[0].map(h => h.trim());
+      let cutoff = allHeaders.length;
+      for (let i = 1; i < allHeaders.length; i++){
+        if (allHeaders[i] === ''){ cutoff = i; break; }
+      }
+      const headers = allHeaders.slice(0, cutoff);
+
+      const iReponses = headers.findIndex(h => /^Réponses?$/i.test(h));
+      const iRep = headers.findIndex(h => /réponse aux attentes/i.test(h));
+      const iObj = headers.findIndex(h => /atteinte des objectifs/i.test(h));
+      const iUti = headers.findIndex(h => /utilisation compétences/i.test(h));
+      const iQua = headers.findIndex(h => /qualité.*animation/i.test(h));
+
+      const getNum = (i) => {
+        if (i < 0) return null;
+        const raw = (row[i] || '').trim();
+        if (raw === '' || raw === '—') return null;
+        return toPercent(raw);
+      };
+
+      const reponses = iReponses >= 0 ? (parseInt(row[iReponses], 10) || null) : null;
+      const pRep = getNum(iRep);
+      const pObj = getNum(iObj);
+      const pUti = getNum(iUti);
+      const pQua = getNum(iQua);
+
+      const vals = [pRep, pObj, pUti, pQua].filter(v => v != null);
+      const satisfaction = vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : null;
+
+      render({
+        name: formation,
+        satisfaction,
+        reponses,
+        pRep, pObj, pUti, pQua,
+        suggestions: SUGGESTIONS[formation] || []
+      });
+
+    } catch (e) {
+      console.error("Erreur chargement:", e);
+      showError("Erreur de chargement", e.message);
+    }
+  }
+
+  function render(r){
+    const lvl = level(r.satisfaction);
+    const pct = r.satisfaction != null ? Math.max(0, Math.min(100, r.satisfaction)) : 0;
+
+    const sugsBlock = r.suggestions.length
+      ? '<div class="sugg-block">' +
+        '<div class="title">💬 Suggestions & remarques <span class="count">'+r.suggestions.length+'</span></div>' +
+        '<ul>' + r.suggestions.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul>' +
+        '</div>'
+      : '<div class="sugg-block">' +
+        '<div class="title">💬 Suggestions & remarques</div>' +
+        '<div class="none">Aucune remarque pour cette formation.</div>' +
+        '</div>';
+
+    document.getElementById('content').innerHTML =
+      '<div class="card '+lvl+'">' +
+        '<h2>'+esc(r.name)+'</h2>' +
+        '<div class="taux-label">Taux de satisfaction global</div>' +
+        '<div class="taux-big">'+fmtPct(r.satisfaction)+'</div>' +
+        '<div class="bar"><span style="width:'+pct+'%"></span></div>' +
+
+        '<div class="indicators">' +
+          '<div class="row"><span class="k">Réponse aux attentes</span>' +
+            '<span class="v'+(r.pRep == null ? ' empty' : '')+'">'+fmtPct(r.pRep)+'</span></div>' +
+          '<div class="row"><span class="k">Atteinte des objectifs</span>' +
+            '<span class="v'+(r.pObj == null ? ' empty' : '')+'">'+fmtPct(r.pObj)+'</span></div>' +
+          '<div class="row"><span class="k">Utilisation compétences</span>' +
+            '<span class="v'+(r.pUti == null ? ' empty' : '')+'">'+fmtPct(r.pUti)+'</span></div>' +
+          '<div class="row"><span class="k">Qualité animation</span>' +
+            '<span class="v'+(r.pQua == null ? ' empty' : '')+'">'+fmtPct(r.pQua)+'</span></div>' +
+          '<div class="row"><span class="k">Réponses</span>' +
+            '<span class="v'+(r.reponses == null ? ' empty' : '')+'">'+(r.reponses != null ? r.reponses : '—')+'</span></div>' +
+          '<div class="row"><span class="k">Refus</span>' +
+            '<span class="v empty">—</span></div>' +
+        '</div>' +
+
+        sugsBlock +
+      '</div>';
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+
+    document.title = r.name + ' — Évaluation complète';
+  }
+
+  function showError(title, msg){
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').innerHTML =
+      '<div class="error-box"><h3>'+esc(title)+'</h3><p>'+esc(msg)+'</p></div>';
+    document.getElementById('content').style.display = 'block';
+  }
+
+  chargerTout();
+</script>
+</body>
+</html>
