@@ -85,7 +85,6 @@
      TABLEAU (desktop)
      ============================================================ */
   .table-wrap{
-    display:none;
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
     overflow-x:auto;-webkit-overflow-scrolling:touch;
@@ -127,14 +126,15 @@
   .formation-link:hover .ext{opacity:1}
 
   /* ============================================================
-     CARTES (mobile) — Version empilée du tableau
+     CARTES (mobile uniquement) — masquées par défaut
      ============================================================ */
-  .table-cards{display:flex;flex-direction:column;gap:12px}
+  .table-cards{display:none}
   .tcard{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
     padding:14px 16px;
     position:relative;overflow:hidden;
+    margin-bottom:12px;
   }
   .tcard::before{
     content:'';position:absolute;top:0;left:0;bottom:0;width:4px;
@@ -221,7 +221,7 @@
   }
 
   /* ============================================================
-     Encart jaune (avec bouton intégré)
+     Encart jaune avec boutons
      ============================================================ */
   .help-box{
     margin-bottom:16px;
@@ -236,30 +236,44 @@
     flex-direction:column;
     gap:14px;
   }
-  .help-box .help-text strong{
-    color:#92400e;
-  }
+  .help-box .help-text strong{color:#92400e}
   .help-box .help-actions{
     display:flex;
+    flex-wrap:wrap;
+    gap:10px;
     justify-content:flex-start;
   }
-  .btn-prompt{
+  .btn-prompt,
+  .btn-export{
     display:inline-flex;align-items:center;gap:8px;
     padding:11px 20px;
-    background:var(--marine);color:#fff;
     border:none;border-radius:var(--radius);
-    box-shadow:0 2px 8px rgba(30,58,95,.20);
     font-size:14px;font-weight:600;font-family:inherit;
     cursor:pointer;
     transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
     white-space:nowrap;
+  }
+  .btn-prompt{
+    background:var(--marine);color:#fff;
+    box-shadow:0 2px 8px rgba(30,58,95,.20);
   }
   .btn-prompt:hover{
     background:var(--ocean);
     transform:translateY(-2px);
     box-shadow:0 6px 14px rgba(30,58,95,.25);
   }
-  .btn-prompt:active{transform:translateY(0)}
+  .btn-export{
+    background:#fff;color:#5c4813;
+    border:1px solid #d4a006;
+    box-shadow:0 2px 6px rgba(212,160,6,.15);
+  }
+  .btn-export:hover{
+    background:#fff3c4;
+    transform:translateY(-2px);
+    box-shadow:0 6px 14px rgba(212,160,6,.25);
+  }
+  .btn-prompt:active,
+  .btn-export:active{transform:translateY(0)}
 
   /* Cartes synthèses IA */
   .synthese-grid{
@@ -287,9 +301,18 @@
     padding:3px 10px;border-radius:12px;
   }
   .synth-content{
-    font-size:14px;color:#475467;line-height:1.6;
+    font-size:14px;color:#475467;line-height:1.65;
     white-space:pre-wrap;word-break:break-word;
   }
+  /* Titres de rubriques en gras */
+  .synth-content .rubrique{
+    font-weight:700;
+    color:var(--marine);
+    display:block;
+    margin-top:10px;
+    margin-bottom:2px;
+  }
+  .synth-content .rubrique:first-child{margin-top:0}
 
   .empty-msg{text-align:center;padding:50px;color:var(--muted);font-size:14px}
 
@@ -307,13 +330,13 @@
      RESPONSIVE
      ============================================================ */
 
-  /* Sur mobile et tablette : cartes */
+  /* Mobile / tablette : cartes, pas de tableau */
   @media (max-width:899px){
     .table-wrap{display:none !important}
-    .table-cards{display:flex}
+    .table-cards{display:block}
   }
 
-  /* Sur desktop : tableau */
+  /* Desktop : tableau, pas de cartes */
   @media (min-width:900px){
     .wrap{padding:20px}
     .header{padding:16px 24px;margin-bottom:16px}
@@ -328,15 +351,73 @@
     .synth-header .info-block{flex:1;min-width:300px}
     .synth-header .date-info{flex:0 0 auto}
     .table-wrap{display:block !important}
-    .table-cards{display:none}
+    .table-cards{display:none !important}
     .help-box{flex-direction:row;align-items:center;justify-content:space-between}
     .help-box .help-text{flex:1}
     .help-box .help-actions{flex:0 0 auto}
   }
 
   @media (max-width:600px){
-    .btn-prompt{width:100%;justify-content:center}
-    .help-box .help-actions{justify-content:stretch}
+    .btn-prompt,
+    .btn-export{width:100%;justify-content:center}
+    .help-box .help-actions{flex-direction:column}
+  }
+
+  /* ============================================================
+     IMPRESSION / EXPORT PDF
+     ============================================================ */
+  @media print {
+    @page { size: A4; margin: 15mm 12mm; }
+    html, body {
+      background: #fff !important;
+      color: #000;
+    }
+    .wrap{max-width:100%;padding:0;margin:0}
+    /* Masquer tout sauf l'onglet Synthèse */
+    .header, .tabs, footer.foot .mention,
+    .synth-header, .help-box, .table-wrap, .table-cards,
+    #panel-board, .loading, .empty-msg{
+      display: none !important;
+    }
+    #panel-synth{
+      display: block !important;
+    }
+    .synthese-grid{
+      display: block !important;
+      grid-template-columns: 1fr;
+    }
+    .synth-card{
+      box-shadow: none;
+      border: 1px solid #ccc;
+      page-break-inside: avoid;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+    }
+    .synth-card::before{
+      background: #999;
+    }
+    .synth-card h3{
+      font-size: 14pt;
+      border-bottom: 1px solid #ccc;
+    }
+    .synth-card h3 .badge{
+      background: #eee;
+      color: #333;
+    }
+    .synth-content{
+      font-size: 11pt;
+      line-height: 1.5;
+    }
+    .synth-content .rubrique{
+      color: #000;
+    }
+    footer.foot{
+      display: block !important;
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid #ccc;
+      font-size: 9pt;
+    }
   }
 </style>
 </head>
@@ -398,7 +479,7 @@
       </div>
     </div>
 
-    <!-- Encart jaune avec bouton intégré -->
+    <!-- Encart jaune avec boutons -->
     <div class="help-box">
       <div class="help-text">
         <strong>💡 Besoin d'une synthèse à jour immédiatement ?</strong>
@@ -410,6 +491,9 @@
       <div class="help-actions">
         <button class="btn-prompt" onclick="genererPrompt()" type="button">
           📄 Générer le prompt manuel
+        </button>
+        <button class="btn-export" onclick="window.print()" type="button">
+          🖨️ Exporter en PDF / Imprimer
         </button>
       </div>
     </div>
@@ -703,6 +787,30 @@
   /* ============================================================
      RENDU — Synthèses IA
      ============================================================ */
+  function formaterSynthese(texte){
+    // Échappe le HTML
+    let s = esc(texte);
+
+    // Liste des rubriques à mettre en gras
+    const rubriques = [
+      "Points positifs",
+      "Axes d'amélioration",
+      "Constats qualité",
+      "Actions conseillées"
+    ];
+
+    // Remplace chaque rubrique (suivie de : ou :\n) par un <span class="rubrique">
+    rubriques.forEach(rub => {
+      const regex = new RegExp(
+        '(' + rub.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\s*:',
+        'g'
+      );
+      s = s.replace(regex, '<span class="rubrique">$1 :</span>');
+    });
+
+    return s;
+  }
+
   function renderSyntheses(rows){
     const html = rows
       .filter(r => SYNTHESES[r.name] && SYNTHESES[r.name].texte)
@@ -713,7 +821,7 @@
           '<h3>' + esc(r.name) +
             '<span class="badge">' + s.nb + ' remarque' + (s.nb > 1 ? 's' : '') + '</span>' +
           '</h3>' +
-          '<div class="synth-content">' + esc(s.texte) + '</div>' +
+          '<div class="synth-content">' + formaterSynthese(s.texte) + '</div>' +
         '</div>';
       }).join('');
 
@@ -739,8 +847,9 @@
     renderSyntheses(DATA.rows);
 
     document.getElementById('loading-board').style.display = 'none';
-    document.getElementById('tableWrap').style.display = 'block';
-    document.getElementById('tableCards').style.display = 'flex';
+    // Note : on n'utilise PAS style.display ici, le CSS s'en charge selon le media query
+    document.getElementById('tableWrap').style.display = '';
+    document.getElementById('tableCards').style.display = '';
     document.getElementById('empty-board').style.display = 'none';
   }
 
