@@ -122,20 +122,45 @@
   .formation-link .ext{font-size:11px;opacity:.5;transition:opacity .15s}
   .formation-link:hover .ext{opacity:1}
 
-  /* Bouton générer prompt (dans l'onglet Synthèse) */
+  /* En-tête de l'onglet Synthèse */
   .synth-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:12px;
+    display:flex;flex-direction:column;gap:14px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:18px 20px;
     margin-bottom:16px;
-    flex-wrap:wrap;
   }
-  .synth-header .info{
-    font-size:13px;
-    color:var(--muted);
-    flex:1;
-    min-width:200px;
+  .synth-header .info-block{
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .synth-header .info-block .title{
+    font-size:15px;font-weight:700;color:var(--marine);
+    display:flex;align-items:center;gap:8px;
+  }
+  .synth-header .info-block .description{
+    font-size:13.5px;color:#475467;line-height:1.55;
+  }
+  .synth-header .info-block .description strong{
+    color:var(--marine);
+  }
+  .synth-header .date-info{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 12px;
+    background:var(--ecume);
+    border-radius:6px;
+    border-left:3px solid var(--azur);
+    font-size:13px;color:#475467;
+  }
+  .synth-header .date-info .label{
+    font-weight:600;color:var(--marine);
+  }
+  .synth-header .date-info .value{
+    font-weight:600;color:var(--azur);
+  }
+  .synth-header .actions{
+    display:flex;justify-content:flex-end;
   }
   .btn-prompt{
     display:inline-flex;align-items:center;gap:8px;
@@ -204,9 +229,16 @@
     .header h1{font-size:20px}
     .tab{font-size:15px;padding:12px 20px}
     .synthese-grid{grid-template-columns:repeat(2,1fr)}
+    .synth-header{
+      flex-direction:row;flex-wrap:wrap;
+      align-items:flex-start;justify-content:space-between;
+    }
+    .synth-header .info-block{flex:1;min-width:300px}
+    .synth-header .date-info{flex:0 0 auto}
+    .synth-header .actions{flex:0 0 auto}
   }
   @media (max-width:600px){
-    .synth-header{flex-direction:column;align-items:stretch}
+    .synth-header .actions{justify-content:stretch}
     .btn-prompt{width:100%;justify-content:center}
   }
 </style>
@@ -245,13 +277,36 @@
 
   <!-- Onglet 2 : Synthèse IA -->
   <div class="panel" id="panel-synth">
+
+    <!-- Encart d'information -->
     <div class="synth-header">
-      <div class="info">
-        Générez le prompt à envoyer à une IA (Gemini, ChatGPT, Claude…) pour obtenir les synthèses Qualiopi.
+      <div class="info-block">
+        <div class="title">🤖 Analyse qualité automatique (Qualiopi)</div>
+        <div class="description">
+          Les synthèses sont <strong>générées automatiquement 4 fois par jour</strong>
+          à partir des remarques et suggestions des stagiaires, dans le respect des
+          exigences Qualiopi (constats factuels et axes d'amélioration).
+        </div>
       </div>
-      <button class="btn-prompt" onclick="genererPrompt()" type="button">
-        📄 Générer le prompt IA
-      </button>
+
+      <div class="date-info" id="date-info" style="display:none">
+        <span class="label">Dernière génération :</span>
+        <span class="value" id="date-synthese">…</span>
+      </div>
+
+      <div class="actions">
+        <button class="btn-prompt" onclick="genererPrompt()" type="button">
+          📄 Générer le prompt manuel
+        </button>
+      </div>
+    </div>
+
+    <div class="info-block" style="margin-bottom:16px;padding:12px 16px;background:#fff8e1;border:1px solid #f0c060;border-radius:8px;font-size:13px;color:#5c4813;line-height:1.5">
+      <strong>💡 Besoin d'une synthèse à jour immédiatement ?</strong>
+      Si les dernières remarques ne sont pas encore prises en compte (mise à jour automatique
+      toutes les 6 h), cliquez sur <strong>« Générer le prompt manuel »</strong>, copiez le
+      contenu du fichier téléchargé dans une IA (Gemini, ChatGPT, Claude…), puis collez la
+      réponse dans l'onglet <strong>SYNTHESE</strong> de votre feuille de calcul.
     </div>
 
     <div class="loading" id="loading-synth">
@@ -280,6 +335,7 @@
   const CSV_REFUS = BASE + "refus.csv";
   const CSV_SUGGESTIONS = BASE + "suggestions.csv";
   const CSV_SYNTHESE = BASE + "synthese.csv";
+  const CSV_SYNTHESE_DATE = BASE + "synthese-date.csv";
   const DATE_FILE = BASE + "last-update.txt";
 
   let DATA = { rows: [] };
@@ -338,17 +394,19 @@
 
   async function chargerTout(){
     try {
-      const [rF, rR, rSug, rSyn] = await Promise.all([
+      const [rF, rR, rSug, rSyn, rSynDate] = await Promise.all([
         fetch(CSV_RESULTATS + '?t=' + Date.now(), { cache: 'no-store' }),
         fetch(CSV_REFUS + '?t=' + Date.now(), { cache: 'no-store' }),
         fetch(CSV_SUGGESTIONS + '?t=' + Date.now(), { cache: 'no-store' }),
-        fetch(CSV_SYNTHESE + '?t=' + Date.now(), { cache: 'no-store' })
+        fetch(CSV_SYNTHESE + '?t=' + Date.now(), { cache: 'no-store' }),
+        fetch(CSV_SYNTHESE_DATE + '?t=' + Date.now(), { cache: 'no-store' })
       ]);
 
       const rowsF = parseCSV(await rF.text());
       const rowsR = parseCSV(await rR.text());
       const rowsS = parseCSV(await rSug.text());
       const rowsSyn = parseCSV(await rSyn.text());
+      const rowsDate = parseCSV(await rSynDate.text());
 
       const refusMap = {};
       rowsR.slice(1).forEach(r => {
@@ -370,6 +428,15 @@
         if (!f) return;
         SYNTHESES[f] = { nb: parseInt(r[1], 10) || 0, texte: (r[2] || '').trim() };
       });
+
+      // Date de génération des synthèses
+      if (rowsDate.length >= 2){
+        const d = (rowsDate[1][1] || '').trim();
+        if (d){
+          document.getElementById('date-synthese').textContent = d;
+          document.getElementById('date-info').style.display = 'flex';
+        }
+      }
 
       if (rowsF.length >= 2){
         const allHeaders = rowsF[0].map(h => h.trim());
@@ -555,8 +622,7 @@
   }
 
   /* ============================================================
-     GÉNÉRATION DU FICHIER PROMPT (.txt)
-     Modèle Qualiopi - Constats + Actions
+     GÉNÉRATION DU FICHIER PROMPT MANUEL (.txt)
      ============================================================ */
   function genererPrompt(){
     if (!SUGGESTIONS || !Object.keys(SUGGESTIONS).length){
@@ -655,8 +721,7 @@
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    console.log("Prompt Qualiopi généré — " + formations.length + " formations, " +
-                formations.reduce((sum, f) => sum + SUGGESTIONS[f].length, 0) + " remarques");
+    console.log("Prompt Qualiopi généré — " + formations.length + " formations");
   }
 
   chargerTout();
