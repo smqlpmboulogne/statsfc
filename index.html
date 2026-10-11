@@ -89,26 +89,15 @@
   tbody tr:nth-child(even){background:#fafbfd}
   tbody tr:hover{background:#eef4ff}
 
-  /* Lien formation */
   .formation-link{
-    color:var(--marine);
-    text-decoration:none;
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
+    color:var(--marine);text-decoration:none;
+    display:inline-flex;align-items:center;gap:6px;
     font-weight:600;
     border-bottom:1px dashed transparent;
     transition:color .15s, border-color .15s;
   }
-  .formation-link:hover{
-    color:var(--azur);
-    border-bottom-color:var(--azur);
-  }
-  .formation-link .ext{
-    font-size:11px;
-    opacity:.5;
-    transition:opacity .15s;
-  }
+  .formation-link:hover{color:var(--azur);border-bottom-color:var(--azur)}
+  .formation-link .ext{font-size:11px;opacity:.5;transition:opacity .15s}
   .formation-link:hover .ext{opacity:1}
 
   .empty-msg{text-align:center;padding:50px;color:var(--muted);font-size:14px}
@@ -172,7 +161,7 @@
 
   const BASE = "https://smqlpmboulogne.github.io/satisfactionfc/";
   const CSV_RESULTATS = BASE + "formations.csv";
-  const CSV_SUGGESTIONS = BASE + "suggestions.csv";
+  const CSV_REFUS = BASE + "refus.csv";
   const DATE_FILE = BASE + "last-update.txt";
 
   let DATA = { rows: [] };
@@ -229,9 +218,27 @@
 
   async function chargerTout(){
     try {
-      const resFormations = await fetch(CSV_RESULTATS + '?t=' + Date.now(), { cache: 'no-store' });
-      const rowsF = parseCSV(await resFormations.text());
+      const [resFormations, resRefus] = await Promise.all([
+        fetch(CSV_RESULTATS + '?t=' + Date.now(), { cache: 'no-store' }),
+        fetch(CSV_REFUS + '?t=' + Date.now(), { cache: 'no-store' })
+      ]);
 
+      const rowsF = parseCSV(await resFormations.text());
+      const rowsR = parseCSV(await resRefus.text());
+
+      // --- Dictionnaire REFUS par formation ---
+      const refusMap = {};
+      rowsR.slice(1).forEach(r => {
+        const f = (r[0] || '').trim();
+        if (!f) return;
+        refusMap[f] = {
+          refus: parseInt(r[1], 10) || 0,
+          reponses: parseInt(r[2], 10) || 0,
+          taux: toPercent(r[3])
+        };
+      });
+
+      // --- Construire DATA depuis formations.csv ---
       if (rowsF.length >= 2){
         const allHeaders = rowsF[0].map(h => h.trim());
 
@@ -266,7 +273,14 @@
             const vals = [pRep, pObj, pUti, pQua].filter(v => v != null);
             const satisfaction = vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : null;
 
-            return { name, satisfaction, reponses, pRep, pObj, pUti, pQua };
+            const refusInfo = refusMap[name] || { refus: null, taux: null };
+
+            return {
+              name, satisfaction, reponses,
+              pRep, pObj, pUti, pQua,
+              refus: refusInfo.refus,
+              tauxRefus: refusInfo.taux
+            };
           });
       }
 
@@ -308,7 +322,8 @@
       { key:'pUti',         label:'Utilisation compétences' },
       { key:'pQua',         label:'Qualité animation' },
       { key:'reponses',     label:'Réponses' },
-      { key:'refus',        label:'Refus' }
+      { key:'refus',        label:'Refus' },
+      { key:'tauxRefus',    label:'Taux de refus' }
     ];
 
     const thead = '<thead><tr>' + columns.map(c => {
@@ -325,8 +340,7 @@
       return '<tr>' +
         '<td>' +
           '<a class="formation-link" href="'+urlDetail+'" target="_blank" rel="noopener">' +
-            esc(r.name) +
-            '<span class="ext">↗</span>' +
+            esc(r.name) + '<span class="ext">↗</span>' +
           '</a>' +
         '</td>' +
         '<td class="taux '+lvl+'">'+fmtPct(r.satisfaction)+'</td>' +
@@ -335,7 +349,8 @@
         '<td class="'+(r.pUti == null ? 'empty' : '')+'">'+fmtPct(r.pUti)+'</td>' +
         '<td class="'+(r.pQua == null ? 'empty' : '')+'">'+fmtPct(r.pQua)+'</td>' +
         '<td class="'+(r.reponses == null ? 'empty' : '')+'">'+(r.reponses != null ? r.reponses : '—')+'</td>' +
-        '<td class="empty">—</td>' +
+        '<td class="'+(r.refus == null ? 'empty' : '')+'">'+(r.refus != null ? r.refus : '—')+'</td>' +
+        '<td class="'+(r.tauxRefus == null ? 'empty' : '')+'">'+fmtPct(r.tauxRefus)+'</td>' +
         '</tr>';
     }).join('') + '</tbody>';
 
