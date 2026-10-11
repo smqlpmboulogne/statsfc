@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Évaluation à chaud des formations fc — Lycée Maritime Boulogne</title>
 <link rel="icon" href="data:,">
-<!-- Bibliothèque Markdown pour le rendu des synthèses -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
   :root{
@@ -82,7 +81,6 @@
   }
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* TABLEAU (desktop) */
   .table-wrap{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
@@ -124,7 +122,6 @@
   .formation-link .ext{font-size:11px;opacity:.5;transition:opacity .15s}
   .formation-link:hover .ext{opacity:1}
 
-  /* CARTES (mobile) */
   .table-cards{display:none}
   .tcard{
     background:var(--card);border:1px solid var(--border);
@@ -177,7 +174,6 @@
   }
   .tcard .tcard-row .v.empty{color:var(--muted);font-weight:400}
 
-  /* En-tête Synthèse */
   .synth-header{
     display:flex;flex-direction:column;gap:14px;
     background:var(--card);
@@ -211,7 +207,6 @@
   .synth-header .date-info .label{font-weight:600;color:var(--marine)}
   .synth-header .date-info .value{font-weight:600;color:var(--azur)}
 
-  /* Encart jaune */
   .help-box{
     margin-bottom:16px;
     padding:16px 18px;
@@ -258,7 +253,6 @@
   }
   .btn-prompt:active, .btn-export:active{transform:translateY(0)}
 
-  /* Cartes synthèses */
   .synthese-grid{
     display:grid;grid-template-columns:1fr;gap:16px;
   }
@@ -284,28 +278,28 @@
     padding:3px 10px;border-radius:12px;
   }
 
-  /* Rendu Markdown dans les synthèses */
   .synth-content{
     font-size:14px;color:#475467;line-height:1.65;
     word-break:break-word;
   }
-  .synth-content h2{
-    font-size:15px;
-    font-weight:700;
+  .synth-content h1,
+  .synth-content h2,
+  .synth-content h3{
     color:var(--marine);
+    font-weight: 700;
     margin: 16px 0 10px 0;
     padding-bottom: 6px;
     border-bottom: 1px dashed var(--border);
   }
-  .synth-content h2:first-child{margin-top: 0}
-  .synth-content p{
-    margin: 0 0 12px 0;
-  }
+  .synth-content h1{font-size: 18px}
+  .synth-content h2{font-size: 15px}
+  .synth-content h3{font-size: 14px}
+  .synth-content h1:first-child,
+  .synth-content h2:first-child,
+  .synth-content h3:first-child{margin-top: 0}
+  .synth-content p{margin: 0 0 12px 0}
   .synth-content p:last-child{margin-bottom: 0}
-  .synth-content strong{
-    color: var(--marine);
-    font-weight: 700;
-  }
+  .synth-content strong{color: var(--marine); font-weight: 700}
   .synth-content em{font-style: italic}
   .synth-content code{
     background: var(--ecume); padding: 2px 6px;
@@ -315,6 +309,10 @@
     margin: 0 0 12px 20px; padding: 0;
   }
   .synth-content li{margin-bottom: 6px}
+  .synth-content hr{
+    border: none; border-top: 1px dashed var(--border);
+    margin: 16px 0;
+  }
 
   .empty-msg{text-align:center;padding:50px;color:var(--muted);font-size:14px}
 
@@ -378,7 +376,8 @@
     .synth-card h3{ font-size: 14pt; border-bottom: 1px solid #ccc; }
     .synth-card h3 .badge{ background: #eee; color: #333; }
     .synth-content{ font-size: 11pt; line-height: 1.5; }
-    .synth-content strong, .synth-content h2{ color: #000; }
+    .synth-content strong, .synth-content h1,
+    .synth-content h2, .synth-content h3{ color: #000; }
     footer.foot{
       display: block !important; margin-top: 20px;
       padding-top: 10px; border-top: 1px solid #ccc; font-size: 9pt;
@@ -444,6 +443,9 @@
       <div class="help-actions">
         <button class="btn-prompt" onclick="genererPrompt()" type="button">
           📄 Générer le prompt manuel
+        </button>
+        <button class="btn-prompt" onclick="telechargerMarkdown()" type="button">
+          📥 Télécharger la synthèse (.md)
         </button>
         <button class="btn-export" onclick="window.print()" type="button">
           🖨️ Exporter en PDF / Imprimer
@@ -731,20 +733,13 @@
     }).join('');
   }
 
-  /* ============================================================
-     RENDU MARKDOWN (via marked.js)
-     ============================================================ */
   function formaterSynthese(texteMarkdown){
     if (!texteMarkdown) return '';
     if (typeof marked === 'undefined') {
-      // Repli si marked n'est pas chargé : afficher le texte brut
       return esc(texteMarkdown);
     }
     try {
-      return marked.parse(texteMarkdown, {
-        breaks: false,
-        gfm: true
-      });
+      return marked.parse(texteMarkdown, { breaks: false, gfm: true });
     } catch (e) {
       console.error("Erreur rendu markdown:", e);
       return esc(texteMarkdown);
@@ -814,7 +809,7 @@
   }
 
   /* ============================================================
-     GÉNÉRATION DU PROMPT MANUEL (au format Markdown)
+     GÉNÉRATION DU PROMPT MANUEL
      ============================================================ */
   function genererPrompt(){
     if (!SUGGESTIONS || !Object.keys(SUGGESTIONS).length){
@@ -909,6 +904,58 @@
     URL.revokeObjectURL(url);
 
     console.log("Prompt Qualiopi généré — " + formations.length + " formations");
+  }
+
+  /* ============================================================
+     TÉLÉCHARGEMENT DE LA SYNTHÈSE EN MARKDOWN (.md)
+     ============================================================ */
+  function telechargerMarkdown(){
+    const noms = Object.keys(SYNTHESES);
+    if (!noms.length){
+      alert("Les synthèses ne sont pas encore chargées. Attendez quelques secondes et réessayez.");
+      return;
+    }
+
+    const maintenant = new Date();
+    const dateStr = maintenant.toLocaleString('fr-FR', {
+      day:'2-digit', month:'long', year:'numeric',
+      hour:'2-digit', minute:'2-digit'
+    });
+
+    let contenu = '';
+    contenu += '# Synthèses Qualiopi — Évaluation à chaud des formations fc\n\n';
+    contenu += '*Lycée Professionnel Maritime Boulogne - Le Portel*\n\n';
+    contenu += '**Généré le ' + dateStr + '**\n\n';
+    contenu += '---\n\n';
+
+    noms.sort((a,b) => a.localeCompare(b, 'fr'));
+
+    noms.forEach((nom, index) => {
+      const s = SYNTHESES[nom];
+      contenu += '## ' + nom + '\n\n';
+      contenu += '_' + s.nb + ' remarque' + (s.nb > 1 ? 's' : '') + '_\n\n';
+      contenu += s.texte + '\n\n';
+
+      if (index < noms.length - 1){
+        contenu += '---\n\n';
+      }
+    });
+
+    contenu += '\n---\n\n';
+    contenu += '*Conception et réalisation : ZEG — Lycée Maritime Boulogne, ' + new Date().getFullYear() + '*\n';
+    contenu += '*Projet réalisé dans le cadre du pacte enseignant*\n';
+
+    const blob = new Blob([contenu], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Syntheses_Qualiopi_' + maintenant.toISOString().slice(0, 10) + '.md';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    console.log("Synthèse Markdown téléchargée — " + noms.length + " formations");
   }
 
   chargerTout();
