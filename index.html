@@ -122,7 +122,7 @@
   .formation-link .ext{font-size:11px;opacity:.5;transition:opacity .15s}
   .formation-link:hover .ext{opacity:1}
 
-  /* CARTES (mobile uniquement) */
+  /* CARTES (mobile) */
   .table-cards{display:none}
   .tcard{
     background:var(--card);border:1px solid var(--border);
@@ -175,7 +175,7 @@
   }
   .tcard .tcard-row .v.empty{color:var(--muted);font-weight:400}
 
-  /* En-tête de l'onglet Synthèse */
+  /* En-tête Synthèse */
   .synth-header{
     display:flex;flex-direction:column;gap:14px;
     background:var(--card);
@@ -266,7 +266,7 @@
   .btn-prompt:active,
   .btn-export:active{transform:translateY(0)}
 
-  /* Cartes synthèses IA */
+  /* Cartes synthèses */
   .synthese-grid{
     display:grid;grid-template-columns:1fr;gap:16px;
   }
@@ -312,7 +312,6 @@
   footer.foot .sep{display:inline-block;margin:0 5px;color:var(--azur-clair)}
   footer.foot .mention{font-style:italic;font-size:11px;color:var(--muted);opacity:.85}
 
-  /* RESPONSIVE */
   @media (max-width:899px){
     .table-wrap{display:none !important}
     .table-cards{display:block}
@@ -344,7 +343,6 @@
     .help-box .help-actions{flex-direction:column}
   }
 
-  /* IMPRESSION */
   @media print {
     @page { size: A4; margin: 15mm 12mm; }
     html, body { background: #fff !important; color: #000; }
@@ -355,37 +353,19 @@
       display: none !important;
     }
     #panel-synth{ display: block !important; }
-    .synthese-grid{
-      display: block !important;
-      grid-template-columns: 1fr;
-    }
+    .synthese-grid{ display: block !important; grid-template-columns: 1fr; }
     .synth-card{
-      box-shadow: none;
-      border: 1px solid #ccc;
-      page-break-inside: avoid;
-      margin-bottom: 12px;
-      padding: 12px 14px;
+      box-shadow: none; border: 1px solid #ccc;
+      page-break-inside: avoid; margin-bottom: 12px; padding: 12px 14px;
     }
     .synth-card::before{ background: #999; }
-    .synth-card h3{
-      font-size: 14pt;
-      border-bottom: 1px solid #ccc;
-    }
-    .synth-card h3 .badge{
-      background: #eee;
-      color: #333;
-    }
-    .synth-content{
-      font-size: 11pt;
-      line-height: 1.5;
-    }
+    .synth-card h3{ font-size: 14pt; border-bottom: 1px solid #ccc; }
+    .synth-card h3 .badge{ background: #eee; color: #333; }
+    .synth-content{ font-size: 11pt; line-height: 1.5; }
     .synth-content .rubrique{ color: #000; }
     footer.foot{
-      display: block !important;
-      margin-top: 20px;
-      padding-top: 10px;
-      border-top: 1px solid #ccc;
-      font-size: 9pt;
+      display: block !important; margin-top: 20px;
+      padding-top: 10px; border-top: 1px solid #ccc; font-size: 9pt;
     }
   }
 </style>
@@ -410,7 +390,6 @@
     <button class="tab" data-tab="synth" role="tab">Synthèse IA</button>
   </div>
 
-  <!-- Onglet 1 : Tableau de bord -->
   <div class="panel active" id="panel-board">
     <div class="loading" id="loading-board">
       <div class="spin"></div>
@@ -423,7 +402,6 @@
     <div class="empty-msg" id="empty-board" style="display:none">Aucune donnée disponible</div>
   </div>
 
-  <!-- Onglet 2 : Synthèse IA -->
   <div class="panel" id="panel-synth">
 
     <div class="synth-header">
@@ -431,8 +409,7 @@
         <div class="title">🤖 Analyse qualité automatique (Qualiopi)</div>
         <div class="description">
           Les synthèses sont <strong>générées automatiquement 4 fois par jour</strong>
-          à partir des remarques et suggestions des stagiaires, dans le respect des
-          exigences Qualiopi (constats factuels et axes d'amélioration).
+          à partir des remarques et suggestions des stagiaires.
         </div>
       </div>
       <div class="date-info" id="date-info" style="display:none">
@@ -444,10 +421,9 @@
     <div class="help-box">
       <div class="help-text">
         <strong>💡 Besoin d'une synthèse à jour immédiatement ?</strong>
-        Si les dernières remarques ne sont pas encore prises en compte (mise à jour
-        automatique toutes les 6 h), cliquez sur <strong>« Générer le prompt manuel »</strong>,
-        copiez le contenu du fichier téléchargé dans une IA (Gemini, ChatGPT, Claude…),
-        puis collez la réponse dans l'onglet <strong>SYNTHESE</strong> de votre feuille de calcul.
+        Cliquez sur <strong>« Générer le prompt manuel »</strong>, collez le contenu
+        dans une IA (Gemini, ChatGPT…), puis copiez la réponse dans l'onglet
+        <strong>SYNTHESE</strong> de votre feuille de calcul.
       </div>
       <div class="help-actions">
         <button class="btn-prompt" onclick="genererPrompt()" type="button">
@@ -740,29 +716,26 @@
   }
 
   /* ============================================================
-     FORMATAGE DES SYNTHÈSES (rubriques en gras)
-     Accepte les apostrophes droites ET typographiques
+     FORMATAGE — Détection robuste des rubriques
+     On cherche le pattern "XXX :" en fin de ligne, quelle que soit
+     l'apostrophe utilisée (droite ' ou typographique ')
      ============================================================ */
   function formaterSynthese(texte){
-    // Étape 1 : échapper le HTML
+    // 1) Échapper le HTML
     let s = esc(texte);
 
-    // Étape 2 : repérer les rubriques, avec n'importe quelle apostrophe
-    // On utilise ['''] qui matche à la fois ' et '
-    const rubriques = [
-      "Points positifs",
-      "Axes d['']amélioration",
-      "Constats qualité",
-      "Actions conseillées"
+    // 2) Chercher "Points positifs :", "Axes d'amélioration :", etc.
+    //    L'apostrophe peut être ' (U+0027) ou ' (U+2019)
+    //    On accepte aussi " :" suivi ou non d'un espace
+    const rubriquesPatterns = [
+      /(Points positifs)\s*:/gi,
+      /(Axes\s+d['’]amélioration)\s*:/gi,
+      /(Constats\s+qualité)\s*:/gi,
+      /(Actions\s+conseillées)\s*:/gi
     ];
 
-    rubriques.forEach(rub => {
-      // On cherche : la rubrique, suivie éventuellement d'espaces et d'un ":"
-      const regex = new RegExp(
-        '(' + rub + ')\\s*:',
-        'gi'
-      );
-      s = s.replace(regex, '<span class="rubrique">$1 :</span>');
+    rubriquesPatterns.forEach(re => {
+      s = s.replace(re, '<span class="rubrique">$1 :</span>');
     });
 
     return s;
