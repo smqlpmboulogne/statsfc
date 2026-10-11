@@ -49,6 +49,27 @@
     background:var(--anis);box-shadow:0 0 0 3px rgba(164,198,57,.30);
   }
 
+  /* Onglets */
+  .tabs{
+    display:flex;gap:4px;margin-bottom:16px;
+    background:var(--card);border:1px solid var(--border);
+    border-radius:12px;padding:4px;box-shadow:var(--shadow);
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+  }
+  .tab{
+    flex:1 1 auto;min-width:max-content;
+    padding:10px 16px;border:none;background:transparent;
+    font-size:14px;font-weight:600;color:var(--muted);
+    border-radius:8px;cursor:pointer;white-space:nowrap;
+    transition:background .15s,color .15s;
+    font-family:inherit;
+  }
+  .tab:hover{background:#f0f4f9;color:var(--marine)}
+  .tab.active{background:var(--marine);color:#fff}
+
+  .panel{display:none}
+  .panel.active{display:block}
+
   .loading{
     text-align:center;padding:50px 16px;color:var(--muted);font-size:15px;
     display:flex;align-items:center;justify-content:center;gap:12px;
@@ -60,6 +81,7 @@
   }
   @keyframes spin{to{transform:rotate(360deg)}}
 
+  /* Tableau */
   .table-wrap{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
@@ -100,6 +122,59 @@
   .formation-link .ext{font-size:11px;opacity:.5;transition:opacity .15s}
   .formation-link:hover .ext{opacity:1}
 
+  /* Cartes synthèse IA */
+  .synthese-grid{
+    display:grid;grid-template-columns:1fr;gap:16px;
+  }
+  .synth-card{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:20px 22px;
+    position:relative;overflow:hidden;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .synth-card:hover{
+    transform:translateY(-3px);
+    box-shadow:var(--shadow-hover);
+  }
+  .synth-card::before{
+    content:'';position:absolute;top:0;left:0;bottom:0;width:5px;
+    background:var(--azur);
+  }
+  .synth-card h3{
+    margin:0 0 16px;font-size:17px;font-weight:700;color:var(--marine);
+    padding-bottom:12px;border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    flex-wrap:wrap;
+  }
+  .synth-card h3 .badge{
+    background:var(--ecume);color:var(--muted);
+    font-size:11.5px;font-weight:600;
+    padding:3px 10px;border-radius:12px;
+  }
+  .synth-section{
+    margin-bottom:14px;
+    padding:12px 14px;
+    background:var(--ecume);
+    border-radius:6px;
+    border-left:3px solid var(--azur);
+  }
+  .synth-section.pos{ border-left-color: var(--success); }
+  .synth-section.axe{ border-left-color: var(--warning); }
+  .synth-section.rec{ border-left-color: var(--marine); }
+  .synth-section .label{
+    font-size:12px;font-weight:700;color:var(--marine);
+    text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .synth-section .content{
+    font-size:14px;color:#475467;line-height:1.55;
+    white-space:pre-wrap;word-break:break-word;
+  }
+  .synth-section .content.empty{
+    color:var(--muted);font-style:italic;
+  }
+
   .empty-msg{text-align:center;padding:50px;color:var(--muted);font-size:14px}
 
   footer.foot{
@@ -117,6 +192,8 @@
     .header{padding:16px 24px;margin-bottom:16px}
     .header .banner{max-width:260px}
     .header h1{font-size:20px}
+    .tab{font-size:15px;padding:12px 20px}
+    .synthese-grid{grid-template-columns:repeat(2,1fr)}
   }
 </style>
 </head>
@@ -135,16 +212,43 @@
     </div>
   </header>
 
-  <div class="loading" id="loading">
-    <div class="spin"></div>
-    <div>Chargement des données…</div>
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-tab="board" role="tab">Tableau de bord</button>
+    <button class="tab" data-tab="detail" role="tab">Détail, suggestions & remarques</button>
+    <button class="tab" data-tab="synth" role="tab">Synthèse IA</button>
   </div>
 
-  <div class="table-wrap" id="tableWrap" style="display:none">
-    <table id="table"></table>
+  <!-- Onglet 1 : Tableau de bord -->
+  <div class="panel active" id="panel-board">
+    <div class="loading" id="loading-board">
+      <div class="spin"></div>
+      <div>Chargement des données…</div>
+    </div>
+    <div class="table-wrap" id="tableWrap" style="display:none">
+      <table id="table"></table>
+    </div>
+    <div class="empty-msg" id="empty-board" style="display:none">Aucune donnée disponible</div>
   </div>
 
-  <div class="empty-msg" id="empty" style="display:none">Aucune donnée disponible</div>
+  <!-- Onglet 2 : Détail -->
+  <div class="panel" id="panel-detail">
+    <div class="loading" id="loading-detail">
+      <div class="spin"></div>
+      <div>Chargement du détail…</div>
+    </div>
+    <div class="cards" id="cards" style="display:none"></div>
+    <div class="empty-msg" id="empty-detail" style="display:none">Aucune donnée détaillée disponible</div>
+  </div>
+
+  <!-- Onglet 3 : Synthèse IA -->
+  <div class="panel" id="panel-synth">
+    <div class="loading" id="loading-synth">
+      <div class="spin"></div>
+      <div>Chargement des synthèses…</div>
+    </div>
+    <div class="synthese-grid" id="syntheseGrid" style="display:none"></div>
+    <div class="empty-msg" id="empty-synth" style="display:none">Aucune synthèse disponible</div>
+  </div>
 
   <footer class="foot">
     <p>
@@ -161,10 +265,14 @@
 
   const BASE = "https://smqlpmboulogne.github.io/satisfactionfc/";
   const CSV_RESULTATS = BASE + "formations.csv";
+  const CSV_SUGGESTIONS = BASE + "suggestions.csv";
   const CSV_REFUS = BASE + "refus.csv";
+  const CSV_SYNTHESE = BASE + "synthese.csv";
   const DATE_FILE = BASE + "last-update.txt";
 
   let DATA = { rows: [] };
+  let SUGGESTIONS = {};
+  let SYNTHESES = {};
   let sortKey = 'name';
   let sortAsc = true;
 
@@ -218,30 +326,54 @@
 
   async function chargerTout(){
     try {
-      const [resFormations, resRefus] = await Promise.all([
+      const [rF, rR, rSug, rSyn] = await Promise.all([
         fetch(CSV_RESULTATS + '?t=' + Date.now(), { cache: 'no-store' }),
-        fetch(CSV_REFUS + '?t=' + Date.now(), { cache: 'no-store' })
+        fetch(CSV_REFUS + '?t=' + Date.now(), { cache: 'no-store' }),
+        fetch(CSV_SUGGESTIONS + '?t=' + Date.now(), { cache: 'no-store' }),
+        fetch(CSV_SYNTHESE + '?t=' + Date.now(), { cache: 'no-store' })
       ]);
 
-      const rowsF = parseCSV(await resFormations.text());
-      const rowsR = parseCSV(await resRefus.text());
+      const rowsF = parseCSV(await rF.text());
+      const rowsR = parseCSV(await rR.text());
+      const rowsS = parseCSV(await rSug.text());
+      const rowsSyn = parseCSV(await rSyn.text());
 
-      // --- Dictionnaire REFUS par formation ---
+      // --- REFUS ---
       const refusMap = {};
       rowsR.slice(1).forEach(r => {
         const f = (r[0] || '').trim();
         if (!f) return;
         refusMap[f] = {
           refus: parseInt(r[1], 10) || 0,
-          reponses: parseInt(r[2], 10) || 0,
           taux: toPercent(r[3])
         };
       });
 
-      // --- Construire DATA depuis formations.csv ---
+      // --- SUGGESTIONS ---
+      rowsS.slice(1).forEach(r => {
+        const f = (r[1] || '').trim();
+        const s = (r[2] || '').trim();
+        if (!f || !s) return;
+        if (!SUGGESTIONS[f]) SUGGESTIONS[f] = [];
+        SUGGESTIONS[f].push(s);
+      });
+
+      // --- SYNTHESES IA ---
+      // Colonnes : Formation | Nb | Positifs | Améliorations | Recommandation
+      rowsSyn.slice(1).forEach(r => {
+        const f = (r[0] || '').trim();
+        if (!f) return;
+        SYNTHESES[f] = {
+          nb: parseInt(r[1], 10) || 0,
+          positifs: (r[2] || '').trim(),
+          ameliorations: (r[3] || '').trim(),
+          recommandation: (r[4] || '').trim()
+        };
+      });
+
+      // --- RESULTATS ---
       if (rowsF.length >= 2){
         const allHeaders = rowsF[0].map(h => h.trim());
-
         let cutoff = allHeaders.length;
         for (let i = 1; i < allHeaders.length; i++){
           if (allHeaders[i] === ''){ cutoff = i; break; }
@@ -289,9 +421,11 @@
 
     } catch (e) {
       console.error("Erreur chargement:", e);
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('empty').textContent = "Impossible de charger : " + e.message;
-      document.getElementById('empty').style.display = 'block';
+      document.getElementById('loading-board').style.display = 'none';
+      document.getElementById('loading-detail').style.display = 'none';
+      document.getElementById('loading-synth').style.display = 'none';
+      document.getElementById('empty-board').textContent = "Impossible de charger : " + e.message;
+      document.getElementById('empty-board').style.display = 'block';
     }
   }
 
@@ -313,6 +447,9 @@
     });
   }
 
+  /* ============================================================
+     TABLEAU (onglet 1)
+     ============================================================ */
   function renderTable(rows){
     const columns = [
       { key:'name',         label:'Formation' },
@@ -368,20 +505,123 @@
     });
   }
 
+  /* ============================================================
+     CARTES (onglet 2)
+     ============================================================ */
+  function renderCards(rows){
+    document.getElementById('cards').innerHTML = rows.map(r => {
+      const lvl = level(r.satisfaction);
+      const pct = r.satisfaction != null ? Math.max(0, Math.min(100, r.satisfaction)) : 0;
+      const sugs = SUGGESTIONS[r.name] || [];
+      const urlDetail = 'detail.html?formation=' + encodeURIComponent(r.name);
+
+      const sugsBlock = sugs.length
+        ? '<div class="sugg-block"><div class="title">💬 Suggestions & remarques ('+sugs.length+')</div>' +
+          '<ul>' + sugs.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul></div>'
+        : '<div class="sugg-block"><div class="title">💬 Suggestions & remarques</div>' +
+          '<div class="none">Aucune remarque</div></div>';
+
+      return '<div class="card '+lvl+'">' +
+        '<h3>'+esc(r.name)+'</h3>' +
+        '<div class="taux-big">'+fmtPct(r.satisfaction)+'</div>' +
+        '<div class="bar"><span style="width:'+pct+'%"></span></div>' +
+        '<div class="row"><span class="k">Réponse aux attentes</span>' +
+          '<span class="v'+(r.pRep == null ? ' empty' : '')+'">'+fmtPct(r.pRep)+'</span></div>' +
+        '<div class="row"><span class="k">Atteinte des objectifs</span>' +
+          '<span class="v'+(r.pObj == null ? ' empty' : '')+'">'+fmtPct(r.pObj)+'</span></div>' +
+        '<div class="row"><span class="k">Utilisation compétences</span>' +
+          '<span class="v'+(r.pUti == null ? ' empty' : '')+'">'+fmtPct(r.pUti)+'</span></div>' +
+        '<div class="row"><span class="k">Qualité animation</span>' +
+          '<span class="v'+(r.pQua == null ? ' empty' : '')+'">'+fmtPct(r.pQua)+'</span></div>' +
+        '<div class="row"><span class="k">Réponses</span>' +
+          '<span class="v'+(r.reponses == null ? ' empty' : '')+'">'+(r.reponses != null ? r.reponses : '—')+'</span></div>' +
+        '<div class="row"><span class="k">Refus</span>' +
+          '<span class="v'+(r.refus == null ? ' empty' : '')+'">'+(r.refus != null ? r.refus : '—')+'</span></div>' +
+        sugsBlock +
+        '<div class="hint"><a href="'+urlDetail+'" target="_blank" rel="noopener">Voir le détail complet ↗</a></div>' +
+        '</div>';
+    }).join('');
+  }
+
+  /* ============================================================
+     SYNTHESES IA (onglet 3)
+     ============================================================ */
+  function renderSyntheses(rows){
+    const html = rows
+      .filter(r => SYNTHESES[r.name])
+      .sort((a,b) => a.name.localeCompare(b.name, 'fr'))
+      .map(r => {
+        const s = SYNTHESES[r.name];
+        const isEmpty = v => !v || /^aucun/i.test(v);
+
+        const makeSection = (label, content, cls) => {
+          const isEmptyContent = isEmpty(content);
+          return '<div class="synth-section '+cls+'">' +
+            '<div class="label">'+label+'</div>' +
+            '<div class="content'+(isEmptyContent ? ' empty' : '')+'">' +
+              esc(content || 'Non renseigné') +
+            '</div>' +
+          '</div>';
+        };
+
+        return '<div class="synth-card">' +
+          '<h3>' + esc(r.name) +
+            '<span class="badge">' + s.nb + ' remarque' + (s.nb > 1 ? 's' : '') + '</span>' +
+          '</h3>' +
+          makeSection('✓ Points positifs', s.positifs, 'pos') +
+          makeSection('↗ Axes d\'amélioration', s.ameliorations, 'axe') +
+          makeSection('★ Recommandation', s.recommandation, 'rec') +
+        '</div>';
+      }).join('');
+
+    if (html){
+      document.getElementById('syntheseGrid').innerHTML = html;
+      document.getElementById('loading-synth').style.display = 'none';
+      document.getElementById('syntheseGrid').style.display = 'grid';
+    } else {
+      document.getElementById('loading-synth').style.display = 'none';
+      document.getElementById('empty-synth').style.display = 'block';
+    }
+  }
+
+  /* ============================================================
+     RENDU GLOBAL
+     ============================================================ */
   function render(){
     if (!DATA.rows.length){
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('empty').style.display = 'block';
+      document.getElementById('loading-board').style.display = 'none';
+      document.getElementById('loading-detail').style.display = 'none';
+      document.getElementById('empty-board').style.display = 'block';
+      document.getElementById('empty-detail').style.display = 'block';
       return;
     }
     const rows = sortRows(DATA.rows);
     renderTable(rows);
+    renderCards(rows);
+    renderSyntheses(DATA.rows);
 
-    document.getElementById('loading').style.display = 'none';
+    document.getElementById('loading-board').style.display = 'none';
+    document.getElementById('loading-detail').style.display = 'none';
     document.getElementById('tableWrap').style.display = 'block';
-    document.getElementById('empty').style.display = 'none';
+    document.getElementById('cards').style.display = 'grid';
+    document.getElementById('empty-board').style.display = 'none';
+    document.getElementById('empty-detail').style.display = 'none';
   }
 
+  /* ============================================================
+     ONGLETS
+     ============================================================ */
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+      document.querySelectorAll('.panel').forEach(p =>
+        p.classList.toggle('active', p.id === 'panel-' + t.dataset.tab));
+    });
+  });
+
+  /* ============================================================
+     DATE
+     ============================================================ */
   async function chargerDate(){
     try {
       const r = await fetch(DATE_FILE + '?t=' + Date.now(), { cache: 'no-store' });
