@@ -49,7 +49,6 @@
     background:var(--anis);box-shadow:0 0 0 3px rgba(164,198,57,.30);
   }
 
-  /* Onglets */
   .tabs{
     display:flex;gap:4px;margin-bottom:16px;
     background:var(--card);border:1px solid var(--border);
@@ -81,9 +80,7 @@
   }
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* ============================================================
-     TABLEAU (desktop)
-     ============================================================ */
+  /* TABLEAU (desktop) */
   .table-wrap{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
@@ -125,9 +122,7 @@
   .formation-link .ext{font-size:11px;opacity:.5;transition:opacity .15s}
   .formation-link:hover .ext{opacity:1}
 
-  /* ============================================================
-     CARTES (mobile uniquement) — masquées par défaut
-     ============================================================ */
+  /* CARTES (mobile uniquement) */
   .table-cards{display:none}
   .tcard{
     background:var(--card);border:1px solid var(--border);
@@ -180,9 +175,7 @@
   }
   .tcard .tcard-row .v.empty{color:var(--muted);font-weight:400}
 
-  /* ============================================================
-     En-tête de l'onglet Synthèse
-     ============================================================ */
+  /* En-tête de l'onglet Synthèse */
   .synth-header{
     display:flex;flex-direction:column;gap:14px;
     background:var(--card);
@@ -220,9 +213,7 @@
     font-weight:600;color:var(--azur);
   }
 
-  /* ============================================================
-     Encart jaune avec boutons
-     ============================================================ */
+  /* Encart jaune */
   .help-box{
     margin-bottom:16px;
     padding:16px 18px;
@@ -304,15 +295,10 @@
     font-size:14px;color:#475467;line-height:1.65;
     white-space:pre-wrap;word-break:break-word;
   }
-  /* Titres de rubriques en gras */
   .synth-content .rubrique{
     font-weight:700;
     color:var(--marine);
-    display:block;
-    margin-top:10px;
-    margin-bottom:2px;
   }
-  .synth-content .rubrique:first-child{margin-top:0}
 
   .empty-msg{text-align:center;padding:50px;color:var(--muted);font-size:14px}
 
@@ -326,17 +312,12 @@
   footer.foot .sep{display:inline-block;margin:0 5px;color:var(--azur-clair)}
   footer.foot .mention{font-style:italic;font-size:11px;color:var(--muted);opacity:.85}
 
-  /* ============================================================
-     RESPONSIVE
-     ============================================================ */
-
-  /* Mobile / tablette : cartes, pas de tableau */
+  /* RESPONSIVE */
   @media (max-width:899px){
     .table-wrap{display:none !important}
     .table-cards{display:block}
   }
 
-  /* Desktop : tableau, pas de cartes */
   @media (min-width:900px){
     .wrap{padding:20px}
     .header{padding:16px 24px;margin-bottom:16px}
@@ -363,25 +344,17 @@
     .help-box .help-actions{flex-direction:column}
   }
 
-  /* ============================================================
-     IMPRESSION / EXPORT PDF
-     ============================================================ */
+  /* IMPRESSION */
   @media print {
     @page { size: A4; margin: 15mm 12mm; }
-    html, body {
-      background: #fff !important;
-      color: #000;
-    }
+    html, body { background: #fff !important; color: #000; }
     .wrap{max-width:100%;padding:0;margin:0}
-    /* Masquer tout sauf l'onglet Synthèse */
     .header, .tabs, footer.foot .mention,
     .synth-header, .help-box, .table-wrap, .table-cards,
     #panel-board, .loading, .empty-msg{
       display: none !important;
     }
-    #panel-synth{
-      display: block !important;
-    }
+    #panel-synth{ display: block !important; }
     .synthese-grid{
       display: block !important;
       grid-template-columns: 1fr;
@@ -393,9 +366,7 @@
       margin-bottom: 12px;
       padding: 12px 14px;
     }
-    .synth-card::before{
-      background: #999;
-    }
+    .synth-card::before{ background: #999; }
     .synth-card h3{
       font-size: 14pt;
       border-bottom: 1px solid #ccc;
@@ -408,9 +379,7 @@
       font-size: 11pt;
       line-height: 1.5;
     }
-    .synth-content .rubrique{
-      color: #000;
-    }
+    .synth-content .rubrique{ color: #000; }
     footer.foot{
       display: block !important;
       margin-top: 20px;
@@ -428,7 +397,7 @@
     <img class="banner"
       src="https://www.lyceemaritime-boulogne.com/application/themes/theme_simpleo_coteo/images/logo-lycee-maritime-boulogne.jpg"
       alt="Lycée Maritime Boulogne">
-    <h1>Évaluation complète des formations</h1>
+    <h1>Évaluation à chaud des formations fc</h1>
     <p class="subtitle">Lycée Professionnel Maritime Boulogne - Le Portel</p>
     <div class="updated" id="updated" style="display:none">
       <span class="dot"></span>
@@ -447,22 +416,16 @@
       <div class="spin"></div>
       <div>Chargement des données…</div>
     </div>
-
-    <!-- Version tableau (desktop) -->
     <div class="table-wrap" id="tableWrap" style="display:none">
       <table id="table"></table>
     </div>
-
-    <!-- Version cartes (mobile) -->
     <div class="table-cards" id="tableCards" style="display:none"></div>
-
     <div class="empty-msg" id="empty-board" style="display:none">Aucune donnée disponible</div>
   </div>
 
   <!-- Onglet 2 : Synthèse IA -->
   <div class="panel" id="panel-synth">
 
-    <!-- Encart d'information haut -->
     <div class="synth-header">
       <div class="info-block">
         <div class="title">🤖 Analyse qualité automatique (Qualiopi)</div>
@@ -472,14 +435,12 @@
           exigences Qualiopi (constats factuels et axes d'amélioration).
         </div>
       </div>
-
       <div class="date-info" id="date-info" style="display:none">
         <span class="label">Dernière génération :</span>
         <span class="value" id="date-synthese">…</span>
       </div>
     </div>
 
-    <!-- Encart jaune avec boutons -->
     <div class="help-box">
       <div class="help-text">
         <strong>💡 Besoin d'une synthèse à jour immédiatement ?</strong>
@@ -697,9 +658,6 @@
     });
   }
 
-  /* ============================================================
-     RENDU — Tableau (desktop)
-     ============================================================ */
   function renderTable(rows){
     const columns = [
       { key:'name',         label:'Formation' },
@@ -752,9 +710,6 @@
     });
   }
 
-  /* ============================================================
-     RENDU — Cartes (mobile)
-     ============================================================ */
   function renderCards(rows){
     document.getElementById('tableCards').innerHTML = rows.map(r => {
       const lvl = level(r.satisfaction);
@@ -785,25 +740,27 @@
   }
 
   /* ============================================================
-     RENDU — Synthèses IA
+     FORMATAGE DES SYNTHÈSES (rubriques en gras)
+     Accepte les apostrophes droites ET typographiques
      ============================================================ */
   function formaterSynthese(texte){
-    // Échappe le HTML
+    // Étape 1 : échapper le HTML
     let s = esc(texte);
 
-    // Liste des rubriques à mettre en gras
+    // Étape 2 : repérer les rubriques, avec n'importe quelle apostrophe
+    // On utilise ['''] qui matche à la fois ' et '
     const rubriques = [
       "Points positifs",
-      "Axes d'amélioration",
+      "Axes d['']amélioration",
       "Constats qualité",
       "Actions conseillées"
     ];
 
-    // Remplace chaque rubrique (suivie de : ou :\n) par un <span class="rubrique">
     rubriques.forEach(rub => {
+      // On cherche : la rubrique, suivie éventuellement d'espaces et d'un ":"
       const regex = new RegExp(
-        '(' + rub.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\s*:',
-        'g'
+        '(' + rub + ')\\s*:',
+        'gi'
       );
       s = s.replace(regex, '<span class="rubrique">$1 :</span>');
     });
@@ -847,7 +804,6 @@
     renderSyntheses(DATA.rows);
 
     document.getElementById('loading-board').style.display = 'none';
-    // Note : on n'utilise PAS style.display ici, le CSS s'en charge selon le media query
     document.getElementById('tableWrap').style.display = '';
     document.getElementById('tableCards').style.display = '';
     document.getElementById('empty-board').style.display = 'none';
@@ -874,9 +830,6 @@
     } catch(e){}
   }
 
-  /* ============================================================
-     GÉNÉRATION DU FICHIER PROMPT MANUEL (.txt)
-     ============================================================ */
   function genererPrompt(){
     if (!SUGGESTIONS || !Object.keys(SUGGESTIONS).length){
       alert("Les suggestions ne sont pas encore chargées. Attendez quelques secondes et réessayez.");
