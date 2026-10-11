@@ -14,7 +14,9 @@
     --radius:10px;
     --shadow:0 1px 2px rgba(30,58,95,.06), 0 6px 16px rgba(30,58,95,.08);
     --shadow-hover:0 6px 12px rgba(30,58,95,.10), 0 16px 32px rgba(30,58,95,.12);
-    --success:#5fa02c;--warning:#e8a63c;--danger:#c93e3e;
+    --success:#5fa02c;--success-2:#4a8a1f;
+    --warning:#e8a63c;--warning-2:#c88a1c;
+    --danger:#c93e3e;--danger-2:#a52f2f;
   }
   *{box-sizing:border-box}
   html, body {
@@ -28,6 +30,7 @@
   }
   .wrap{width:100%;max-width:1600px;margin:0 auto;padding:12px;overflow-x:hidden}
 
+  /* En-tête maritime */
   .header{
     background: linear-gradient(135deg, var(--marine) 0%, var(--ocean) 100%);
     border:1px solid var(--marine-fonce);
@@ -35,8 +38,8 @@
     box-shadow:0 8px 24px rgba(30,58,95,.20);
     padding:14px 16px;margin-bottom:14px;text-align:center;
   }
-  .header .banner{display:block;margin:0 auto 6px;max-width:220px;width:100%;height:auto}
-  .header h1{margin:0;font-size:17px;font-weight:700;line-height:1.3;color:#fff}
+  .header .banner{display:block;margin:0 auto 6px;max-width:260px;width:100%;height:auto}
+  .header h1{margin:0;font-size:16px;font-weight:700;line-height:1.3;color:#fff}
   .header .subtitle{margin:4px 0 0;font-size:13px;color:#b8d2e8;font-weight:500}
   .header .updated{
     margin-top:8px;font-size:11.5px;color:#d0e0ee;
@@ -49,19 +52,7 @@
     background:var(--anis);box-shadow:0 0 0 3px rgba(164,198,57,.30);
   }
 
-  /* Stats globales */
-  .stats-bar{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-    gap:10px;margin-bottom:14px;
-  }
-  .stat-box{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:var(--radius);box-shadow:var(--shadow);
-    padding:12px 14px;text-align:center;
-  }
-  .stat-box .label{font-size:11.5px;color:var(--muted);font-weight:500;margin-bottom:4px}
-  .stat-box .value{font-size:20px;font-weight:700;color:var(--azur)}
-
+  /* Loader */
   .loading{
     text-align:center;padding:50px 16px;color:var(--muted);font-size:15px;
     display:flex;align-items:center;justify-content:center;gap:12px;
@@ -73,49 +64,91 @@
   }
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* Tableau desktop */
+  /* Tableau (desktop) */
   .table-wrap{display:none}
-  table{width:100%;border-collapse:collapse;font-size:13px;background:var(--card);
-    border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+  table{
+    width:100%;border-collapse:collapse;font-size:13px;
+    background:var(--card);border-radius:var(--radius);
+    overflow:hidden;box-shadow:var(--shadow);
+  }
   thead th{
     position:sticky;top:0;background:var(--marine);color:#fff;
-    text-align:left;padding:10px 12px;font-weight:600;
+    text-align:left;padding:10px 10px;font-weight:600;
     white-space:nowrap;cursor:pointer;user-select:none;
+    transition:background .15s;
   }
   thead th:hover{background:var(--ocean)}
   thead th:not(:first-child){text-align:right}
-  thead th .arrow{display:inline-block;margin-left:6px;opacity:.4;font-size:11px}
+  thead th .arrow{display:inline-block;margin-left:5px;opacity:.4;font-size:10px}
   thead th.sorted .arrow{opacity:1}
-  tbody td{padding:9px 12px;border-top:1px solid var(--border);
-    vertical-align:top;word-break:break-word}
+  tbody td{
+    padding:9px 10px;border-top:1px solid var(--border);
+    vertical-align:top;word-break:break-word;
+  }
   tbody td:first-child{font-weight:600;color:var(--marine)}
   tbody td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
-  tbody td.suggestion{text-align:left;font-weight:400;color:#475467;
-    font-size:12.5px;max-width:400px;line-height:1.4}
+  tbody td.suggestion{
+    text-align:left;font-weight:400;color:#475467;
+    font-size:12.5px;max-width:350px;line-height:1.4;
+  }
+  tbody td.taux{font-weight:700;font-size:14px}
+  tbody td.taux.high{color:var(--success)}
+  tbody td.taux.mid{color:var(--warning)}
+  tbody td.taux.low{color:var(--danger)}
   tbody td.empty{color:var(--muted);font-weight:400}
   tbody tr:nth-child(even){background:#fafbfd}
   tbody tr:hover{background:#eef4ff}
 
-  /* Cartes mobile */
+  /* Cartes (mobile) */
   .cards{display:grid;grid-template-columns:1fr;gap:12px}
   .card{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
     padding:16px 18px;
+    position:relative;overflow:hidden;
   }
+  .card::before{
+    content:'';position:absolute;top:0;left:0;bottom:0;width:4px;
+    background:var(--azur);
+  }
+  .card.high::before{background:var(--success)}
+  .card.mid::before{background:var(--warning)}
+  .card.low::before{background:var(--danger)}
   .card h3{
-    margin:0 0 10px;font-size:16px;font-weight:600;color:var(--marine);
-    word-break:break-word;padding-bottom:8px;border-bottom:1px solid var(--border);
+    margin:0 0 12px;font-size:16px;font-weight:600;color:var(--marine);
+    word-break:break-word;padding-bottom:10px;border-bottom:1px solid var(--border);
   }
+  .card .taux-big{
+    font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;
+    letter-spacing:-0.5px;color:var(--azur);margin-bottom:6px;
+  }
+  .card.high .taux-big{color:var(--success)}
+  .card.mid .taux-big{color:var(--warning)}
+  .card.low .taux-big{color:var(--danger)}
+  .card .bar{
+    width:100%;height:6px;background:var(--ecume-2);border-radius:3px;
+    overflow:hidden;margin-bottom:12px;
+  }
+  .card .bar span{
+    display:block;height:100%;border-radius:3px;
+    background:linear-gradient(90deg, var(--azur), var(--ocean));
+    transition:width .6s ease;
+  }
+  .card.high .bar span{background:linear-gradient(90deg, var(--anis), var(--success-2))}
+  .card.mid .bar span{background:linear-gradient(90deg, #f0c060, var(--warning-2))}
+  .card.low .bar span{background:linear-gradient(90deg, #e06060, var(--danger-2))}
+
   .card .row{
     display:grid;grid-template-columns:1fr auto;align-items:center;
-    gap:12px;padding:8px 0;border-bottom:1px dashed var(--border);
-    font-size:14px;
+    gap:12px;padding:7px 0;border-bottom:1px dashed var(--border);
+    font-size:13.5px;
   }
   .card .row:last-child{border-bottom:none}
-  .card .row .k{color:#475467;font-size:13.5px;min-width:0;word-break:break-word}
-  .card .row .v{text-align:right;font-weight:700;color:var(--azur);
-    font-variant-numeric:tabular-nums;white-space:nowrap;font-size:15px}
+  .card .row .k{color:#475467;min-width:0;word-break:break-word}
+  .card .row .v{
+    text-align:right;font-weight:700;color:var(--azur);
+    font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
   .card .row .v.empty{color:var(--muted);font-weight:500}
 
   .card .sugg-block{
@@ -126,7 +159,7 @@
   }
   .card .sugg-block ul{
     margin:0;padding-left:18px;list-style:disc;color:#475467;
-    font-size:13.5px;line-height:1.5;
+    font-size:13px;line-height:1.5;
   }
   .card .sugg-block li{margin-bottom:5px}
   .card .sugg-block li:last-child{margin-bottom:0}
@@ -136,6 +169,7 @@
 
   .empty-msg{text-align:center;padding:50px;color:var(--muted);font-size:14px}
 
+  /* Pied de page */
   footer.foot{
     text-align:center;padding:16px 16px 12px;font-size:12px;
     color:var(--muted);line-height:1.4;
@@ -146,13 +180,14 @@
   footer.foot .sep{display:inline-block;margin:0 5px;color:var(--azur-clair)}
   footer.foot .mention{font-style:italic;font-size:11px;color:var(--muted);opacity:.85}
 
+  /* RESPONSIVE */
   @media (min-width:900px){
     .wrap{padding:20px}
     .cards{display:none}
     .table-wrap{display:block}
-    .header{padding:16px 24px}
-    .header h1{font-size:20px}
+    .header{padding:16px 24px;margin-bottom:16px}
     .header .banner{max-width:260px}
+    .header h1{font-size:20px}
   }
 </style>
 </head>
@@ -170,25 +205,6 @@
       <span>Données mises à jour le <span id="updated-date">…</span></span>
     </div>
   </header>
-
-  <div class="stats-bar" id="statsBar" style="display:none">
-    <div class="stat-box">
-      <div class="label">Formations évaluées</div>
-      <div class="value" id="statFormations">—</div>
-    </div>
-    <div class="stat-box">
-      <div class="label">Réponses totales</div>
-      <div class="value" id="statReponses">—</div>
-    </div>
-    <div class="stat-box">
-      <div class="label">Refus totaux</div>
-      <div class="value" id="statRefus">—</div>
-    </div>
-    <div class="stat-box">
-      <div class="label">Taux de refus global</div>
-      <div class="value" id="statTauxRefus">—</div>
-    </div>
-  </div>
 
   <div class="loading" id="loading">
     <div class="spin"></div>
@@ -214,18 +230,30 @@
 </div>
 
 <script>
+  /* ============================================================
+     1) ANNÉE
+     ============================================================ */
   document.getElementById('year').textContent = new Date().getFullYear();
 
+  /* ============================================================
+     2) URLs DES CSV
+     ============================================================ */
   const BASE = "https://smqlpmboulogne.github.io/satisfactionfc/";
   const CSV_RESULTATS = BASE + "formations.csv";
   const CSV_SUGGESTIONS = BASE + "suggestions.csv";
   const DATE_FILE = BASE + "last-update.txt";
 
-  let DATA = { indicators: [], rows: [] };
+  /* ============================================================
+     3) ÉTAT GLOBAL
+     ============================================================ */
+  let DATA = { rows: [] };
   let SUGGESTIONS = {};
   let sortKey = 'name';
   let sortAsc = true;
 
+  /* ============================================================
+     4) UTILITAIRES
+     ============================================================ */
   function esc(s){
     return String(s).replace(/[&<>"']/g, c => ({
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -254,10 +282,24 @@
     return rows.filter(r => r.some(c => c.trim() !== ''));
   }
 
-  function cleanHeader(h){
-    return h.trim().replace(/\s+/g, ' ');
+  function toPercent(v){
+    if (!v) return null;
+    const s = String(v).trim().replace('%','').replace(',','.');
+    const n = parseFloat(s);
+    if (isNaN(n)) return null;
+    return n <= 1 ? n * 100 : n;
   }
 
+  function level(n){
+    if (n == null) return 'unknown';
+    if (n >= 75) return 'high';
+    if (n >= 50) return 'mid';
+    return 'low';
+  }
+
+  /* ============================================================
+     5) CHARGEMENT
+     ============================================================ */
   async function chargerTout(){
     try {
       const [resFormations, resSuggestions] = await Promise.all([
@@ -271,41 +313,60 @@
       const rowsF = parseCSV(csvFormations);
       const rowsS = parseCSV(csvSuggestions);
 
-      // --- Construire DATA depuis formations.csv ---
+      /* --- Construire DATA depuis formations.csv --- */
       if (rowsF.length >= 2){
-        const allHeaders = rowsF[0].map(cleanHeader);
+        const allHeaders = rowsF[0].map(h => h.trim());
 
-        // On ne garde que les colonnes A à F (Formation + Réponses + 4 indicateurs)
-        // On ignore les colonnes de refus qui sont au-delà (décalage)
-        const cutoff = allHeaders.findIndex((h, i) =>
-          i > 0 && h === '' // première colonne vide = séparateur
-        );
-        const maxCol = cutoff > 0 ? cutoff : 6;
+        // Couper après les 4 indicateurs (ignorer les colonnes de refus au-delà)
+        // On cherche la première colonne vide après l'index 0
+        let cutoff = allHeaders.length;
+        for (let i = 1; i < allHeaders.length; i++){
+          if (allHeaders[i] === ''){
+            cutoff = i;
+            break;
+          }
+        }
 
-        const headers = allHeaders.slice(0, maxCol);
-        const indicators = headers.slice(1);
+        const headers = allHeaders.slice(0, cutoff);
 
-        DATA.indicators = indicators;
         DATA.rows = rowsF.slice(1)
           .filter(r => r[0] && r[0].trim() !== '')
           .map(r => {
             const name = r[0].trim();
-            const cells = indicators.map((_, i) => {
-              const raw = (r[i+1] || '').trim();
-              const bad = raw === '' || raw === '—';
-              let num = null;
-              if (!bad){
-                const cleaned = raw.replace(/[%\s]/g,'').replace(',','.');
-                const n = parseFloat(cleaned);
-                if (!isNaN(n)) num = n;
-              }
-              return { value: bad ? '—' : raw, empty: bad, num };
-            });
-            return { name, cells };
+            // Index des colonnes utiles
+            const iReponses = headers.findIndex(h => /^Réponses?$/i.test(h));
+            const iRep = headers.findIndex(h => /réponse aux attentes/i.test(h));
+            const iObj = headers.findIndex(h => /atteinte des objectifs/i.test(h));
+            const iUti = headers.findIndex(h => /utilisation compétences/i.test(h));
+            const iQua = headers.findIndex(h => /qualité.*animation/i.test(h));
+
+            const getNum = (i) => {
+              if (i < 0) return null;
+              const raw = (r[i] || '').trim();
+              if (raw === '' || raw === '—') return null;
+              const v = toPercent(raw);
+              return v;
+            };
+
+            const reponses = iReponses >= 0 ? parseInt(r[iReponses], 10) || null : null;
+            const pRep = getNum(iRep);
+            const pObj = getNum(iObj);
+            const pUti = getNum(iUti);
+            const pQua = getNum(iQua);
+
+            const vals = [pRep, pObj, pUti, pQua].filter(v => v != null);
+            const satisfaction = vals.length ? vals.reduce((a,b) => a+b,0) / vals.length : null;
+
+            return {
+              name,
+              satisfaction,
+              reponses,
+              pRep, pObj, pUti, pQua
+            };
           });
       }
 
-      // --- Construire SUGGESTIONS depuis suggestions.csv ---
+      /* --- Construire SUGGESTIONS depuis suggestions.csv --- */
       // Structure : Date | Formation | Suggestion
       if (rowsS.length >= 2){
         rowsS.slice(1).forEach(r => {
@@ -318,7 +379,6 @@
       }
 
       render();
-      updateStats();
       chargerDate();
 
     } catch (e) {
@@ -329,32 +389,18 @@
     }
   }
 
-  function updateStats(){
-    const nbFormations = DATA.rows.length;
-    let nbReponses = 0;
-
-    DATA.rows.forEach(r => {
-      DATA.indicators.forEach((ind, i) => {
-        const c = r.cells[i];
-        if (/^Réponses?$/i.test(ind) && c.num != null) nbReponses += c.num;
-      });
-    });
-
-    if (nbFormations > 0){
-      document.getElementById('statFormations').textContent = nbFormations;
-      document.getElementById('statReponses').textContent = nbReponses;
-      document.getElementById('statRefus').textContent = '—';
-      document.getElementById('statTauxRefus').textContent = '—';
-      document.getElementById('statsBar').style.display = 'grid';
-    }
-  }
-
+  /* ============================================================
+     6) TRI
+     ============================================================ */
   function getValue(row, key){
     if (key === 'name') return row.name.toLowerCase();
-    const i = parseInt(key.replace('col',''), 10);
-    const c = row.cells[i];
-    if (c.empty) return null;
-    return c.num != null ? c.num : c.value.toLowerCase();
+    if (key === 'satisfaction') return row.satisfaction;
+    if (key === 'reponses') return row.reponses;
+    if (key === 'pRep') return row.pRep;
+    if (key === 'pObj') return row.pObj;
+    if (key === 'pUti') return row.pUti;
+    if (key === 'pQua') return row.pQua;
+    return null;
   }
   function sortRows(rows){
     return rows.slice().sort((a, b) => {
@@ -370,28 +416,54 @@
     });
   }
 
+  /* ============================================================
+     7) RENDU TABLEAU
+     ============================================================ */
+  function fmtPct(v){
+    if (v == null) return '—';
+    return v.toFixed(1).replace('.',',') + ' %';
+  }
+
   function renderTable(rows){
-    const thead = '<thead><tr>' +
-      '<th data-key="name" class="'+(sortKey==='name'?'sorted':'')+'">Formation' +
-      '<span class="arrow">'+(sortKey==='name'?(sortAsc?'▲':'▼'):'▲')+'</span></th>' +
-      DATA.indicators.map((h, i) => {
-        const k = 'col'+i;
-        const cls = sortKey===k ? 'sorted' : '';
-        const arr = sortKey===k ? (sortAsc?'▲':'▼') : '▲';
-        return '<th data-key="'+k+'" class="'+cls+'">'+esc(h)+
-               '<span class="arrow">'+arr+'</span></th>';
-      }).join('') +
-      '<th>Suggestions</th>' +
-      '</tr></thead>';
+    // Colonnes : Formation | Taux | Rép. att. | Atteinte | Utilis. | Qualité | Suggestions | Réponses | Refus
+    const columns = [
+      { key:'name',         label:'Formation',              align:'left' },
+      { key:'satisfaction', label:'Taux de satisfaction',   align:'right' },
+      { key:'pRep',         label:'Réponse aux attentes',   align:'right' },
+      { key:'pObj',         label:'Atteinte des objectifs', align:'right' },
+      { key:'pUti',         label:'Utilisation compétences',align:'right' },
+      { key:'pQua',         label:'Qualité animation',      align:'right' },
+      { key:'sugg',         label:'Suggestions',            align:'left' },
+      { key:'reponses',     label:'Réponses',               align:'right' },
+      { key:'refus',        label:'Refus',                  align:'right' }
+    ];
+
+    const thead = '<thead><tr>' + columns.map(c => {
+      const isSorted = sortKey === c.key;
+      const cls = isSorted ? 'sorted' : '';
+      const arr = isSorted ? (sortAsc ? '▲' : '▼') : '▲';
+      return '<th data-key="'+c.key+'" class="'+cls+'">'+esc(c.label)+
+             '<span class="arrow">'+arr+'</span></th>';
+    }).join('') + '</tr></thead>';
 
     const tbody = '<tbody>' + rows.map(r => {
       const sugs = SUGGESTIONS[r.name] || [];
       const sugsHtml = sugs.length
         ? sugs.map(s => '• ' + esc(s)).join('<br>')
         : '<span style="color:#98a2b3;font-style:italic">—</span>';
-      return '<tr><td>'+esc(r.name)+'</td>' +
-        r.cells.map(c => '<td class="'+(c.empty?'empty':'')+'">'+esc(c.value)+'</td>').join('') +
+
+      const lvl = level(r.satisfaction);
+
+      return '<tr>' +
+        '<td>'+esc(r.name)+'</td>' +
+        '<td class="taux '+lvl+'">'+fmtPct(r.satisfaction)+'</td>' +
+        '<td class="'+(r.pRep == null ? 'empty' : '')+'">'+fmtPct(r.pRep)+'</td>' +
+        '<td class="'+(r.pObj == null ? 'empty' : '')+'">'+fmtPct(r.pObj)+'</td>' +
+        '<td class="'+(r.pUti == null ? 'empty' : '')+'">'+fmtPct(r.pUti)+'</td>' +
+        '<td class="'+(r.pQua == null ? 'empty' : '')+'">'+fmtPct(r.pQua)+'</td>' +
         '<td class="suggestion">'+sugsHtml+'</td>' +
+        '<td class="'+(r.reponses == null ? 'empty' : '')+'">'+(r.reponses != null ? r.reponses : '—')+'</td>' +
+        '<td class="empty">—</td>' +
         '</tr>';
     }).join('') + '</tbody>';
 
@@ -399,7 +471,6 @@
     $table.innerHTML = thead + tbody;
 
     $table.querySelectorAll('thead th').forEach(th => {
-      if (th.textContent.trim() === 'Suggestions') return;
       th.addEventListener('click', () => {
         const k = th.dataset.key;
         if (!k) return;
@@ -410,13 +481,13 @@
     });
   }
 
+  /* ============================================================
+     8) RENDU CARTES (mobile)
+     ============================================================ */
   function renderCards(rows){
     document.getElementById('cards').innerHTML = rows.map(r => {
-      const rowsHtml = DATA.indicators.map((label, i) => {
-        const c = r.cells[i];
-        return '<div class="row"><span class="k">'+esc(label)+'</span>' +
-               '<span class="v'+(c.empty?' empty':'')+'">'+esc(c.value)+'</span></div>';
-      }).join('');
+      const lvl = level(r.satisfaction);
+      const pct = r.satisfaction != null ? Math.max(0, Math.min(100, r.satisfaction)) : 0;
 
       const sugs = SUGGESTIONS[r.name] || [];
       const sugsBlock = sugs.length
@@ -425,10 +496,30 @@
         : '<div class="sugg-block"><div class="title">💬 Suggestions</div>' +
           '<div class="none">Aucune remarque</div></div>';
 
-      return '<div class="card"><h3>'+esc(r.name)+'</h3>' + rowsHtml + sugsBlock + '</div>';
+      return '<div class="card '+lvl+'">' +
+        '<h3>'+esc(r.name)+'</h3>' +
+        '<div class="taux-big">'+fmtPct(r.satisfaction)+'</div>' +
+        '<div class="bar"><span style="width:'+pct+'%"></span></div>' +
+        '<div class="row"><span class="k">Réponse aux attentes</span>' +
+          '<span class="v'+(r.pRep == null ? ' empty' : '')+'">'+fmtPct(r.pRep)+'</span></div>' +
+        '<div class="row"><span class="k">Atteinte des objectifs</span>' +
+          '<span class="v'+(r.pObj == null ? ' empty' : '')+'">'+fmtPct(r.pObj)+'</span></div>' +
+        '<div class="row"><span class="k">Utilisation compétences</span>' +
+          '<span class="v'+(r.pUti == null ? ' empty' : '')+'">'+fmtPct(r.pUti)+'</span></div>' +
+        '<div class="row"><span class="k">Qualité animation</span>' +
+          '<span class="v'+(r.pQua == null ? ' empty' : '')+'">'+fmtPct(r.pQua)+'</span></div>' +
+        '<div class="row"><span class="k">Réponses</span>' +
+          '<span class="v'+(r.reponses == null ? ' empty' : '')+'">'+(r.reponses != null ? r.reponses : '—')+'</span></div>' +
+        '<div class="row"><span class="k">Refus</span>' +
+          '<span class="v empty">—</span></div>' +
+        sugsBlock +
+        '</div>';
     }).join('');
   }
 
+  /* ============================================================
+     9) RENDU GLOBAL
+     ============================================================ */
   function render(){
     if (!DATA.rows.length){
       document.getElementById('loading').style.display = 'none';
@@ -445,6 +536,9 @@
     document.getElementById('empty').style.display = 'none';
   }
 
+  /* ============================================================
+     10) DATE
+     ============================================================ */
   async function chargerDate(){
     try {
       const r = await fetch(DATE_FILE + '?t=' + Date.now(), { cache: 'no-store' });
