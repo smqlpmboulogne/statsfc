@@ -298,6 +298,11 @@
   .synth-content .rubrique{
     font-weight:700;
     color:var(--marine);
+    display: block;
+    margin-top: 12px;
+  }
+  .synth-content .rubrique:first-child{
+    margin-top: 0;
   }
 
   .empty-msg{text-align:center;padding:50px;color:var(--muted);font-size:14px}
@@ -716,27 +721,15 @@
   }
 
   /* ============================================================
-     FORMATAGE — Détection robuste des rubriques
-     On cherche le pattern "XXX :" en fin de ligne, quelle que soit
-     l'apostrophe utilisée (droite ' ou typographique ')
+     FORMATAGE — Détection robuste : toute ligne courte finissant par ":"
      ============================================================ */
   function formaterSynthese(texte){
     // 1) Échapper le HTML
     let s = esc(texte);
 
-    // 2) Chercher "Points positifs :", "Axes d'amélioration :", etc.
-    //    L'apostrophe peut être ' (U+0027) ou ' (U+2019)
-    //    On accepte aussi " :" suivi ou non d'un espace
-    const rubriquesPatterns = [
-      /(Points positifs)\s*:/gi,
-      /(Axes\s+d['’]amélioration)\s*:/gi,
-      /(Constats\s+qualité)\s*:/gi,
-      /(Actions\s+conseillées)\s*:/gi
-    ];
-
-    rubriquesPatterns.forEach(re => {
-      s = s.replace(re, '<span class="rubrique">$1 :</span>');
-    });
+    // 2) Détecter toute ligne de 2 à 50 caractères qui finit par ":"
+    //    ^(...)$ avec flag m → chaque ligne
+    s = s.replace(/^(.{2,50}?)\s*:\s*$/gm, '<span class="rubrique">$1 :</span>');
 
     return s;
   }
