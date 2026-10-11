@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Évaluation à chaud des formations fc — Lycée Maritime Boulogne</title>
 <link rel="icon" href="data:,">
+<!-- Bibliothèque Markdown pour le rendu des synthèses -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
   :root{
     --marine:#1e3a5f;--marine-fonce:#152a45;--ocean:#2c5a8c;
@@ -206,12 +208,8 @@
     border-left:3px solid var(--azur);
     font-size:13px;color:#475467;
   }
-  .synth-header .date-info .label{
-    font-weight:600;color:var(--marine);
-  }
-  .synth-header .date-info .value{
-    font-weight:600;color:var(--azur);
-  }
+  .synth-header .date-info .label{font-weight:600;color:var(--marine)}
+  .synth-header .date-info .value{font-weight:600;color:var(--azur)}
 
   /* Encart jaune */
   .help-box{
@@ -229,10 +227,7 @@
   }
   .help-box .help-text strong{color:#92400e}
   .help-box .help-actions{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    justify-content:flex-start;
+    display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-start;
   }
   .btn-prompt,
   .btn-export{
@@ -249,8 +244,7 @@
     box-shadow:0 2px 8px rgba(30,58,95,.20);
   }
   .btn-prompt:hover{
-    background:var(--ocean);
-    transform:translateY(-2px);
+    background:var(--ocean);transform:translateY(-2px);
     box-shadow:0 6px 14px rgba(30,58,95,.25);
   }
   .btn-export{
@@ -259,12 +253,10 @@
     box-shadow:0 2px 6px rgba(212,160,6,.15);
   }
   .btn-export:hover{
-    background:#fff3c4;
-    transform:translateY(-2px);
+    background:#fff3c4;transform:translateY(-2px);
     box-shadow:0 6px 14px rgba(212,160,6,.25);
   }
-  .btn-prompt:active,
-  .btn-export:active{transform:translateY(0)}
+  .btn-prompt:active, .btn-export:active{transform:translateY(0)}
 
   /* Cartes synthèses */
   .synthese-grid{
@@ -291,19 +283,38 @@
     font-size:11.5px;font-weight:600;
     padding:3px 10px;border-radius:12px;
   }
+
+  /* Rendu Markdown dans les synthèses */
   .synth-content{
     font-size:14px;color:#475467;line-height:1.65;
-    white-space:pre-wrap;word-break:break-word;
+    word-break:break-word;
   }
-  .synth-content .rubrique{
+  .synth-content h2{
+    font-size:15px;
     font-weight:700;
     color:var(--marine);
-    display: block;
-    margin-top: 12px;
+    margin: 16px 0 10px 0;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--border);
   }
-  .synth-content .rubrique:first-child{
-    margin-top: 0;
+  .synth-content h2:first-child{margin-top: 0}
+  .synth-content p{
+    margin: 0 0 12px 0;
   }
+  .synth-content p:last-child{margin-bottom: 0}
+  .synth-content strong{
+    color: var(--marine);
+    font-weight: 700;
+  }
+  .synth-content em{font-style: italic}
+  .synth-content code{
+    background: var(--ecume); padding: 2px 6px;
+    border-radius: 4px; font-size: 13px;
+  }
+  .synth-content ul, .synth-content ol{
+    margin: 0 0 12px 20px; padding: 0;
+  }
+  .synth-content li{margin-bottom: 6px}
 
   .empty-msg{text-align:center;padding:50px;color:var(--muted);font-size:14px}
 
@@ -367,7 +378,7 @@
     .synth-card h3{ font-size: 14pt; border-bottom: 1px solid #ccc; }
     .synth-card h3 .badge{ background: #eee; color: #333; }
     .synth-content{ font-size: 11pt; line-height: 1.5; }
-    .synth-content .rubrique{ color: #000; }
+    .synth-content strong, .synth-content h2{ color: #000; }
     footer.foot{
       display: block !important; margin-top: 20px;
       padding-top: 10px; border-top: 1px solid #ccc; font-size: 9pt;
@@ -721,17 +732,23 @@
   }
 
   /* ============================================================
-     FORMATAGE — Détection robuste : toute ligne courte finissant par ":"
+     RENDU MARKDOWN (via marked.js)
      ============================================================ */
-  function formaterSynthese(texte){
-    // 1) Échapper le HTML
-    let s = esc(texte);
-
-    // 2) Détecter toute ligne de 2 à 50 caractères qui finit par ":"
-    //    ^(...)$ avec flag m → chaque ligne
-    s = s.replace(/^(.{2,50}?)\s*:\s*$/gm, '<span class="rubrique">$1 :</span>');
-
-    return s;
+  function formaterSynthese(texteMarkdown){
+    if (!texteMarkdown) return '';
+    if (typeof marked === 'undefined') {
+      // Repli si marked n'est pas chargé : afficher le texte brut
+      return esc(texteMarkdown);
+    }
+    try {
+      return marked.parse(texteMarkdown, {
+        breaks: false,
+        gfm: true
+      });
+    } catch (e) {
+      console.error("Erreur rendu markdown:", e);
+      return esc(texteMarkdown);
+    }
   }
 
   function renderSyntheses(rows){
@@ -796,6 +813,9 @@
     } catch(e){}
   }
 
+  /* ============================================================
+     GÉNÉRATION DU PROMPT MANUEL (au format Markdown)
+     ============================================================ */
   function genererPrompt(){
     if (!SUGGESTIONS || !Object.keys(SUGGESTIONS).length){
       alert("Les suggestions ne sont pas encore chargées. Attendez quelques secondes et réessayez.");
@@ -841,35 +861,30 @@
       "- Les actions proposées doivent être concrètes, réalistes et directement actionnables.\n\n" +
       "CAS PARTICULIERS\n\n" +
       "Si aucune remarque exploitable n'est disponible :\n\n" +
-      "Constats :\n" +
+      "**Constats qualité :**\n" +
       "Les commentaires recueillis ne contiennent pas d'informations suffisamment exploitables pour réaliser une analyse qualitative.\n\n" +
-      "Actions conseillées :\n" +
+      "**Actions conseillées :**\n" +
       "Poursuivre la collecte des évaluations en encourageant des retours plus détaillés.\n\n" +
-      "FORMAT DE SORTIE (OBLIGATOIRE)\n\n" +
-      "=== NOM DE LA FORMATION ===\n\n" +
-      "Points positifs :\n" +
+      "FORMAT DE SORTIE (OBLIGATOIRE) — MARKDOWN\n\n" +
+      "Pour chaque formation, tu dois produire EXACTEMENT le format Markdown suivant :\n\n" +
+      "## NOM DE LA FORMATION\n\n" +
+      "**Points positifs :**\n" +
       "[1 à 3 phrases maximum]\n\n" +
-      "Axes d'amélioration :\n" +
+      "**Axes d'amélioration :**\n" +
       "[1 à 3 phrases maximum]\n\n" +
-      "Constats qualité :\n" +
+      "**Constats qualité :**\n" +
       "[constat synthétique basé uniquement sur les retours]\n\n" +
-      "Actions conseillées :\n" +
+      "**Actions conseillées :**\n" +
       "[1 à 3 actions rédigées sous forme de phrases courtes]\n\n" +
-      "=== NOM DE LA FORMATION SUIVANTE ===\n\n" +
-      "Points positifs :\n" +
-      "...\n\n" +
-      "Axes d'amélioration :\n" +
-      "...\n\n" +
-      "Constats qualité :\n" +
-      "...\n\n" +
-      "Actions conseillées :\n" +
-      "...\n\n" +
-      "RÈGLES DE RÉDACTION\n\n" +
+      "Puis pour la formation suivante, même structure, en commençant par :\n" +
+      "## NOM DE LA FORMATION SUIVANTE\n\n" +
+      "RÈGLES DE MISE EN FORME MARKDOWN (STRICTES)\n\n" +
       "- Répondre uniquement en français.\n" +
-      "- Respecter exactement les séparateurs :\n" +
-      "  === NOM DE LA FORMATION ===\n" +
+      "- Utiliser EXACTEMENT `## NOM DE LA FORMATION` comme titre de niveau 2.\n" +
+      "- Utiliser EXACTEMENT `**Points positifs :**`, `**Axes d'amélioration :**`, `**Constats qualité :**` et `**Actions conseillées :**`.\n" +
+      "- Aucun autre titre Markdown.\n" +
       "- Aucun tableau.\n" +
-      "- Aucune puce.\n" +
+      "- Aucune liste à puces ni tirets.\n" +
       "- Aucune information inventée.\n" +
       "- Formulation concise et professionnelle.\n" +
       "- Les actions doivent toujours commencer par un verbe d'action : Maintenir, Renforcer, Développer, Vérifier, Adapter, Améliorer, Mettre en place, Poursuivre, etc.\n\n" +
