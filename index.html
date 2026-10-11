@@ -81,27 +81,31 @@
   }
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* Tableau */
+  /* ============================================================
+     TABLEAU (desktop)
+     ============================================================ */
   .table-wrap{
+    display:none;
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
     overflow-x:auto;-webkit-overflow-scrolling:touch;
   }
-  table{width:100%;border-collapse:collapse;font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
   thead th{
     position:sticky;top:0;background:var(--marine);color:#fff;
-    text-align:left;padding:11px 10px;font-weight:600;
+    text-align:left;padding:12px 10px;font-weight:600;
     white-space:nowrap;cursor:pointer;user-select:none;
+    font-size:12.5px;
   }
   thead th:hover{background:var(--ocean)}
   thead th:not(:first-child){text-align:right}
   thead th .arrow{display:inline-block;margin-left:5px;opacity:.4;font-size:10px}
   thead th.sorted .arrow{opacity:1}
   tbody td{
-    padding:10px;border-top:1px solid var(--border);
-    vertical-align:top;word-break:break-word;
+    padding:11px 10px;border-top:1px solid var(--border);
+    vertical-align:middle;word-break:break-word;
   }
-  tbody td:first-child{font-weight:600}
+  tbody td:first-child{font-weight:600;text-align:left}
   tbody td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
   tbody td.taux{font-weight:700;font-size:14px}
   tbody td.taux.high{color:var(--success)}
@@ -122,7 +126,63 @@
   .formation-link .ext{font-size:11px;opacity:.5;transition:opacity .15s}
   .formation-link:hover .ext{opacity:1}
 
-  /* En-tête de l'onglet Synthèse */
+  /* ============================================================
+     CARTES (mobile) — Version empilée du tableau
+     ============================================================ */
+  .table-cards{display:flex;flex-direction:column;gap:12px}
+  .tcard{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:14px 16px;
+    position:relative;overflow:hidden;
+  }
+  .tcard::before{
+    content:'';position:absolute;top:0;left:0;bottom:0;width:4px;
+    background:var(--azur);
+  }
+  .tcard.high::before{background:var(--success)}
+  .tcard.mid::before{background:var(--warning)}
+  .tcard.low::before{background:var(--danger)}
+
+  .tcard .tcard-header{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    gap:10px;padding-bottom:10px;margin-bottom:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .tcard .tcard-header .name{
+    font-size:15px;font-weight:700;color:var(--marine);
+    line-height:1.3;flex:1;min-width:0;word-break:break-word;
+  }
+  .tcard .tcard-header .name a{
+    color:var(--marine);text-decoration:none;
+    display:inline-flex;align-items:center;gap:5px;
+  }
+  .tcard .tcard-header .name a:hover{color:var(--azur)}
+  .tcard .tcard-header .taux{
+    font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;
+    letter-spacing:-0.5px;white-space:nowrap;
+  }
+  .tcard.high .tcard-header .taux{color:var(--success)}
+  .tcard.mid .tcard-header .taux{color:var(--warning)}
+  .tcard.low .tcard-header .taux{color:var(--danger)}
+
+  .tcard .tcard-row{
+    display:grid;grid-template-columns:1fr auto;
+    gap:10px;padding:6px 0;
+    font-size:13px;
+    border-bottom:1px dashed var(--border);
+  }
+  .tcard .tcard-row:last-child{border-bottom:none}
+  .tcard .tcard-row .k{color:#667085}
+  .tcard .tcard-row .v{
+    text-align:right;font-weight:600;color:var(--azur);
+    font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
+  .tcard .tcard-row .v.empty{color:var(--muted);font-weight:400}
+
+  /* ============================================================
+     En-tête de l'onglet Synthèse
+     ============================================================ */
   .synth-header{
     display:flex;flex-direction:column;gap:14px;
     background:var(--card);
@@ -159,8 +219,29 @@
   .synth-header .date-info .value{
     font-weight:600;color:var(--azur);
   }
-  .synth-header .actions{
-    display:flex;justify-content:flex-end;
+
+  /* ============================================================
+     Encart jaune (avec bouton intégré)
+     ============================================================ */
+  .help-box{
+    margin-bottom:16px;
+    padding:16px 18px;
+    background:#fff8e1;
+    border:1px solid #f0c060;
+    border-radius:10px;
+    font-size:13.5px;
+    color:#5c4813;
+    line-height:1.55;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .help-box .help-text strong{
+    color:#92400e;
+  }
+  .help-box .help-actions{
+    display:flex;
+    justify-content:flex-start;
   }
   .btn-prompt{
     display:inline-flex;align-items:center;gap:8px;
@@ -222,6 +303,17 @@
   footer.foot .sep{display:inline-block;margin:0 5px;color:var(--azur-clair)}
   footer.foot .mention{font-style:italic;font-size:11px;color:var(--muted);opacity:.85}
 
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+
+  /* Sur mobile et tablette : cartes */
+  @media (max-width:899px){
+    .table-wrap{display:none !important}
+    .table-cards{display:flex}
+  }
+
+  /* Sur desktop : tableau */
   @media (min-width:900px){
     .wrap{padding:20px}
     .header{padding:16px 24px;margin-bottom:16px}
@@ -235,11 +327,16 @@
     }
     .synth-header .info-block{flex:1;min-width:300px}
     .synth-header .date-info{flex:0 0 auto}
-    .synth-header .actions{flex:0 0 auto}
+    .table-wrap{display:block !important}
+    .table-cards{display:none}
+    .help-box{flex-direction:row;align-items:center;justify-content:space-between}
+    .help-box .help-text{flex:1}
+    .help-box .help-actions{flex:0 0 auto}
   }
+
   @media (max-width:600px){
-    .synth-header .actions{justify-content:stretch}
     .btn-prompt{width:100%;justify-content:center}
+    .help-box .help-actions{justify-content:stretch}
   }
 </style>
 </head>
@@ -269,16 +366,22 @@
       <div class="spin"></div>
       <div>Chargement des données…</div>
     </div>
+
+    <!-- Version tableau (desktop) -->
     <div class="table-wrap" id="tableWrap" style="display:none">
       <table id="table"></table>
     </div>
+
+    <!-- Version cartes (mobile) -->
+    <div class="table-cards" id="tableCards" style="display:none"></div>
+
     <div class="empty-msg" id="empty-board" style="display:none">Aucune donnée disponible</div>
   </div>
 
   <!-- Onglet 2 : Synthèse IA -->
   <div class="panel" id="panel-synth">
 
-    <!-- Encart d'information -->
+    <!-- Encart d'information haut -->
     <div class="synth-header">
       <div class="info-block">
         <div class="title">🤖 Analyse qualité automatique (Qualiopi)</div>
@@ -293,20 +396,22 @@
         <span class="label">Dernière génération :</span>
         <span class="value" id="date-synthese">…</span>
       </div>
+    </div>
 
-      <div class="actions">
+    <!-- Encart jaune avec bouton intégré -->
+    <div class="help-box">
+      <div class="help-text">
+        <strong>💡 Besoin d'une synthèse à jour immédiatement ?</strong>
+        Si les dernières remarques ne sont pas encore prises en compte (mise à jour
+        automatique toutes les 6 h), cliquez sur <strong>« Générer le prompt manuel »</strong>,
+        copiez le contenu du fichier téléchargé dans une IA (Gemini, ChatGPT, Claude…),
+        puis collez la réponse dans l'onglet <strong>SYNTHESE</strong> de votre feuille de calcul.
+      </div>
+      <div class="help-actions">
         <button class="btn-prompt" onclick="genererPrompt()" type="button">
           📄 Générer le prompt manuel
         </button>
       </div>
-    </div>
-
-    <div class="info-block" style="margin-bottom:16px;padding:12px 16px;background:#fff8e1;border:1px solid #f0c060;border-radius:8px;font-size:13px;color:#5c4813;line-height:1.5">
-      <strong>💡 Besoin d'une synthèse à jour immédiatement ?</strong>
-      Si les dernières remarques ne sont pas encore prises en compte (mise à jour automatique
-      toutes les 6 h), cliquez sur <strong>« Générer le prompt manuel »</strong>, copiez le
-      contenu du fichier téléchargé dans une IA (Gemini, ChatGPT, Claude…), puis collez la
-      réponse dans l'onglet <strong>SYNTHESE</strong> de votre feuille de calcul.
     </div>
 
     <div class="loading" id="loading-synth">
@@ -429,7 +534,6 @@
         SYNTHESES[f] = { nb: parseInt(r[1], 10) || 0, texte: (r[2] || '').trim() };
       });
 
-      // Date de génération des synthèses
       if (rowsDate.length >= 2){
         const d = (rowsDate[1][1] || '').trim();
         if (d){
@@ -509,6 +613,9 @@
     });
   }
 
+  /* ============================================================
+     RENDU — Tableau (desktop)
+     ============================================================ */
   function renderTable(rows){
     const columns = [
       { key:'name',         label:'Formation' },
@@ -561,6 +668,41 @@
     });
   }
 
+  /* ============================================================
+     RENDU — Cartes (mobile)
+     ============================================================ */
+  function renderCards(rows){
+    document.getElementById('tableCards').innerHTML = rows.map(r => {
+      const lvl = level(r.satisfaction);
+      const urlDetail = 'detail.html?formation=' + encodeURIComponent(r.name);
+
+      return '<div class="tcard '+lvl+'">' +
+        '<div class="tcard-header">' +
+          '<div class="name"><a href="'+urlDetail+'" target="_blank" rel="noopener">' +
+            esc(r.name) + ' <span style="opacity:.5;font-size:11px">↗</span></a></div>' +
+          '<div class="taux">'+fmtPct(r.satisfaction)+'</div>' +
+        '</div>' +
+        '<div class="tcard-row"><span class="k">Réponse aux attentes</span>' +
+          '<span class="v'+(r.pRep == null ? ' empty' : '')+'">'+fmtPct(r.pRep)+'</span></div>' +
+        '<div class="tcard-row"><span class="k">Atteinte des objectifs</span>' +
+          '<span class="v'+(r.pObj == null ? ' empty' : '')+'">'+fmtPct(r.pObj)+'</span></div>' +
+        '<div class="tcard-row"><span class="k">Utilisation compétences</span>' +
+          '<span class="v'+(r.pUti == null ? ' empty' : '')+'">'+fmtPct(r.pUti)+'</span></div>' +
+        '<div class="tcard-row"><span class="k">Qualité animation</span>' +
+          '<span class="v'+(r.pQua == null ? ' empty' : '')+'">'+fmtPct(r.pQua)+'</span></div>' +
+        '<div class="tcard-row"><span class="k">Réponses</span>' +
+          '<span class="v'+(r.reponses == null ? ' empty' : '')+'">'+(r.reponses != null ? r.reponses : '—')+'</span></div>' +
+        '<div class="tcard-row"><span class="k">Refus</span>' +
+          '<span class="v'+(r.refus == null ? ' empty' : '')+'">'+(r.refus != null ? r.refus : '—')+'</span></div>' +
+        '<div class="tcard-row"><span class="k">Taux de refus</span>' +
+          '<span class="v'+(r.tauxRefus == null ? ' empty' : '')+'">'+fmtPct(r.tauxRefus)+'</span></div>' +
+        '</div>';
+    }).join('');
+  }
+
+  /* ============================================================
+     RENDU — Synthèses IA
+     ============================================================ */
   function renderSyntheses(rows){
     const html = rows
       .filter(r => SYNTHESES[r.name] && SYNTHESES[r.name].texte)
@@ -593,10 +735,12 @@
     }
     const rows = sortRows(DATA.rows);
     renderTable(rows);
+    renderCards(rows);
     renderSyntheses(DATA.rows);
 
     document.getElementById('loading-board').style.display = 'none';
     document.getElementById('tableWrap').style.display = 'block';
+    document.getElementById('tableCards').style.display = 'flex';
     document.getElementById('empty-board').style.display = 'none';
   }
 
