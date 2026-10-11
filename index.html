@@ -49,27 +49,7 @@
     background:var(--anis);box-shadow:0 0 0 3px rgba(164,198,57,.30);
   }
 
-  .top-actions{
-    display:flex;justify-content:flex-end;
-    margin-bottom:12px;
-  }
-  .btn-prompt{
-    display:inline-flex;align-items:center;gap:8px;
-    padding:10px 18px;
-    background:var(--marine);color:#fff;
-    border:none;border-radius:var(--radius);
-    box-shadow:0 2px 8px rgba(30,58,95,.20);
-    font-size:13.5px;font-weight:600;font-family:inherit;
-    cursor:pointer;
-    transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
-  }
-  .btn-prompt:hover{
-    background:var(--ocean);
-    transform:translateY(-2px);
-    box-shadow:0 6px 14px rgba(30,58,95,.25);
-  }
-  .btn-prompt:active{transform:translateY(0)}
-
+  /* Onglets */
   .tabs{
     display:flex;gap:4px;margin-bottom:16px;
     background:var(--card);border:1px solid var(--border);
@@ -101,6 +81,7 @@
   }
   @keyframes spin{to{transform:rotate(360deg)}}
 
+  /* Tableau */
   .table-wrap{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
@@ -141,81 +122,40 @@
   .formation-link .ext{font-size:11px;opacity:.5;transition:opacity .15s}
   .formation-link:hover .ext{opacity:1}
 
-  .cards{display:grid;grid-template-columns:1fr;gap:12px}
-  .card{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:var(--radius);box-shadow:var(--shadow);
-    padding:16px 18px;
-    position:relative;overflow:hidden;
-    transition:transform .2s ease, box-shadow .2s ease;
+  /* Bouton générer prompt (dans l'onglet Synthèse) */
+  .synth-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:16px;
+    flex-wrap:wrap;
   }
-  .card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
-  .card::before{
-    content:'';position:absolute;top:0;left:0;bottom:0;width:4px;
-    background:var(--azur);
+  .synth-header .info{
+    font-size:13px;
+    color:var(--muted);
+    flex:1;
+    min-width:200px;
   }
-  .card.high::before{background:var(--success)}
-  .card.mid::before{background:var(--warning)}
-  .card.low::before{background:var(--danger)}
+  .btn-prompt{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:11px 20px;
+    background:var(--marine);color:#fff;
+    border:none;border-radius:var(--radius);
+    box-shadow:0 2px 8px rgba(30,58,95,.20);
+    font-size:14px;font-weight:600;font-family:inherit;
+    cursor:pointer;
+    transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
+    white-space:nowrap;
+  }
+  .btn-prompt:hover{
+    background:var(--ocean);
+    transform:translateY(-2px);
+    box-shadow:0 6px 14px rgba(30,58,95,.25);
+  }
+  .btn-prompt:active{transform:translateY(0)}
 
-  .card h3{
-    margin:0 0 12px;font-size:16px;font-weight:600;color:var(--marine);
-    word-break:break-word;padding-bottom:10px;border-bottom:1px solid var(--border);
-  }
-  .card .taux-big{
-    font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;
-    letter-spacing:-0.5px;color:var(--azur);margin-bottom:6px;
-  }
-  .card.high .taux-big{color:var(--success)}
-  .card.mid .taux-big{color:var(--warning)}
-  .card.low .taux-big{color:var(--danger)}
-  .card .bar{
-    width:100%;height:6px;background:var(--ecume-2);border-radius:3px;
-    overflow:hidden;margin-bottom:12px;
-  }
-  .card .bar span{
-    display:block;height:100%;border-radius:3px;
-    background:linear-gradient(90deg, var(--azur), var(--ocean));
-    transition:width .6s ease;
-  }
-  .card .row{
-    display:grid;grid-template-columns:1fr auto;align-items:center;
-    gap:12px;padding:7px 0;border-bottom:1px dashed var(--border);
-    font-size:13.5px;
-  }
-  .card .row:last-of-type{border-bottom:none}
-  .card .row .k{color:#475467;min-width:0;word-break:break-word}
-  .card .row .v{
-    text-align:right;font-weight:700;color:var(--azur);
-    font-variant-numeric:tabular-nums;white-space:nowrap;
-  }
-  .card .row .v.empty{color:var(--muted);font-weight:500}
-
-  .card .sugg-block{
-    margin-top:14px;padding-top:12px;border-top:1px solid var(--border);
-  }
-  .card .sugg-block .title{
-    font-size:13px;font-weight:600;color:var(--marine);margin-bottom:8px;
-  }
-  .card .sugg-block ul{
-    margin:0;padding-left:18px;list-style:disc;color:#475467;
-    font-size:13px;line-height:1.5;
-  }
-  .card .sugg-block li{margin-bottom:5px}
-  .card .sugg-block li:last-child{margin-bottom:0}
-  .card .sugg-block .none{
-    color:var(--muted);font-style:italic;font-size:13px;
-  }
-  .card .hint{
-    margin-top:12px;padding-top:10px;
-    border-top:1px dashed var(--border);
-    font-size:12px;text-align:right;
-  }
-  .card .hint a{
-    color:var(--azur);text-decoration:none;font-weight:600;
-  }
-  .card .hint a:hover{text-decoration:underline}
-
+  /* Cartes synthèses IA */
   .synthese-grid{
     display:grid;grid-template-columns:1fr;gap:16px;
   }
@@ -257,9 +197,6 @@
   footer.foot .sep{display:inline-block;margin:0 5px;color:var(--azur-clair)}
   footer.foot .mention{font-style:italic;font-size:11px;color:var(--muted);opacity:.85}
 
-  @media (min-width:600px){
-    .cards{grid-template-columns:repeat(2,1fr);gap:14px}
-  }
   @media (min-width:900px){
     .wrap{padding:20px}
     .header{padding:16px 24px;margin-bottom:16px}
@@ -269,7 +206,7 @@
     .synthese-grid{grid-template-columns:repeat(2,1fr)}
   }
   @media (max-width:600px){
-    .top-actions{justify-content:center}
+    .synth-header{flex-direction:column;align-items:stretch}
     .btn-prompt{width:100%;justify-content:center}
   }
 </style>
@@ -289,18 +226,12 @@
     </div>
   </header>
 
-  <div class="top-actions">
-    <button class="btn-prompt" onclick="genererPrompt()" type="button">
-      📄 Générer le prompt IA
-    </button>
-  </div>
-
   <div class="tabs" role="tablist">
     <button class="tab active" data-tab="board" role="tab">Tableau de bord</button>
-    <button class="tab" data-tab="detail" role="tab">Détail, suggestions & remarques</button>
     <button class="tab" data-tab="synth" role="tab">Synthèse IA</button>
   </div>
 
+  <!-- Onglet 1 : Tableau de bord -->
   <div class="panel active" id="panel-board">
     <div class="loading" id="loading-board">
       <div class="spin"></div>
@@ -312,16 +243,17 @@
     <div class="empty-msg" id="empty-board" style="display:none">Aucune donnée disponible</div>
   </div>
 
-  <div class="panel" id="panel-detail">
-    <div class="loading" id="loading-detail">
-      <div class="spin"></div>
-      <div>Chargement du détail…</div>
-    </div>
-    <div class="cards" id="cards" style="display:none"></div>
-    <div class="empty-msg" id="empty-detail" style="display:none">Aucune donnée détaillée disponible</div>
-  </div>
-
+  <!-- Onglet 2 : Synthèse IA -->
   <div class="panel" id="panel-synth">
+    <div class="synth-header">
+      <div class="info">
+        Générez le prompt à envoyer à une IA (Gemini, ChatGPT, Claude…) pour obtenir les synthèses Qualiopi.
+      </div>
+      <button class="btn-prompt" onclick="genererPrompt()" type="button">
+        📄 Générer le prompt IA
+      </button>
+    </div>
+
     <div class="loading" id="loading-synth">
       <div class="spin"></div>
       <div>Chargement des synthèses…</div>
@@ -486,7 +418,6 @@
     } catch (e) {
       console.error("Erreur chargement:", e);
       document.getElementById('loading-board').style.display = 'none';
-      document.getElementById('loading-detail').style.display = 'none';
       document.getElementById('loading-synth').style.display = 'none';
       document.getElementById('empty-board').textContent = "Impossible de charger : " + e.message;
       document.getElementById('empty-board').style.display = 'block';
@@ -563,41 +494,6 @@
     });
   }
 
-  function renderCards(rows){
-    document.getElementById('cards').innerHTML = rows.map(r => {
-      const lvl = level(r.satisfaction);
-      const pct = r.satisfaction != null ? Math.max(0, Math.min(100, r.satisfaction)) : 0;
-      const sugs = SUGGESTIONS[r.name] || [];
-      const urlDetail = 'detail.html?formation=' + encodeURIComponent(r.name);
-
-      const sugsBlock = sugs.length
-        ? '<div class="sugg-block"><div class="title">💬 Suggestions & remarques ('+sugs.length+')</div>' +
-          '<ul>' + sugs.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul></div>'
-        : '<div class="sugg-block"><div class="title">💬 Suggestions & remarques</div>' +
-          '<div class="none">Aucune remarque</div></div>';
-
-      return '<div class="card '+lvl+'">' +
-        '<h3>'+esc(r.name)+'</h3>' +
-        '<div class="taux-big">'+fmtPct(r.satisfaction)+'</div>' +
-        '<div class="bar"><span style="width:'+pct+'%"></span></div>' +
-        '<div class="row"><span class="k">Réponse aux attentes</span>' +
-          '<span class="v'+(r.pRep == null ? ' empty' : '')+'">'+fmtPct(r.pRep)+'</span></div>' +
-        '<div class="row"><span class="k">Atteinte des objectifs</span>' +
-          '<span class="v'+(r.pObj == null ? ' empty' : '')+'">'+fmtPct(r.pObj)+'</span></div>' +
-        '<div class="row"><span class="k">Utilisation compétences</span>' +
-          '<span class="v'+(r.pUti == null ? ' empty' : '')+'">'+fmtPct(r.pUti)+'</span></div>' +
-        '<div class="row"><span class="k">Qualité animation</span>' +
-          '<span class="v'+(r.pQua == null ? ' empty' : '')+'">'+fmtPct(r.pQua)+'</span></div>' +
-        '<div class="row"><span class="k">Réponses</span>' +
-          '<span class="v'+(r.reponses == null ? ' empty' : '')+'">'+(r.reponses != null ? r.reponses : '—')+'</span></div>' +
-        '<div class="row"><span class="k">Refus</span>' +
-          '<span class="v'+(r.refus == null ? ' empty' : '')+'">'+(r.refus != null ? r.refus : '—')+'</span></div>' +
-        sugsBlock +
-        '<div class="hint"><a href="'+urlDetail+'" target="_blank" rel="noopener">Voir le détail complet ↗</a></div>' +
-        '</div>';
-    }).join('');
-  }
-
   function renderSyntheses(rows){
     const html = rows
       .filter(r => SYNTHESES[r.name] && SYNTHESES[r.name].texte)
@@ -625,22 +521,16 @@
   function render(){
     if (!DATA.rows.length){
       document.getElementById('loading-board').style.display = 'none';
-      document.getElementById('loading-detail').style.display = 'none';
       document.getElementById('empty-board').style.display = 'block';
-      document.getElementById('empty-detail').style.display = 'block';
       return;
     }
     const rows = sortRows(DATA.rows);
     renderTable(rows);
-    renderCards(rows);
     renderSyntheses(DATA.rows);
 
     document.getElementById('loading-board').style.display = 'none';
-    document.getElementById('loading-detail').style.display = 'none';
     document.getElementById('tableWrap').style.display = 'block';
-    document.getElementById('cards').style.display = 'grid';
     document.getElementById('empty-board').style.display = 'none';
-    document.getElementById('empty-detail').style.display = 'none';
   }
 
   document.querySelectorAll('.tab').forEach(t => {
@@ -666,7 +556,7 @@
 
   /* ============================================================
      GÉNÉRATION DU FICHIER PROMPT (.txt)
-     Avec le prompt Qualiopi complet
+     Modèle Qualiopi - Constats + Actions
      ============================================================ */
   function genererPrompt(){
     if (!SUGGESTIONS || !Object.keys(SUGGESTIONS).length){
@@ -692,49 +582,59 @@
       hour:'2-digit', minute:'2-digit'
     });
 
-    // Prompt Qualiopi complet
     const promptQualiopi = 
       "Tu es responsable qualité dans un organisme de formation professionnelle maritime certifié Qualiopi.\n\n" +
-      "Ta mission consiste à analyser les verbatims libres des stagiaires et à produire une synthèse qualité objective, fidèle aux retours exprimés et exploitable dans le cadre de l'amélioration continue.\n\n" +
-      "CONSIGNES D'ANALYSE\n\n" +
-      "- Utiliser exclusivement les remarques fournies.\n" +
-      "- Ne jamais inventer d'informations.\n" +
+      "Ta mission consiste à analyser les commentaires libres des stagiaires et à produire une synthèse qualité exploitable dans le cadre de l'amélioration continue.\n\n" +
+      "PRINCIPE FONDAMENTAL\n\n" +
+      "La synthèse doit distinguer clairement :\n\n" +
+      "1. Les CONSTATS issus des retours stagiaires.\n" +
+      "2. Les ACTIONS D'AMÉLIORATION recommandées.\n\n" +
+      "Ne jamais mélanger les deux.\n\n" +
+      "RÈGLES D'ANALYSE\n\n" +
+      "- Utiliser uniquement les remarques fournies.\n" +
+      "- Ne jamais inventer d'information.\n" +
       "- Ne jamais extrapoler au-delà des commentaires.\n" +
-      "- Regrouper les remarques similaires en une idée synthétique.\n" +
-      "- Corriger mentalement les fautes d'orthographe évidentes sans les mentionner.\n" +
-      "- Ignorer totalement les suites de caractères, tests de clavier, réponses vides, commentaires incompréhensibles ou non exploitables (exemples : « aaaaaaa », « fffffff », « test », « ras », « . », « ok », etc.).\n" +
-      "- Lorsqu'une remarque est négative mais imprécise, la signaler comme une insatisfaction exprimée sans en déduire la cause.\n" +
-      "- N'interpréter aucun élément non explicitement mentionné.\n" +
-      "- Employer un ton neutre, factuel, professionnel et conforme à une démarche qualité.\n" +
-      "- Ne jamais attribuer une opinion à l'ensemble des stagiaires lorsqu'elle provient d'un seul commentaire.\n" +
-      "- Les recommandations doivent être concrètes, réalistes et directement actionnables.\n\n" +
-      "TRAITEMENT DES DONNÉES\n\n" +
-      "Pour chaque formation :\n\n" +
-      "1. Identifier les points positifs réellement exprimés.\n" +
-      "2. Identifier les axes d'amélioration réellement exprimés.\n" +
-      "3. Rédiger une recommandation d'amélioration adaptée aux remarques recueillies.\n\n" +
+      "- Regrouper les remarques similaires.\n" +
+      "- Ignorer les suites de caractères, tests de clavier, commentaires vides ou non exploitables.\n" +
+      "- Ne pas transformer une critique en point positif.\n" +
+      "- Ne pas attribuer une opinion à l'ensemble des stagiaires lorsqu'elle provient d'un seul commentaire.\n" +
+      "- Ton neutre, factuel et professionnel.\n" +
+      "- Style compatible avec un compte-rendu qualité Qualiopi.\n" +
+      "- Les actions proposées doivent être concrètes, réalistes et directement actionnables.\n\n" +
       "CAS PARTICULIERS\n\n" +
-      "- Si aucun point positif exploitable n'est présent :\n" +
-      "  « Aucun point positif exploitable n'a été identifié dans les commentaires recueillis. »\n\n" +
-      "- Si aucun axe d'amélioration exploitable n'est présent :\n" +
-      "  « Aucun axe d'amélioration exploitable n'a été identifié dans les commentaires recueillis. »\n\n" +
-      "- Si l'ensemble des commentaires est inexploitable :\n" +
-      "  « Les commentaires recueillis ne contiennent pas d'informations suffisamment exploitables pour réaliser une analyse qualitative. »\n\n" +
-      "FORMAT DE SORTIE À RESPECTER STRICTEMENT\n\n" +
+      "Si aucune remarque exploitable n'est disponible :\n\n" +
+      "Constats :\n" +
+      "Les commentaires recueillis ne contiennent pas d'informations suffisamment exploitables pour réaliser une analyse qualitative.\n\n" +
+      "Actions conseillées :\n" +
+      "Poursuivre la collecte des évaluations en encourageant des retours plus détaillés.\n\n" +
+      "FORMAT DE SORTIE (OBLIGATOIRE)\n\n" +
       "=== NOM DE LA FORMATION ===\n\n" +
-      "[Synthèse des points positifs en 1 à 3 phrases maximum.]\n\n" +
-      "[Synthèse des axes d'amélioration en 1 à 3 phrases maximum.]\n\n" +
-      "[Une seule phrase de recommandation commençant impérativement par un verbe d'action : Maintenir, Renforcer, Développer, Adapter, Vérifier, Améliorer, Poursuivre, Mettre en place, etc.]\n\n" +
-      "RÈGLES DE MISE EN FORME\n\n" +
+      "Points positifs :\n" +
+      "[1 à 3 phrases maximum]\n\n" +
+      "Axes d'amélioration :\n" +
+      "[1 à 3 phrases maximum]\n\n" +
+      "Constats qualité :\n" +
+      "[constat synthétique basé uniquement sur les retours]\n\n" +
+      "Actions conseillées :\n" +
+      "[1 à 3 actions rédigées sous forme de phrases courtes]\n\n" +
+      "=== NOM DE LA FORMATION SUIVANTE ===\n\n" +
+      "Points positifs :\n" +
+      "...\n\n" +
+      "Axes d'amélioration :\n" +
+      "...\n\n" +
+      "Constats qualité :\n" +
+      "...\n\n" +
+      "Actions conseillées :\n" +
+      "...\n\n" +
+      "RÈGLES DE RÉDACTION\n\n" +
       "- Répondre uniquement en français.\n" +
-      "- Utiliser exactement le séparateur :\n" +
+      "- Respecter exactement les séparateurs :\n" +
       "  === NOM DE LA FORMATION ===\n" +
       "- Aucun tableau.\n" +
-      "- Aucune liste à puces.\n" +
-      "- Aucun titre supplémentaire.\n" +
-      "- Trois paragraphes uniquement par formation.\n" +
-      "- Style synthétique et professionnel.\n" +
-      "- Formulation adaptée à un rapport qualité Qualiopi.\n\n" +
+      "- Aucune puce.\n" +
+      "- Aucune information inventée.\n" +
+      "- Formulation concise et professionnelle.\n" +
+      "- Les actions doivent toujours commencer par un verbe d'action : Maintenir, Renforcer, Développer, Vérifier, Adapter, Améliorer, Mettre en place, Poursuivre, etc.\n\n" +
       "DONNÉES À ANALYSER :\n\n" +
       texteConcatene;
 
