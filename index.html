@@ -49,6 +49,28 @@
     background:var(--anis);box-shadow:0 0 0 3px rgba(164,198,57,.30);
   }
 
+  /* Barre d'actions (bouton prompt) */
+  .top-actions{
+    display:flex;justify-content:flex-end;
+    margin-bottom:12px;
+  }
+  .btn-prompt{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 18px;
+    background:var(--marine);color:#fff;
+    border:none;border-radius:var(--radius);
+    box-shadow:0 2px 8px rgba(30,58,95,.20);
+    font-size:13.5px;font-weight:600;font-family:inherit;
+    cursor:pointer;
+    transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .btn-prompt:hover{
+    background:var(--ocean);
+    transform:translateY(-2px);
+    box-shadow:0 6px 14px rgba(30,58,95,.25);
+  }
+  .btn-prompt:active{transform:translateY(0)}
+
   /* Onglets */
   .tabs{
     display:flex;gap:4px;margin-bottom:16px;
@@ -122,7 +144,86 @@
   .formation-link .ext{font-size:11px;opacity:.5;transition:opacity .15s}
   .formation-link:hover .ext{opacity:1}
 
-  /* Cartes synthèse IA */
+  /* Cartes (onglet détail) */
+  .cards{display:grid;grid-template-columns:1fr;gap:12px}
+  .card{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:16px 18px;
+    position:relative;overflow:hidden;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .card:hover{
+    transform:translateY(-2px);
+    box-shadow:var(--shadow-hover);
+  }
+  .card::before{
+    content:'';position:absolute;top:0;left:0;bottom:0;width:4px;
+    background:var(--azur);
+  }
+  .card.high::before{background:var(--success)}
+  .card.mid::before{background:var(--warning)}
+  .card.low::before{background:var(--danger)}
+
+  .card h3{
+    margin:0 0 12px;font-size:16px;font-weight:600;color:var(--marine);
+    word-break:break-word;padding-bottom:10px;border-bottom:1px solid var(--border);
+  }
+  .card .taux-big{
+    font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;
+    letter-spacing:-0.5px;color:var(--azur);margin-bottom:6px;
+  }
+  .card.high .taux-big{color:var(--success)}
+  .card.mid .taux-big{color:var(--warning)}
+  .card.low .taux-big{color:var(--danger)}
+  .card .bar{
+    width:100%;height:6px;background:var(--ecume-2);border-radius:3px;
+    overflow:hidden;margin-bottom:12px;
+  }
+  .card .bar span{
+    display:block;height:100%;border-radius:3px;
+    background:linear-gradient(90deg, var(--azur), var(--ocean));
+    transition:width .6s ease;
+  }
+  .card .row{
+    display:grid;grid-template-columns:1fr auto;align-items:center;
+    gap:12px;padding:7px 0;border-bottom:1px dashed var(--border);
+    font-size:13.5px;
+  }
+  .card .row:last-of-type{border-bottom:none}
+  .card .row .k{color:#475467;min-width:0;word-break:break-word}
+  .card .row .v{
+    text-align:right;font-weight:700;color:var(--azur);
+    font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
+  .card .row .v.empty{color:var(--muted);font-weight:500}
+
+  .card .sugg-block{
+    margin-top:14px;padding-top:12px;border-top:1px solid var(--border);
+  }
+  .card .sugg-block .title{
+    font-size:13px;font-weight:600;color:var(--marine);margin-bottom:8px;
+  }
+  .card .sugg-block ul{
+    margin:0;padding-left:18px;list-style:disc;color:#475467;
+    font-size:13px;line-height:1.5;
+  }
+  .card .sugg-block li{margin-bottom:5px}
+  .card .sugg-block li:last-child{margin-bottom:0}
+  .card .sugg-block .none{
+    color:var(--muted);font-style:italic;font-size:13px;
+  }
+  .card .hint{
+    margin-top:12px;padding-top:10px;
+    border-top:1px dashed var(--border);
+    font-size:12px;text-align:right;
+  }
+  .card .hint a{
+    color:var(--azur);text-decoration:none;font-weight:600;
+  }
+  .card .hint a:hover{text-decoration:underline}
+
+  /* Cartes synthèses IA */
   .synthese-grid{
     display:grid;grid-template-columns:1fr;gap:16px;
   }
@@ -131,11 +232,6 @@
     border-radius:var(--radius);box-shadow:var(--shadow);
     padding:20px 22px;
     position:relative;overflow:hidden;
-    transition:transform .2s ease, box-shadow .2s ease;
-  }
-  .synth-card:hover{
-    transform:translateY(-3px);
-    box-shadow:var(--shadow-hover);
   }
   .synth-card::before{
     content:'';position:absolute;top:0;left:0;bottom:0;width:5px;
@@ -152,27 +248,9 @@
     font-size:11.5px;font-weight:600;
     padding:3px 10px;border-radius:12px;
   }
-  .synth-section{
-    margin-bottom:14px;
-    padding:12px 14px;
-    background:var(--ecume);
-    border-radius:6px;
-    border-left:3px solid var(--azur);
-  }
-  .synth-section.pos{ border-left-color: var(--success); }
-  .synth-section.axe{ border-left-color: var(--warning); }
-  .synth-section.rec{ border-left-color: var(--marine); }
-  .synth-section .label{
-    font-size:12px;font-weight:700;color:var(--marine);
-    text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;
-    display:flex;align-items:center;gap:6px;
-  }
-  .synth-section .content{
-    font-size:14px;color:#475467;line-height:1.55;
+  .synth-content{
+    font-size:14px;color:#475467;line-height:1.6;
     white-space:pre-wrap;word-break:break-word;
-  }
-  .synth-section .content.empty{
-    color:var(--muted);font-style:italic;
   }
 
   .empty-msg{text-align:center;padding:50px;color:var(--muted);font-size:14px}
@@ -187,6 +265,9 @@
   footer.foot .sep{display:inline-block;margin:0 5px;color:var(--azur-clair)}
   footer.foot .mention{font-style:italic;font-size:11px;color:var(--muted);opacity:.85}
 
+  @media (min-width:600px){
+    .cards{grid-template-columns:repeat(2,1fr);gap:14px}
+  }
   @media (min-width:900px){
     .wrap{padding:20px}
     .header{padding:16px 24px;margin-bottom:16px}
@@ -194,6 +275,10 @@
     .header h1{font-size:20px}
     .tab{font-size:15px;padding:12px 20px}
     .synthese-grid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:600px){
+    .top-actions{justify-content:center}
+    .btn-prompt{width:100%;justify-content:center}
   }
 </style>
 </head>
@@ -211,6 +296,12 @@
       <span>Données mises à jour le <span id="updated-date">…</span></span>
     </div>
   </header>
+
+  <div class="top-actions">
+    <button class="btn-prompt" onclick="genererPrompt()" type="button">
+      📄 Générer le prompt IA
+    </button>
+  </div>
 
   <div class="tabs" role="tablist">
     <button class="tab active" data-tab="board" role="tab">Tableau de bord</button>
@@ -261,21 +352,33 @@
 </div>
 
 <script>
+  /* ============================================================
+     ANNÉE EN COURS
+     ============================================================ */
   document.getElementById('year').textContent = new Date().getFullYear();
 
+  /* ============================================================
+     URLs DES CSV
+     ============================================================ */
   const BASE = "https://smqlpmboulogne.github.io/satisfactionfc/";
   const CSV_RESULTATS = BASE + "formations.csv";
-  const CSV_SUGGESTIONS = BASE + "suggestions.csv";
   const CSV_REFUS = BASE + "refus.csv";
+  const CSV_SUGGESTIONS = BASE + "suggestions.csv";
   const CSV_SYNTHESE = BASE + "synthese.csv";
   const DATE_FILE = BASE + "last-update.txt";
 
+  /* ============================================================
+     ÉTAT GLOBAL
+     ============================================================ */
   let DATA = { rows: [] };
   let SUGGESTIONS = {};
   let SYNTHESES = {};
   let sortKey = 'name';
   let sortAsc = true;
 
+  /* ============================================================
+     UTILITAIRES
+     ============================================================ */
   function esc(s){
     return String(s).replace(/[&<>"']/g, c => ({
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -324,6 +427,9 @@
     return v.toFixed(1).replace('.',',') + ' %';
   }
 
+  /* ============================================================
+     CHARGEMENT DES DONNÉES
+     ============================================================ */
   async function chargerTout(){
     try {
       const [rF, rR, rSug, rSyn] = await Promise.all([
@@ -338,7 +444,7 @@
       const rowsS = parseCSV(await rSug.text());
       const rowsSyn = parseCSV(await rSyn.text());
 
-      // --- REFUS ---
+      // REFUS
       const refusMap = {};
       rowsR.slice(1).forEach(r => {
         const f = (r[0] || '').trim();
@@ -349,7 +455,7 @@
         };
       });
 
-      // --- SUGGESTIONS ---
+      // SUGGESTIONS (structure : Date | Formation | Suggestion)
       rowsS.slice(1).forEach(r => {
         const f = (r[1] || '').trim();
         const s = (r[2] || '').trim();
@@ -358,20 +464,17 @@
         SUGGESTIONS[f].push(s);
       });
 
-      // --- SYNTHESES IA ---
-      // Colonnes : Formation | Nb | Positifs | Améliorations | Recommandation
+      // SYNTHESES (structure : Formation | Nb | Synthèse)
       rowsSyn.slice(1).forEach(r => {
         const f = (r[0] || '').trim();
         if (!f) return;
         SYNTHESES[f] = {
           nb: parseInt(r[1], 10) || 0,
-          positifs: (r[2] || '').trim(),
-          ameliorations: (r[3] || '').trim(),
-          recommandation: (r[4] || '').trim()
+          texte: (r[2] || '').trim()
         };
       });
 
-      // --- RESULTATS ---
+      // RESULTATS
       if (rowsF.length >= 2){
         const allHeaders = rowsF[0].map(h => h.trim());
         let cutoff = allHeaders.length;
@@ -429,6 +532,9 @@
     }
   }
 
+  /* ============================================================
+     TRI
+     ============================================================ */
   function getValue(row, key){
     if (key === 'name') return row.name.toLowerCase();
     return row[key] != null ? row[key] : null;
@@ -448,7 +554,7 @@
   }
 
   /* ============================================================
-     TABLEAU (onglet 1)
+     RENDU — TABLEAU (onglet 1)
      ============================================================ */
   function renderTable(rows){
     const columns = [
@@ -506,7 +612,7 @@
   }
 
   /* ============================================================
-     CARTES (onglet 2)
+     RENDU — CARTES (onglet 2)
      ============================================================ */
   function renderCards(rows){
     document.getElementById('cards').innerHTML = rows.map(r => {
@@ -544,33 +650,19 @@
   }
 
   /* ============================================================
-     SYNTHESES IA (onglet 3)
+     RENDU — SYNTHESES IA (onglet 3)
      ============================================================ */
   function renderSyntheses(rows){
     const html = rows
-      .filter(r => SYNTHESES[r.name])
+      .filter(r => SYNTHESES[r.name] && SYNTHESES[r.name].texte)
       .sort((a,b) => a.name.localeCompare(b.name, 'fr'))
       .map(r => {
         const s = SYNTHESES[r.name];
-        const isEmpty = v => !v || /^aucun/i.test(v);
-
-        const makeSection = (label, content, cls) => {
-          const isEmptyContent = isEmpty(content);
-          return '<div class="synth-section '+cls+'">' +
-            '<div class="label">'+label+'</div>' +
-            '<div class="content'+(isEmptyContent ? ' empty' : '')+'">' +
-              esc(content || 'Non renseigné') +
-            '</div>' +
-          '</div>';
-        };
-
         return '<div class="synth-card">' +
           '<h3>' + esc(r.name) +
             '<span class="badge">' + s.nb + ' remarque' + (s.nb > 1 ? 's' : '') + '</span>' +
           '</h3>' +
-          makeSection('✓ Points positifs', s.positifs, 'pos') +
-          makeSection('↗ Axes d\'amélioration', s.ameliorations, 'axe') +
-          makeSection('★ Recommandation', s.recommandation, 'rec') +
+          '<div class="synth-content">' + esc(s.texte) + '</div>' +
         '</div>';
       }).join('');
 
@@ -635,6 +727,84 @@
     } catch(e){}
   }
 
+  /* ============================================================
+     GÉNÉRATION DU FICHIER PROMPT (.txt)
+     ============================================================ */
+  function genererPrompt(){
+    if (!SUGGESTIONS || !Object.keys(SUGGESTIONS).length){
+      alert("Les suggestions ne sont pas encore chargées. Attendez quelques secondes et réessayez.");
+      return;
+    }
+
+    const formations = Object.keys(SUGGESTIONS).sort((a,b) => a.localeCompare(b, 'fr'));
+    let texteConcatene = "";
+
+    formations.forEach(formation => {
+      const remarques = SUGGESTIONS[formation];
+      texteConcatene += "### " + formation + " (" + remarques.length + " remarque(s))\n";
+      remarques.forEach(r => {
+        texteConcatene += "- " + r + "\n";
+      });
+      texteConcatene += "\n";
+    });
+
+    const maintenant = new Date();
+    const dateStr = maintenant.toLocaleString('fr-FR', {
+      day:'2-digit', month:'long', year:'numeric',
+      hour:'2-digit', minute:'2-digit'
+    });
+
+    const contenu = 
+      "================================================================\n" +
+      "PROMPT À ENVOYER À L'IA (Gemini, ChatGPT, Claude, etc.)\n" +
+      "Généré le " + dateStr + "\n" +
+      "================================================================\n\n" +
+      "Tu es analyste qualité dans un centre de formation professionnelle maritime française (démarche Qualiopi).\n\n" +
+      "Voici les remarques et suggestions de stagiaires pour plusieurs formations :\n\n" +
+      texteConcatene + "\n" +
+      "Pour CHAQUE formation listée ci-dessus, rédige une synthèse en 3 paragraphes distincts :\n" +
+      "1. Points positifs (aspects appréciés)\n" +
+      "2. Axes d'amélioration (critiques et suggestions)\n" +
+      "3. Recommandation (une phrase actionnable pour le responsable pédagogique)\n\n" +
+      "FORMAT DE RÉPONSE ATTENDU (à respecter STRICTEMENT) :\n\n" +
+      "=== NOM DE LA FORMATION 1 ===\n" +
+      "[Paragraphe 1 : points positifs]\n" +
+      "[Paragraphe 2 : axes d'amélioration]\n" +
+      "[Paragraphe 3 : recommandation]\n\n" +
+      "=== NOM DE LA FORMATION 2 ===\n" +
+      "[Paragraphe 1]\n" +
+      "[Paragraphe 2]\n" +
+      "[Paragraphe 3]\n\n" +
+      "(et ainsi de suite pour chaque formation)\n\n" +
+      "RÈGLES ABSOLUES :\n" +
+      "- Réponds UNIQUEMENT en français\n" +
+      "- Utilise exactement le format « === NOM DE LA FORMATION === » pour séparer les formations\n" +
+      "- Base-toi UNIQUEMENT sur les remarques fournies\n" +
+      "- N'invente AUCUNE information\n" +
+      "- Ne mets pas de titres ni de puces, uniquement les 3 paragraphes séparés par un retour à la ligne\n" +
+      "- Ton neutre, factuel, professionnel\n" +
+      "- Si une formation n'a aucune remarque exploitable, indique-le clairement\n\n" +
+      "================================================================\n" +
+      "FIN DU PROMPT\n" +
+      "================================================================\n";
+
+    const blob = new Blob([contenu], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Prompt_Syntheses_' + maintenant.toISOString().slice(0, 10) + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    console.log("Prompt généré — " + formations.length + " formations, " +
+                formations.reduce((sum, f) => sum + SUGGESTIONS[f].length, 0) + " remarques");
+  }
+
+  /* ============================================================
+     LANCEMENT
+     ============================================================ */
   chargerTout();
 </script>
 </body>
