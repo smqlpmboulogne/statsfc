@@ -30,7 +30,6 @@
   }
   .wrap{width:100%;max-width:1600px;margin:0 auto;padding:12px;overflow-x:hidden}
 
-  /* En-tête maritime */
   .header{
     background: linear-gradient(135deg, var(--marine) 0%, var(--ocean) 100%);
     border:1px solid var(--marine-fonce);
@@ -73,7 +72,6 @@
   .panel{display:none}
   .panel.active{display:block}
 
-  /* Loader */
   .loading{
     text-align:center;padding:50px 16px;color:var(--muted);font-size:15px;
     display:flex;align-items:center;justify-content:center;gap:12px;
@@ -85,17 +83,13 @@
   }
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* ============================================================
-     TABLEAU (onglet 1)
-     ============================================================ */
+  /* Tableau */
   .table-wrap{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
     overflow-x:auto;-webkit-overflow-scrolling:touch;
   }
-  table{
-    width:100%;border-collapse:collapse;font-size:13px;
-  }
+  table{width:100%;border-collapse:collapse;font-size:13px}
   thead th{
     position:sticky;top:0;background:var(--marine);color:#fff;
     text-align:left;padding:11px 10px;font-weight:600;
@@ -120,22 +114,56 @@
   tbody tr:nth-child(even){background:#fafbfd}
   tbody tr:hover{background:#eef4ff}
 
-  /* ============================================================
-     CARTES (onglet 2)
-     ============================================================ */
-  .cards{
-    display:grid;grid-template-columns:1fr;gap:12px;
+  /* Cartes */
+  .cards{display:grid;grid-template-columns:1fr;gap:12px}
+
+  /* Modal de focus */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(30,58,95,.65);
+    backdrop-filter:blur(4px);
+    display:none;align-items:center;justify-content:center;
+    padding:20px;z-index:1000;
+    animation:fadeIn .2s ease;
   }
+  .modal-overlay.active{display:flex}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+  .modal-content{
+    background:var(--card);border-radius:var(--radius);
+    box-shadow:0 20px 60px rgba(0,0,0,.30);
+    max-width:600px;width:100%;max-height:90vh;
+    overflow-y:auto;padding:24px;
+    position:relative;
+    animation:slideUp .25s ease;
+  }
+  @keyframes slideUp{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  .modal-close{
+    position:absolute;top:12px;right:12px;
+    width:32px;height:32px;border-radius:50%;
+    background:var(--ecume);border:none;cursor:pointer;
+    font-size:18px;color:var(--muted);
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s,color .15s;
+    font-family:inherit;
+  }
+  .modal-close:hover{background:var(--ecume-2);color:var(--marine)}
+
+  /* Carte */
   .card{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
     padding:16px 18px;
     position:relative;overflow:hidden;
-    transition:transform .2s ease, box-shadow .2s ease;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    cursor:pointer;
   }
   .card:hover{
     transform:translateY(-3px);
     box-shadow:var(--shadow-hover);
+    border-color:var(--azur-clair);
   }
   .card::before{
     content:'';position:absolute;top:0;left:0;bottom:0;width:4px;
@@ -174,7 +202,7 @@
     gap:12px;padding:7px 0;border-bottom:1px dashed var(--border);
     font-size:13.5px;
   }
-  .card .row:last-child{border-bottom:none}
+  .card .row:last-of-type{border-bottom:none}
   .card .row .k{color:#475467;min-width:0;word-break:break-word}
   .card .row .v{
     text-align:right;font-weight:700;color:var(--azur);
@@ -193,15 +221,21 @@
     margin:0;padding-left:18px;list-style:disc;color:#475467;
     font-size:13px;line-height:1.5;
   }
-  .card .sugg-block li{margin-bottom:5px}
+  .card .sugg-block li{margin-bottom:6px}
   .card .sugg-block li:last-child{margin-bottom:0}
   .card .sugg-block .none{
     color:var(--muted);font-style:italic;font-size:13px;
   }
 
+  .card .hint{
+    margin-top:12px;padding-top:10px;
+    border-top:1px dashed var(--border);
+    font-size:11.5px;color:var(--muted);text-align:center;
+    font-style:italic;
+  }
+
   .empty-msg{text-align:center;padding:50px;color:var(--muted);font-size:14px}
 
-  /* Pied de page */
   footer.foot{
     text-align:center;padding:16px 16px 12px;font-size:12px;
     color:var(--muted);line-height:1.4;
@@ -212,7 +246,6 @@
   footer.foot .sep{display:inline-block;margin:0 5px;color:var(--azur-clair)}
   footer.foot .mention{font-style:italic;font-size:11px;color:var(--muted);opacity:.85}
 
-  /* RESPONSIVE */
   @media (min-width:600px){
     .cards{grid-template-columns:repeat(2,1fr);gap:14px}
   }
@@ -245,7 +278,7 @@
 
   <div class="tabs" role="tablist">
     <button class="tab active" data-tab="board" role="tab">Tableau de bord</button>
-    <button class="tab" data-tab="detail" role="tab">Détail & Remarques</button>
+    <button class="tab" data-tab="detail" role="tab">Détail, suggestions & remarques</button>
   </div>
 
   <div class="panel active" id="panel-board">
@@ -278,31 +311,24 @@
   </footer>
 </div>
 
+<!-- MODAL pour focus carte -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
 <script>
-  /* ============================================================
-     1) ANNÉE
-     ============================================================ */
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  /* ============================================================
-     2) URLs DES CSV
-     ============================================================ */
   const BASE = "https://smqlpmboulogne.github.io/satisfactionfc/";
   const CSV_RESULTATS = BASE + "formations.csv";
   const CSV_SUGGESTIONS = BASE + "suggestions.csv";
   const DATE_FILE = BASE + "last-update.txt";
 
-  /* ============================================================
-     3) ÉTAT GLOBAL
-     ============================================================ */
   let DATA = { rows: [] };
   let SUGGESTIONS = {};
   let sortKey = 'name';
   let sortAsc = true;
 
-  /* ============================================================
-     4) UTILITAIRES
-     ============================================================ */
   function esc(s){
     return String(s).replace(/[&<>"']/g, c => ({
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -351,9 +377,6 @@
     return v.toFixed(1).replace('.',',') + ' %';
   }
 
-  /* ============================================================
-     5) CHARGEMENT
-     ============================================================ */
   async function chargerTout(){
     try {
       const [resFormations, resSuggestions] = await Promise.all([
@@ -364,11 +387,9 @@
       const rowsF = parseCSV(await resFormations.text());
       const rowsS = parseCSV(await resSuggestions.text());
 
-      /* --- DATA depuis formations.csv --- */
       if (rowsF.length >= 2){
         const allHeaders = rowsF[0].map(h => h.trim());
 
-        // Couper après la première colonne vide (séparateur avec le tableau refus)
         let cutoff = allHeaders.length;
         for (let i = 1; i < allHeaders.length; i++){
           if (allHeaders[i] === ''){ cutoff = i; break; }
@@ -404,8 +425,6 @@
           });
       }
 
-      /* --- SUGGESTIONS depuis suggestions.csv --- */
-      // Structure : Date | Formation | Suggestion
       if (rowsS.length >= 2){
         rowsS.slice(1).forEach(r => {
           const formation = (r[1] || '').trim();
@@ -430,9 +449,6 @@
     }
   }
 
-  /* ============================================================
-     6) TRI
-     ============================================================ */
   function getValue(row, key){
     if (key === 'name') return row.name.toLowerCase();
     if (key === 'satisfaction') return row.satisfaction;
@@ -454,9 +470,6 @@
     });
   }
 
-  /* ============================================================
-     7) RENDU TABLEAU (onglet 1)
-     ============================================================ */
   function renderTable(rows){
     const columns = [
       { key:'name',         label:'Formation' },
@@ -506,43 +519,95 @@
   }
 
   /* ============================================================
-     8) RENDU CARTES (onglet 2)
+     CARTE — fonction pour générer le HTML (utilisée pour l'affichage ET la modale)
      ============================================================ */
+  function carteHTML(r, pourModale){
+    const lvl = level(r.satisfaction);
+    const pct = r.satisfaction != null ? Math.max(0, Math.min(100, r.satisfaction)) : 0;
+    const sugs = SUGGESTIONS[r.name] || [];
+
+    const sugsBlock = sugs.length
+      ? '<div class="sugg-block"><div class="title">💬 Suggestions & remarques ('+sugs.length+')</div>' +
+        '<ul>' + sugs.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul></div>'
+      : '<div class="sugg-block"><div class="title">💬 Suggestions & remarques</div>' +
+        '<div class="none">Aucune remarque</div></div>';
+
+    const hint = pourModale ? '' :
+      '<div class="hint">💡 Cliquez pour agrandir</div>';
+
+    return '<div class="card '+lvl+'" data-name="'+esc(r.name)+'">' +
+      '<h3>'+esc(r.name)+'</h3>' +
+      '<div class="taux-big">'+fmtPct(r.satisfaction)+'</div>' +
+      '<div class="bar"><span style="width:'+pct+'%"></span></div>' +
+      '<div class="row"><span class="k">Réponse aux attentes</span>' +
+        '<span class="v'+(r.pRep == null ? ' empty' : '')+'">'+fmtPct(r.pRep)+'</span></div>' +
+      '<div class="row"><span class="k">Atteinte des objectifs</span>' +
+        '<span class="v'+(r.pObj == null ? ' empty' : '')+'">'+fmtPct(r.pObj)+'</span></div>' +
+      '<div class="row"><span class="k">Utilisation compétences</span>' +
+        '<span class="v'+(r.pUti == null ? ' empty' : '')+'">'+fmtPct(r.pUti)+'</span></div>' +
+      '<div class="row"><span class="k">Qualité animation</span>' +
+        '<span class="v'+(r.pQua == null ? ' empty' : '')+'">'+fmtPct(r.pQua)+'</span></div>' +
+      '<div class="row"><span class="k">Réponses</span>' +
+        '<span class="v'+(r.reponses == null ? ' empty' : '')+'">'+(r.reponses != null ? r.reponses : '—')+'</span></div>' +
+      '<div class="row"><span class="k">Refus</span>' +
+        '<span class="v empty">—</span></div>' +
+      sugsBlock +
+      hint +
+      '</div>';
+  }
+
   function renderCards(rows){
-    document.getElementById('cards').innerHTML = rows.map(r => {
-      const lvl = level(r.satisfaction);
-      const pct = r.satisfaction != null ? Math.max(0, Math.min(100, r.satisfaction)) : 0;
-      const sugs = SUGGESTIONS[r.name] || [];
+    document.getElementById('cards').innerHTML = rows.map(r => carteHTML(r, false)).join('');
 
-      const sugsBlock = sugs.length
-        ? '<div class="sugg-block"><div class="title">💬 Suggestions ('+sugs.length+')</div>' +
-          '<ul>' + sugs.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul></div>'
-        : '<div class="sugg-block"><div class="title">💬 Suggestions</div>' +
-          '<div class="none">Aucune remarque</div></div>';
-
-      return '<div class="card '+lvl+'">' +
-        '<h3>'+esc(r.name)+'</h3>' +
-        '<div class="taux-big">'+fmtPct(r.satisfaction)+'</div>' +
-        '<div class="bar"><span style="width:'+pct+'%"></span></div>' +
-        '<div class="row"><span class="k">Réponse aux attentes</span>' +
-          '<span class="v'+(r.pRep == null ? ' empty' : '')+'">'+fmtPct(r.pRep)+'</span></div>' +
-        '<div class="row"><span class="k">Atteinte des objectifs</span>' +
-          '<span class="v'+(r.pObj == null ? ' empty' : '')+'">'+fmtPct(r.pObj)+'</span></div>' +
-        '<div class="row"><span class="k">Utilisation compétences</span>' +
-          '<span class="v'+(r.pUti == null ? ' empty' : '')+'">'+fmtPct(r.pUti)+'</span></div>' +
-        '<div class="row"><span class="k">Qualité animation</span>' +
-          '<span class="v'+(r.pQua == null ? ' empty' : '')+'">'+fmtPct(r.pQua)+'</span></div>' +
-        '<div class="row"><span class="k">Réponses</span>' +
-          '<span class="v'+(r.reponses == null ? ' empty' : '')+'">'+(r.reponses != null ? r.reponses : '—')+'</span></div>' +
-        '<div class="row"><span class="k">Refus</span>' +
-          '<span class="v empty">—</span></div>' +
-        sugsBlock +
-        '</div>';
-    }).join('');
+    // Rendre les cartes cliquables
+    document.querySelectorAll('#cards .card').forEach(card => {
+      card.addEventListener('click', () => {
+        const name = card.dataset.name;
+        const r = DATA.rows.find(x => x.name === name);
+        if (!r) return;
+        ouvrirModale(r);
+      });
+    });
   }
 
   /* ============================================================
-     9) RENDU GLOBAL
+     MODALE — focus sur une carte
+     ============================================================ */
+  function ouvrirModale(r){
+    const modal = document.getElementById('modalOverlay');
+    const content = document.getElementById('modalContent');
+
+    content.innerHTML =
+      '<button class="modal-close" aria-label="Fermer">✕</button>' +
+      carteHTML(r, true);
+
+    // Retirer le curseur sur la carte dans la modale
+    content.querySelector('.card').style.cursor = 'default';
+    content.querySelector('.card').style.transform = 'none';
+    content.querySelector('.card').style.boxShadow = 'none';
+    content.querySelector('.card').style.border = 'none';
+    content.querySelector('.card').style.padding = '0';
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    content.querySelector('.modal-close').addEventListener('click', fermerModale);
+    modal.addEventListener('click', e => {
+      if (e.target === modal) fermerModale();
+    });
+  }
+
+  function fermerModale(){
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') fermerModale();
+  });
+
+  /* ============================================================
+     RENDU GLOBAL
      ============================================================ */
   function render(){
     if (!DATA.rows.length){
@@ -565,7 +630,7 @@
   }
 
   /* ============================================================
-     10) ONGLETS
+     ONGLETS
      ============================================================ */
   document.querySelectorAll('.tab').forEach(t => {
     t.addEventListener('click', () => {
@@ -576,7 +641,7 @@
   });
 
   /* ============================================================
-     11) DATE
+     DATE
      ============================================================ */
   async function chargerDate(){
     try {
