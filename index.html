@@ -7,155 +7,153 @@
 <link rel="icon" href="data:,">
 <style>
   :root{
-    --accent:#1a73e8;--bg:#f6f8fb;--card:#ffffff;
-    --text:#1f2430;--muted:#98a2b3;--border:#e6e9ef;--radius:14px;
-    --shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(16,24,40,.07);
-    --success:#0f9d58;--warning:#f4b400;--danger:#d93025;
+    --marine:#1e3a5f;--marine-fonce:#152a45;--ocean:#2c5a8c;
+    --azur:#4a90c4;--azur-clair:#7fb3d9;--anis:#a4c639;
+    --ecume:#f0f5fa;--ecume-2:#e3edf5;
+    --card:#ffffff;--text:#1a2a3a;--muted:#7a8fa6;--border:#d8e3ed;
+    --radius:10px;
+    --shadow:0 1px 2px rgba(30,58,95,.06), 0 6px 16px rgba(30,58,95,.08);
+    --shadow-hover:0 6px 12px rgba(30,58,95,.10), 0 16px 32px rgba(30,58,95,.12);
+    --success:#5fa02c;--warning:#e8a63c;--danger:#c93e3e;
   }
   *{box-sizing:border-box}
   html, body {
     margin:0; padding:0;
-    background:var(--bg); color:var(--text);
+    background: linear-gradient(180deg, #e8f1f9 0%, #f0f5fa 400px, #f5f9fc 100%);
+    color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
     width:100%; max-width:100%; overflow-x:hidden;
+    min-height:100vh;
   }
   .wrap{width:100%;max-width:1600px;margin:0 auto;padding:12px;overflow-x:hidden}
 
   .header{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:var(--radius);box-shadow:var(--shadow);
-    padding:16px 14px;margin-bottom:14px;text-align:center;
+    background: linear-gradient(135deg, var(--marine) 0%, var(--ocean) 100%);
+    border:1px solid var(--marine-fonce);
+    border-radius:var(--radius);
+    box-shadow:0 8px 24px rgba(30,58,95,.20);
+    padding:14px 16px;margin-bottom:14px;text-align:center;
   }
-  .header .banner{display:block;margin:0 auto 12px;max-width:400px;width:100%;height:auto}
-  .header h1{margin:0;font-size:18px;font-weight:700;line-height:1.3}
-  .header .subtitle{margin:6px 0 0;font-size:13px;color:#667085;font-weight:500}
+  .header .banner{display:block;margin:0 auto 6px;max-width:220px;width:100%;height:auto}
+  .header h1{margin:0;font-size:17px;font-weight:700;line-height:1.3;color:#fff}
+  .header .subtitle{margin:4px 0 0;font-size:13px;color:#b8d2e8;font-weight:500}
   .header .updated{
-    margin-top:10px;font-size:12px;color:#98a2b3;
+    margin-top:8px;font-size:11.5px;color:#d0e0ee;
     display:inline-flex;align-items:center;gap:6px;
+    padding:3px 10px;background:rgba(255,255,255,.12);
+    border-radius:14px;
   }
   .header .updated .dot{
     display:inline-block;width:6px;height:6px;border-radius:50%;
-    background:var(--success);
+    background:var(--anis);box-shadow:0 0 0 3px rgba(164,198,57,.30);
   }
 
-  /* Compteur global */
+  /* Stats globales */
   .stats-bar{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:12px;margin-bottom:16px;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:10px;margin-bottom:14px;
   }
   .stat-box{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
-    padding:14px 16px;text-align:center;
+    padding:12px 14px;text-align:center;
   }
-  .stat-box .label{font-size:12px;color:#667085;font-weight:500;margin-bottom:4px}
-  .stat-box .value{font-size:22px;font-weight:700;color:var(--accent)}
+  .stat-box .label{font-size:11.5px;color:var(--muted);font-weight:500;margin-bottom:4px}
+  .stat-box .value{font-size:20px;font-weight:700;color:var(--azur)}
 
   .loading{
-    text-align:center;padding:40px 16px;color:var(--muted);font-size:15px;
+    text-align:center;padding:50px 16px;color:var(--muted);font-size:15px;
     display:flex;align-items:center;justify-content:center;gap:12px;
   }
   .loading .spin{
-    width:20px;height:20px;border:2px solid var(--border);
-    border-top-color:var(--accent);border-radius:50%;
+    width:22px;height:22px;border:2px solid var(--border);
+    border-top-color:var(--azur);border-radius:50%;
     animation:spin .8s linear infinite;
   }
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* Tableau (desktop) */
+  /* Tableau desktop */
   .table-wrap{display:none}
-  table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card);
+  table{width:100%;border-collapse:collapse;font-size:13px;background:var(--card);
     border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
   thead th{
-    position:sticky;top:0;background:var(--accent);color:#fff;
-    text-align:left;padding:11px 12px;font-weight:600;
+    position:sticky;top:0;background:var(--marine);color:#fff;
+    text-align:left;padding:10px 12px;font-weight:600;
     white-space:nowrap;cursor:pointer;user-select:none;
-    transition:background .15s;
   }
-  thead th:hover{background:#1558b0}
+  thead th:hover{background:var(--ocean)}
   thead th:not(:first-child){text-align:right}
   thead th .arrow{display:inline-block;margin-left:6px;opacity:.4;font-size:11px}
   thead th.sorted .arrow{opacity:1}
-  tbody td{padding:10px 12px;border-top:1px solid var(--border);
+  tbody td{padding:9px 12px;border-top:1px solid var(--border);
     vertical-align:top;word-break:break-word}
-  tbody td:first-child{font-weight:600;color:#344054}
+  tbody td:first-child{font-weight:600;color:var(--marine)}
   tbody td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
+  tbody td.suggestion{text-align:left;font-weight:400;color:#475467;
+    font-size:12.5px;max-width:400px;line-height:1.4}
   tbody td.empty{color:var(--muted);font-weight:400}
   tbody tr:nth-child(even){background:#fafbfd}
   tbody tr:hover{background:#eef4ff}
-  tbody td.suggestion{text-align:left;font-weight:400;color:#475467;
-    font-size:13px;max-width:400px}
 
-  /* Cartes (mobile) */
+  /* Cartes mobile */
   .cards{display:grid;grid-template-columns:1fr;gap:12px}
   .card{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
     padding:16px 18px;
   }
-  .card h3{margin:0 0 12px;font-size:17px;font-weight:600;color:var(--accent);
-    word-break:break-word;padding-bottom:8px;border-bottom:1px solid var(--border)}
+  .card h3{
+    margin:0 0 10px;font-size:16px;font-weight:600;color:var(--marine);
+    word-break:break-word;padding-bottom:8px;border-bottom:1px solid var(--border);
+  }
   .card .row{
     display:grid;grid-template-columns:1fr auto;align-items:center;
     gap:12px;padding:8px 0;border-bottom:1px dashed var(--border);
-    font-size:14.5px;
+    font-size:14px;
   }
   .card .row:last-child{border-bottom:none}
-  .card .row .k{color:#475467;font-size:14px;min-width:0;word-break:break-word}
-  .card .row .v{text-align:right;font-weight:700;color:var(--accent);
+  .card .row .k{color:#475467;font-size:13.5px;min-width:0;word-break:break-word}
+  .card .row .v{text-align:right;font-weight:700;color:var(--azur);
     font-variant-numeric:tabular-nums;white-space:nowrap;font-size:15px}
   .card .row .v.empty{color:var(--muted);font-weight:500}
-  .card .suggestions-block{
+
+  .card .sugg-block{
     margin-top:12px;padding-top:12px;border-top:1px solid var(--border);
   }
-  .card .suggestions-block .title{
-    font-size:13px;font-weight:600;color:#667085;margin-bottom:8px;
-    display:flex;align-items:center;gap:6px;
+  .card .sugg-block .title{
+    font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:8px;
   }
-  .card .suggestions-block ul{
+  .card .sugg-block ul{
     margin:0;padding-left:18px;list-style:disc;color:#475467;
     font-size:13.5px;line-height:1.5;
   }
-  .card .suggestions-block li{margin-bottom:6px}
-  .card .suggestions-block li:last-child{margin-bottom:0}
-  .card .suggestions-block .none{
+  .card .sugg-block li{margin-bottom:5px}
+  .card .sugg-block li:last-child{margin-bottom:0}
+  .card .sugg-block .none{
     color:var(--muted);font-style:italic;font-size:13px;
   }
 
-  .empty-msg{text-align:center;padding:40px;color:var(--muted);font-size:14px}
+  .empty-msg{text-align:center;padding:50px;color:var(--muted);font-size:14px}
 
   footer.foot{
-    text-align:center;padding:24px 16px 12px;
-    font-size:12px;color:#98a2b3;
+    text-align:center;padding:16px 16px 12px;font-size:12px;
+    color:var(--muted);line-height:1.4;
   }
-  footer.foot a{color:var(--accent);text-decoration:none}
-  footer.foot a:hover{text-decoration:underline}
+  footer.foot p{margin:0}
+  footer.foot p + p{margin-top:3px}
+  footer.foot .brand{color:var(--marine);font-weight:600;letter-spacing:.3px}
+  footer.foot .sep{display:inline-block;margin:0 5px;color:var(--azur-clair)}
+  footer.foot .mention{font-style:italic;font-size:11px;color:var(--muted);opacity:.85}
 
-  /* RESPONSIVE */
   @media (min-width:900px){
     .wrap{padding:20px}
     .cards{display:none}
     .table-wrap{display:block}
+    .header{padding:16px 24px}
+    .header h1{font-size:20px}
+    .header .banner{max-width:260px}
   }
-  body.layout-mobile .wrap{padding:14px}
-  body.layout-mobile .header{padding:18px 16px;margin-bottom:16px}
-  body.layout-mobile .header h1{font-size:20px}
-  body.layout-mobile .header .subtitle{font-size:14px}
-  body.layout-mobile .cards{display:grid}
-  body.layout-mobile .table-wrap{display:none}
-
-  body.layout-tablet .wrap{padding:16px}
-  body.layout-tablet .header{padding:22px 18px}
-  body.layout-tablet .header h1{font-size:22px}
-  body.layout-tablet .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-  body.layout-tablet .table-wrap{display:none}
-
-  body.layout-desktop .wrap{padding:20px}
-  body.layout-desktop .header{padding:28px 24px}
-  body.layout-desktop .header h1{font-size:24px}
-  body.layout-desktop .cards{display:none}
-  body.layout-desktop .table-wrap{display:block}
 </style>
 </head>
 <body>
@@ -206,39 +204,28 @@
   <div class="empty-msg" id="empty" style="display:none">Aucune donnée disponible</div>
 
   <footer class="foot">
-    <p>Page d'analyse interne — <a href="https://smqlpmboulogne.github.io/satisfactionfc/" target="_blank">Voir le site public</a></p>
-    <p>Source : Google Sheets — synchronisation automatique.</p>
+    <p>
+      Conception et réalisation : <span class="brand">ZEG</span>
+      <span class="sep">—</span>
+      Lycée Maritime Boulogne, <span id="year">2026</span>
+    </p>
+    <p class="mention">Projet réalisé dans le cadre du pacte enseignant</p>
   </footer>
 </div>
 
 <script>
-  /* ============================================================
-     1) LAYOUT
-     ============================================================ */
-  function applyLayout(){
-    var w = Math.min(window.innerWidth||9999, document.documentElement.clientWidth||9999, screen.width||9999);
-    document.body.classList.remove('layout-mobile','layout-tablet','layout-desktop');
-    if (w < 700)       document.body.classList.add('layout-mobile');
-    else if (w < 1000) document.body.classList.add('layout-tablet');
-    else               document.body.classList.add('layout-desktop');
-  }
-  applyLayout();
-  window.addEventListener('resize', applyLayout);
-  window.addEventListener('orientationchange', () => setTimeout(applyLayout, 200));
-  setTimeout(applyLayout, 300);
-  setTimeout(applyLayout, 1000);
+  document.getElementById('year').textContent = new Date().getFullYear();
 
-  /* ============================================================
-     2) URLs DES CSV (sur l'autre dépôt)
-     ============================================================ */
   const BASE = "https://smqlpmboulogne.github.io/satisfactionfc/";
   const CSV_RESULTATS = BASE + "formations.csv";
   const CSV_SUGGESTIONS = BASE + "suggestions.csv";
   const DATE_FILE = BASE + "last-update.txt";
 
-  /* ============================================================
-     3) UTILITAIRES
-     ============================================================ */
+  let DATA = { indicators: [], rows: [] };
+  let SUGGESTIONS = {};
+  let sortKey = 'name';
+  let sortAsc = true;
+
   function esc(s){
     return String(s).replace(/[&<>"']/g, c => ({
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -267,20 +254,12 @@
     return rows.filter(r => r.some(c => c.trim() !== ''));
   }
 
-  /* ============================================================
-     4) ÉTAT GLOBAL
-     ============================================================ */
-  let DATA = { indicators: [], rows: [] };
-  let SUGGESTIONS = {}; // { "Formation": ["sugg1", "sugg2"] }
-  let sortKey = 'name';
-  let sortAsc = true;
+  function cleanHeader(h){
+    return h.trim().replace(/\s+/g, ' ');
+  }
 
-  /* ============================================================
-     5) CHARGEMENT DES DONNÉES
-     ============================================================ */
   async function chargerTout(){
     try {
-      // Charger les deux CSV en parallèle
       const [resFormations, resSuggestions] = await Promise.all([
         fetch(CSV_RESULTATS + '?t=' + Date.now(), { cache: 'no-store' }),
         fetch(CSV_SUGGESTIONS + '?t=' + Date.now(), { cache: 'no-store' })
@@ -289,13 +268,21 @@
       const csvFormations = await resFormations.text();
       const csvSuggestions = await resSuggestions.text();
 
-      // Parser les formations
       const rowsF = parseCSV(csvFormations);
       const rowsS = parseCSV(csvSuggestions);
 
-      // Construire DATA
+      // --- Construire DATA depuis formations.csv ---
       if (rowsF.length >= 2){
-        const headers = rowsF[0].map(h => h.trim());
+        const allHeaders = rowsF[0].map(cleanHeader);
+
+        // On ne garde que les colonnes A à F (Formation + Réponses + 4 indicateurs)
+        // On ignore les colonnes de refus qui sont au-delà (décalage)
+        const cutoff = allHeaders.findIndex((h, i) =>
+          i > 0 && h === '' // première colonne vide = séparateur
+        );
+        const maxCol = cutoff > 0 ? cutoff : 6;
+
+        const headers = allHeaders.slice(0, maxCol);
         const indicators = headers.slice(1);
 
         DATA.indicators = indicators;
@@ -318,18 +305,18 @@
           });
       }
 
-      // Construire SUGGESTIONS
+      // --- Construire SUGGESTIONS depuis suggestions.csv ---
+      // Structure : Date | Formation | Suggestion
       if (rowsS.length >= 2){
         rowsS.slice(1).forEach(r => {
-          const formation = (r[0] || '').trim();
-          const suggestion = (r[2] || r[1] || '').trim(); // selon ordre colonnes
+          const formation = (r[1] || '').trim();
+          const suggestion = (r[2] || '').trim();
           if (!formation || !suggestion) return;
           if (!SUGGESTIONS[formation]) SUGGESTIONS[formation] = [];
           SUGGESTIONS[formation].push(suggestion);
         });
       }
 
-      // Afficher
       render();
       updateStats();
       chargerDate();
@@ -342,40 +329,26 @@
     }
   }
 
-  /* ============================================================
-     6) STATS GLOBALES
-     ============================================================ */
   function updateStats(){
     const nbFormations = DATA.rows.length;
     let nbReponses = 0;
-    let nbRefus = 0;
 
     DATA.rows.forEach(r => {
-      // On cherche une colonne "Réponses" ou "Refus" par son nom
       DATA.indicators.forEach((ind, i) => {
         const c = r.cells[i];
         if (/^Réponses?$/i.test(ind) && c.num != null) nbReponses += c.num;
-        if (/^Refus$/i.test(ind) && c.num != null) nbRefus += c.num;
       });
     });
 
     if (nbFormations > 0){
       document.getElementById('statFormations').textContent = nbFormations;
       document.getElementById('statReponses').textContent = nbReponses;
-      document.getElementById('statRefus').textContent = nbRefus;
-      if (nbReponses + nbRefus > 0){
-        const taux = (nbRefus / (nbReponses + nbRefus)) * 100;
-        document.getElementById('statTauxRefus').textContent = taux.toFixed(1) + ' %';
-      } else {
-        document.getElementById('statTauxRefus').textContent = '—';
-      }
+      document.getElementById('statRefus').textContent = '—';
+      document.getElementById('statTauxRefus').textContent = '—';
       document.getElementById('statsBar').style.display = 'grid';
     }
   }
 
-  /* ============================================================
-     7) TRI
-     ============================================================ */
   function getValue(row, key){
     if (key === 'name') return row.name.toLowerCase();
     const i = parseInt(key.replace('col',''), 10);
@@ -397,9 +370,6 @@
     });
   }
 
-  /* ============================================================
-     8) RENDU — TABLEAU (desktop)
-     ============================================================ */
   function renderTable(rows){
     const thead = '<thead><tr>' +
       '<th data-key="name" class="'+(sortKey==='name'?'sorted':'')+'">Formation' +
@@ -440,9 +410,6 @@
     });
   }
 
-  /* ============================================================
-     9) RENDU — CARTES (mobile)
-     ============================================================ */
   function renderCards(rows){
     document.getElementById('cards').innerHTML = rows.map(r => {
       const rowsHtml = DATA.indicators.map((label, i) => {
@@ -452,27 +419,16 @@
       }).join('');
 
       const sugs = SUGGESTIONS[r.name] || [];
-      let sugsBlock = '';
-      if (sugs.length){
-        sugsBlock = '<div class="suggestions-block">' +
-          '<div class="title">💬 Suggestions ('+sugs.length+')</div>' +
-          '<ul>' + sugs.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul>' +
-          '</div>';
-      } else {
-        sugsBlock = '<div class="suggestions-block">' +
-          '<div class="title">💬 Suggestions</div>' +
-          '<div class="none">Aucune remarque</div>' +
-          '</div>';
-      }
+      const sugsBlock = sugs.length
+        ? '<div class="sugg-block"><div class="title">💬 Suggestions ('+sugs.length+')</div>' +
+          '<ul>' + sugs.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul></div>'
+        : '<div class="sugg-block"><div class="title">💬 Suggestions</div>' +
+          '<div class="none">Aucune remarque</div></div>';
 
-      return '<div class="card"><h3>'+esc(r.name)+'</h3>' +
-             rowsHtml + sugsBlock + '</div>';
+      return '<div class="card"><h3>'+esc(r.name)+'</h3>' + rowsHtml + sugsBlock + '</div>';
     }).join('');
   }
 
-  /* ============================================================
-     10) RENDU GLOBAL
-     ============================================================ */
   function render(){
     if (!DATA.rows.length){
       document.getElementById('loading').style.display = 'none';
@@ -487,17 +443,8 @@
     document.getElementById('tableWrap').style.display = 'block';
     document.getElementById('cards').style.display = 'grid';
     document.getElementById('empty').style.display = 'none';
-
-    // Ajuster selon layout
-    const w = Math.min(window.innerWidth||9999, screen.width||9999);
-    if (w < 900){
-      document.getElementById('tableWrap').style.display = 'none';
-    }
   }
 
-  /* ============================================================
-     11) DATE
-     ============================================================ */
   async function chargerDate(){
     try {
       const r = await fetch(DATE_FILE + '?t=' + Date.now(), { cache: 'no-store' });
