@@ -176,8 +176,8 @@
   .ind-card.low .ind-value{color:var(--danger)}
 
   /* ============================================================
-     BLOC SUGGESTIONS & REMARQUES (parent)
-     Contient : bouton télécharger + Synthèse IA + liste brute
+     BLOC SUGGESTIONS & REMARQUES
+     Contient : bouton télécharger + Synthèse IA
      ============================================================ */
   .sugg-bloc{
     background:var(--card);border:1px solid var(--border);
@@ -221,18 +221,13 @@
   .btn-download:active{transform:translateY(0)}
   .btn-download svg{width:15px;height:15px;fill:currentColor;flex:0 0 auto}
 
-  /* Sous-section (Synthèse IA, Liste) */
+  /* Sous-section Synthèse IA */
   .sub-section{
-    margin-top:20px;
+    margin-top:0;
     padding:16px 18px;
-    background:var(--ecume);
-    border-radius:8px;
-    border-left:3px solid var(--azur);
-  }
-  .sub-section:first-of-type{margin-top:0}
-  .sub-section.synth{
     background: linear-gradient(135deg, #ffffff, var(--ecume));
-    border-left-color: var(--anis);
+    border-radius:8px;
+    border-left:3px solid var(--anis);
   }
   .sub-section .sub-title{
     margin:0 0 12px;
@@ -281,20 +276,6 @@
     text-align:center;padding:16px;
   }
 
-  /* Liste des suggestions brutes */
-  .sugg-bloc ul.raw-list{
-    margin:0;padding:0;list-style:none;
-  }
-  .sugg-bloc ul.raw-list li{
-    padding:10px 12px;
-    background:#fff;
-    border-radius:6px;
-    margin-bottom:8px;
-    color:#475467;font-size:14px;line-height:1.55;
-    border:1px solid var(--border);
-  }
-  .sugg-bloc ul.raw-list li:last-child{margin-bottom:0}
-
   .error-box{
     text-align:center;padding:40px 20px;
     background:var(--card);border:1px solid var(--border);
@@ -335,7 +316,6 @@
     .sugg-bloc .sugg-title{font-size:16px}
     .sub-section{padding:14px 14px}
     .synth-content{font-size:14px}
-    .sugg-bloc ul.raw-list li{font-size:13.5px;padding:10px 12px}
     .titre-bloc h1{font-size:20px}
     .taux-bloc .value{font-size:52px}
   }
@@ -364,7 +344,6 @@
     .sub-section{ background: #f5f5f5; padding: 10px 12px; }
     .synth-content strong, .synth-content h1,
     .synth-content h2, .synth-content h3{ color: #000; }
-    .sugg-bloc ul.raw-list li{ background: #f5f5f5; padding: 6px 10px; }
     .page > *{ page-break-inside: avoid }
     footer.foot{ margin-top: 16px; padding-top: 8px; border-top: 1px solid #ccc; font-size: 9pt; }
   }
@@ -483,22 +462,16 @@
     }
   }
 
-  /* Extrait la date (jour/mois/année) d'un horodatage
-     Entrée : "10/10/2026 14:32:15" ou "2026-10-10T14:32:15Z" ou autre
-     Sortie : "10/10/2026" ou "date inconnue" */
   function extraireDate(brut){
     if (!brut) return 'date inconnue';
     const s = String(brut).trim();
 
-    // Format JJ/MM/AAAA ou JJ-MM-AAAA
     let m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
     if (m) return m[1].padStart(2,'0') + '/' + m[2].padStart(2,'0') + '/' + m[3];
 
-    // Format ISO AAAA-MM-JJ
     m = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
     if (m) return m[3].padStart(2,'0') + '/' + m[2].padStart(2,'0') + '/' + m[1];
 
-    // Fallback : essayer Date
     try {
       const d = new Date(s);
       if (!isNaN(d)){
@@ -532,7 +505,6 @@
       const rowsR = parseCSV(await resRefus.text());
       const rowsSyn = parseCSV(await resSynth.text());
 
-      // Suggestions : structure CSV = Date | Formation | Suggestion
       rowsS.slice(1).forEach(r => {
         const dateBrute = (r[0] || '').trim();
         const f = (r[1] || '').trim();
@@ -545,7 +517,6 @@
         });
       });
 
-      // Synthèses IA
       rowsSyn.slice(1).forEach(r => {
         const f = (r[0] || '').trim();
         if (!f) return;
@@ -555,7 +526,6 @@
         };
       });
 
-      // Refus
       let refusInfo = { refus: null, taux: null };
       rowsR.slice(1).forEach(r => {
         if ((r[0] || '').trim() === formation){
@@ -566,7 +536,6 @@
         }
       });
 
-      // Trouver la formation dans les résultats
       const row = rowsF.slice(1).find(r => (r[0] || '').trim() === formation);
       if (!row){
         showError("Formation introuvable", "La formation « " + formation + " » n'existe pas dans les données.");
@@ -633,15 +602,31 @@
       '</div>';
     };
 
-    /* ---------- Bloc Suggestions & remarques (parent) ---------- */
+    /* ---------- Bloc Suggestions & remarques ---------- */
     let suggBlock = '';
 
-    if (r.suggestions.length){
-      // Synthèse IA (sous-section, si disponible)
+    if (r.suggestions.length || (r.synthese && r.synthese.texte)){
+      const nbRemarques = r.suggestions.length;
+
+      // En-tête : titre + bouton télécharger (le bouton n'apparaît que s'il y a des suggestions)
+      const headerBtn = nbRemarques
+        ? '<button class="btn-download" onclick="telechargerVerbatim()" type="button">' +
+            '<svg viewBox="0 0 24 24">' +
+              '<path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>' +
+            '</svg>' +
+            'Télécharger le verbatim des suggestions et remarques' +
+          '</button>'
+        : '';
+
+      const headerCount = nbRemarques
+        ? '<span class="count">' + nbRemarques + '</span>'
+        : '';
+
+      // Sous-section Synthèse IA
       let synthSub = '';
       if (r.synthese && r.synthese.texte){
         synthSub =
-          '<div class="sub-section synth">' +
+          '<div class="sub-section">' +
             '<h3 class="sub-title">🤖 Synthèse IA ' +
               '<span class="badge">' + r.synthese.nb + ' remarque' + (r.synthese.nb > 1 ? 's' : '') + '</span>' +
             '</h3>' +
@@ -649,38 +634,19 @@
           '</div>';
       } else {
         synthSub =
-          '<div class="sub-section synth">' +
+          '<div class="sub-section">' +
             '<h3 class="sub-title">🤖 Synthèse IA</h3>' +
             '<div class="synth-none">Aucune synthèse générée pour cette formation.</div>' +
           '</div>';
       }
 
-      // Liste brute des suggestions
-      const rawSub =
-        '<div class="sub-section">' +
-          '<h3 class="sub-title">📝 Toutes les remarques ' +
-            '<span class="badge">' + r.suggestions.length + '</span>' +
-          '</h3>' +
-          '<ul class="raw-list">' +
-            r.suggestions.map(s => '<li>'+esc(s.texte)+'</li>').join('') +
-          '</ul>' +
-        '</div>';
-
       suggBlock =
         '<div class="sugg-bloc">' +
           '<div class="sugg-header">' +
-            '<h2 class="sugg-title">💬 Suggestions & remarques ' +
-              '<span class="count">' + r.suggestions.length + '</span>' +
-            '</h2>' +
-            '<button class="btn-download" onclick="telechargerVerbatim()" type="button">' +
-              '<svg viewBox="0 0 24 24">' +
-                '<path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>' +
-              '</svg>' +
-              'Télécharger le verbatim des suggestions et remarques' +
-            '</button>' +
+            '<h2 class="sugg-title">💬 Suggestions & remarques ' + headerCount + '</h2>' +
+            headerBtn +
           '</div>' +
           synthSub +
-          rawSub +
         '</div>';
     } else {
       suggBlock =
@@ -688,7 +654,7 @@
           '<div class="sugg-header">' +
             '<h2 class="sugg-title">💬 Suggestions & remarques</h2>' +
           '</div>' +
-          '<div class="synth-none">Aucune remarque pour cette formation.</div>' +
+          '<div class="synth-none">Aucune remarque ni synthèse pour cette formation.</div>' +
         '</div>';
     }
 
@@ -760,7 +726,6 @@
       return b.localeCompare(a);     // fallback alphabétique
     });
 
-    // Construction du contenu
     let contenu = '';
     contenu += '================================================================\n';
     contenu += 'VERBATIM DES SUGGESTIONS ET REMARQUES\n';
@@ -804,7 +769,6 @@
     console.log("Verbatim téléchargé : " + nomFichier);
   }
 
-  /* Convertit "JJ/MM/AAAA" en objet Date (ou null) */
   function parseDateFr(str){
     const m = String(str).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
     if (!m) return null;
