@@ -41,7 +41,6 @@
   .header h1{margin:0;font-size:15px;font-weight:700;line-height:1.3;color:#fff}
   .header .subtitle{margin:4px 0 0;font-size:12.5px;color:#b8d2e8;font-weight:500}
 
-  /* Barre d'actions */
   .top-bar{
     display:flex;justify-content:space-between;align-items:center;
     gap:10px;margin-bottom:14px;flex-wrap:wrap;
@@ -90,7 +89,6 @@
   }
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* Blocs génériques */
   .page{display:flex;flex-direction:column;gap:16px}
 
   .titre-bloc{
@@ -266,7 +264,7 @@
     transform:translateY(-2px);
   }
   .btn-download:active{transform:translateY(0)}
-  .btn-download svg{width:15px;height:15px;fill:currentColor}
+  .btn-download svg{width:15px;height:15px;fill:currentColor;flex:0 0 auto}
 
   .sugg-bloc ul{
     margin:0;padding:0;list-style:none;
@@ -318,6 +316,8 @@
   @media (max-width:600px){
     .top-bar{flex-direction:column;align-items:stretch}
     .back-link, .btn-print{width:100%;justify-content:center}
+    .sugg-bloc .sugg-header{flex-direction:column;align-items:stretch}
+    .btn-download{width:100%;justify-content:center}
   }
 
   @media print {
@@ -487,7 +487,6 @@
       const rowsR = parseCSV(await resRefus.text());
       const rowsSyn = parseCSV(await resSynth.text());
 
-      // Suggestions
       rowsS.slice(1).forEach(r => {
         const f = (r[1] || '').trim();
         const s = (r[2] || '').trim();
@@ -496,7 +495,6 @@
         SUGGESTIONS[f].push(s);
       });
 
-      // Synthèses IA
       rowsSyn.slice(1).forEach(r => {
         const f = (r[0] || '').trim();
         if (!f) return;
@@ -506,7 +504,6 @@
         };
       });
 
-      // Refus
       let refusInfo = { refus: null, taux: null };
       rowsR.slice(1).forEach(r => {
         if ((r[0] || '').trim() === formation){
@@ -517,7 +514,6 @@
         }
       });
 
-      // Trouver la formation
       const row = rowsF.slice(1).find(r => (r[0] || '').trim() === formation);
       if (!row){
         showError("Formation introuvable", "La formation « " + formation + " » n'existe pas dans les données.");
@@ -584,7 +580,6 @@
       '</div>';
     };
 
-    // Synthèse IA
     let synthBlock = '';
     if (r.synthese && r.synthese.texte){
       synthBlock =
@@ -602,7 +597,6 @@
         '</div>';
     }
 
-    // Suggestions
     let suggBlock = '';
     if (r.suggestions.length){
       suggBlock =
@@ -615,7 +609,7 @@
               '<svg viewBox="0 0 24 24">' +
                 '<path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>' +
               '</svg>' +
-              'Télécharger le verbatim (.txt)' +
+              'Télécharger le verbatim des suggestions et remarques' +
             '</button>' +
           '</div>' +
           '<ul>' + r.suggestions.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul>' +
@@ -630,7 +624,6 @@
         '</div>';
     }
 
-    // Meta
     const metaParts = [];
     if (r.reponses != null) metaParts.push('<strong>'+r.reponses+'</strong> réponse'+(r.reponses > 1 ? 's' : ''));
     if (r.refus != null && r.refus > 0) metaParts.push('<strong>'+r.refus+'</strong> refus');
@@ -709,7 +702,6 @@
     const blob = new Blob([contenu], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    // Nom du fichier : on remplace les caractères problématiques
     const nomFichier = 'Verbatim_' +
       r.name.replace(/[^a-zA-Z0-9]/g, '_') + '_' +
       maintenant.toISOString().slice(0, 10) + '.txt';
