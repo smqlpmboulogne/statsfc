@@ -75,7 +75,6 @@
     transform:translateY(-2px);
     box-shadow:0 6px 14px rgba(30,58,95,.25);
   }
-  .btn-print:active{transform:translateY(0)}
   .btn-print svg{width:16px;height:16px;fill:currentColor}
 
   .loading{
@@ -91,6 +90,7 @@
 
   .page{display:flex;flex-direction:column;gap:16px}
 
+  /* Bloc titre */
   .titre-bloc{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
@@ -109,6 +109,7 @@
     line-height:1.25;word-break:break-word;
   }
 
+  /* Bloc taux */
   .taux-bloc{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
@@ -144,16 +145,16 @@
   }
   .taux-bloc .meta strong{color:var(--marine)}
 
+  /* Indicateurs */
   .indicators-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
     gap:12px;
   }
   .ind-card{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
-    padding:16px 14px;
-    text-align:center;
+    padding:16px 14px;text-align:center;
     transition:transform .2s ease, box-shadow .2s ease;
   }
   .ind-card:hover{
@@ -174,73 +175,26 @@
   .ind-card.mid .ind-value{color:var(--warning)}
   .ind-card.low .ind-value{color:var(--danger)}
 
-  /* Bloc synthèse IA */
-  .synth-bloc{
-    background: linear-gradient(135deg, #ffffff, var(--ecume));
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    padding:22px 24px;
-    border-left:5px solid var(--anis);
-  }
-  .synth-bloc .synth-title{
-    font-size:16px;font-weight:700;color:var(--marine);
-    margin:0 0 16px;
-    display:flex;align-items:center;gap:10px;
-    padding-bottom:12px;border-bottom:1px solid var(--border);
-  }
-  .synth-bloc .synth-title .badge{
-    background:var(--ecume-2);color:var(--muted);
-    font-size:11.5px;font-weight:600;
-    padding:3px 10px;border-radius:12px;
-  }
-  .synth-bloc .synth-content{
-    font-size:14.5px;color:#475467;line-height:1.65;
-  }
-  .synth-bloc .synth-content h1,
-  .synth-bloc .synth-content h2,
-  .synth-bloc .synth-content h3{
-    color:var(--marine);font-weight:700;
-    margin:14px 0 8px 0;padding-bottom:4px;
-    border-bottom:1px dashed var(--border);
-  }
-  .synth-bloc .synth-content h1{font-size:17px}
-  .synth-bloc .synth-content h2{font-size:15px}
-  .synth-bloc .synth-content h3{font-size:14px}
-  .synth-bloc .synth-content h1:first-child,
-  .synth-bloc .synth-content h2:first-child,
-  .synth-bloc .synth-content h3:first-child{margin-top:0}
-  .synth-bloc .synth-content p{margin:0 0 12px 0}
-  .synth-bloc .synth-content p:last-child{margin-bottom:0}
-  .synth-bloc .synth-content strong{color:var(--marine);font-weight:700}
-  .synth-bloc .synth-content em{font-style:italic}
-  .synth-bloc .synth-content ul,
-  .synth-bloc .synth-content ol{margin:0 0 12px 20px;padding:0}
-  .synth-bloc .synth-content li{margin-bottom:6px}
-  .synth-bloc .synth-content hr{
-    border:none;border-top:1px dashed var(--border);margin:14px 0;
-  }
-  .synth-bloc .synth-none{
-    color:var(--muted);font-style:italic;font-size:14px;
-    text-align:center;padding:20px;
-  }
-
-  /* Bloc suggestions */
+  /* ============================================================
+     BLOC SUGGESTIONS & REMARQUES (parent)
+     Contient : bouton télécharger + Synthèse IA + liste brute
+     ============================================================ */
   .sugg-bloc{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
-    padding:22px 24px;
+    padding:20px 22px;
+    border-left:5px solid var(--azur);
   }
   .sugg-bloc .sugg-header{
     display:flex;justify-content:space-between;align-items:center;
     gap:12px;flex-wrap:wrap;
     margin-bottom:16px;
-    padding-bottom:12px;border-bottom:1px solid var(--border);
+    padding-bottom:14px;border-bottom:1px solid var(--border);
   }
   .sugg-bloc .sugg-title{
-    font-size:16px;font-weight:700;color:var(--marine);
+    font-size:17px;font-weight:700;color:var(--marine);
     margin:0;
-    display:flex;align-items:center;gap:10px;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
   }
   .sugg-bloc .sugg-title .count{
     background:var(--ecume);color:var(--muted);
@@ -249,7 +203,7 @@
   }
   .btn-download{
     display:inline-flex;align-items:center;gap:8px;
-    padding:9px 16px;
+    padding:10px 16px;
     background:#fff;color:var(--marine);
     border:1px solid var(--azur-clair);
     border-radius:var(--radius);
@@ -257,6 +211,7 @@
     cursor:pointer;
     transition:background .15s ease, transform .15s ease, border-color .15s ease;
     text-decoration:none;
+    line-height:1.3;
   }
   .btn-download:hover{
     background:var(--ecume);
@@ -266,22 +221,79 @@
   .btn-download:active{transform:translateY(0)}
   .btn-download svg{width:15px;height:15px;fill:currentColor;flex:0 0 auto}
 
-  .sugg-bloc ul{
+  /* Sous-section (Synthèse IA, Liste) */
+  .sub-section{
+    margin-top:20px;
+    padding:16px 18px;
+    background:var(--ecume);
+    border-radius:8px;
+    border-left:3px solid var(--azur);
+  }
+  .sub-section:first-of-type{margin-top:0}
+  .sub-section.synth{
+    background: linear-gradient(135deg, #ffffff, var(--ecume));
+    border-left-color: var(--anis);
+  }
+  .sub-section .sub-title{
+    margin:0 0 12px;
+    font-size:15px;font-weight:700;color:var(--marine);
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  }
+  .sub-section .sub-title .badge{
+    background:var(--ecume-2);color:var(--muted);
+    font-size:11.5px;font-weight:600;
+    padding:3px 10px;border-radius:12px;
+  }
+  .sub-section .sub-hint{
+    font-size:12.5px;color:var(--muted);
+    margin:0 0 10px;font-style:italic;
+  }
+
+  /* Contenu synthèse (Markdown) */
+  .synth-content{
+    font-size:14.5px;color:#475467;line-height:1.65;
+  }
+  .synth-content h1,
+  .synth-content h2,
+  .synth-content h3{
+    color:var(--marine);font-weight:700;
+    margin:14px 0 8px 0;padding-bottom:4px;
+    border-bottom:1px dashed var(--border);
+  }
+  .synth-content h1{font-size:17px}
+  .synth-content h2{font-size:15px}
+  .synth-content h3{font-size:14px}
+  .synth-content h1:first-child,
+  .synth-content h2:first-child,
+  .synth-content h3:first-child{margin-top:0}
+  .synth-content p{margin:0 0 12px 0}
+  .synth-content p:last-child{margin-bottom:0}
+  .synth-content strong{color:var(--marine);font-weight:700}
+  .synth-content em{font-style:italic}
+  .synth-content ul,
+  .synth-content ol{margin:0 0 12px 20px;padding:0}
+  .synth-content li{margin-bottom:6px}
+  .synth-content hr{
+    border:none;border-top:1px dashed var(--border);margin:14px 0;
+  }
+  .synth-none{
+    color:var(--muted);font-style:italic;font-size:14px;
+    text-align:center;padding:16px;
+  }
+
+  /* Liste des suggestions brutes */
+  .sugg-bloc ul.raw-list{
     margin:0;padding:0;list-style:none;
   }
-  .sugg-bloc li{
-    padding:12px 14px;
-    background:var(--ecume);
-    border-left:3px solid var(--azur);
+  .sugg-bloc ul.raw-list li{
+    padding:10px 12px;
+    background:#fff;
     border-radius:6px;
-    margin-bottom:10px;
-    color:#475467;font-size:14.5px;line-height:1.5;
+    margin-bottom:8px;
+    color:#475467;font-size:14px;line-height:1.55;
+    border:1px solid var(--border);
   }
-  .sugg-bloc li:last-child{margin-bottom:0}
-  .sugg-bloc .none{
-    color:var(--muted);font-style:italic;font-size:14px;
-    text-align:center;padding:20px;
-  }
+  .sugg-bloc ul.raw-list li:last-child{margin-bottom:0}
 
   .error-box{
     text-align:center;padding:40px 20px;
@@ -302,6 +314,7 @@
   footer.foot .sep{display:inline-block;margin:0 5px;color:var(--azur-clair)}
   footer.foot .mention{font-style:italic;font-size:11px;color:var(--muted);opacity:.85}
 
+  /* Tablette / Desktop */
   @media (min-width:600px){
     .wrap{padding:20px}
     .header{padding:18px 24px}
@@ -309,17 +322,25 @@
     .header h1{font-size:17px}
     .titre-bloc h1{font-size:28px}
     .taux-bloc .value{font-size:72px}
-    .synth-bloc{padding:26px 30px}
     .sugg-bloc{padding:26px 30px}
+    .sub-section{padding:18px 22px}
   }
 
+  /* Mobile */
   @media (max-width:600px){
     .top-bar{flex-direction:column;align-items:stretch}
     .back-link, .btn-print{width:100%;justify-content:center}
     .sugg-bloc .sugg-header{flex-direction:column;align-items:stretch}
-    .btn-download{width:100%;justify-content:center}
+    .btn-download{width:100%;justify-content:center;text-align:center}
+    .sugg-bloc .sugg-title{font-size:16px}
+    .sub-section{padding:14px 14px}
+    .synth-content{font-size:14px}
+    .sugg-bloc ul.raw-list li{font-size:13.5px;padding:10px 12px}
+    .titre-bloc h1{font-size:20px}
+    .taux-bloc .value{font-size:52px}
   }
 
+  /* Impression */
   @media print {
     @page { size: A4; margin: 15mm 12mm; }
     html, body { background: #fff !important; color: #000; font-size: 11pt; }
@@ -333,20 +354,17 @@
     .header .banner{ max-width: 180px; margin: 0 0 6px 0; }
     .header h1{color: var(--marine); font-size: 14pt}
     .header .subtitle{color: var(--marine); font-size: 10pt}
-    .titre-bloc{ border: 1px solid #ccc; box-shadow: none; padding: 12px 14px; page-break-inside: avoid; }
+    .titre-bloc, .taux-bloc, .ind-card, .sugg-bloc, .sub-section{
+      border: 1px solid #ccc; box-shadow: none; page-break-inside: avoid;
+    }
     .titre-bloc h1{font-size: 18pt}
-    .taux-bloc{ border: 1px solid #ccc; box-shadow: none; padding: 16px; page-break-inside: avoid; }
     .taux-bloc .value{font-size: 40pt}
     .indicators-grid{ grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .ind-card{ border: 1px solid #ccc; box-shadow: none; padding: 10px 8px; page-break-inside: avoid; }
     .ind-card .ind-value{font-size: 18pt}
-    .synth-bloc{ border: 1px solid #ccc; box-shadow: none; padding: 14px 16px; page-break-inside: avoid; }
-    .sugg-bloc{ border: 1px solid #ccc; box-shadow: none; padding: 14px 16px; page-break-inside: avoid; }
-    .sugg-bloc li{ background: #f5f5f5; border-left-color: #999; padding: 8px 10px; }
-    .synth-bloc .synth-content strong,
-    .synth-bloc .synth-content h1,
-    .synth-bloc .synth-content h2,
-    .synth-bloc .synth-content h3{ color: #000; }
+    .sub-section{ background: #f5f5f5; padding: 10px 12px; }
+    .synth-content strong, .synth-content h1,
+    .synth-content h2, .synth-content h3{ color: #000; }
+    .sugg-bloc ul.raw-list li{ background: #f5f5f5; padding: 6px 10px; }
     .page > *{ page-break-inside: avoid }
     footer.foot{ margin-top: 16px; padding-top: 8px; border-top: 1px solid #ccc; font-size: 9pt; }
   }
@@ -402,7 +420,7 @@
   const CSV_REFUS = BASE + "refus.csv";
   const CSV_SYNTHESE = BASE + "synthese.csv";
 
-  let SUGGESTIONS = {};
+  let SUGGESTIONS = {};   // { "Nom formation": [{ date, texte }, ...] }
   let SYNTHESES = {};
   let DONNEES_FORMATION = null;
 
@@ -465,6 +483,33 @@
     }
   }
 
+  /* Extrait la date (jour/mois/année) d'un horodatage
+     Entrée : "10/10/2026 14:32:15" ou "2026-10-10T14:32:15Z" ou autre
+     Sortie : "10/10/2026" ou "date inconnue" */
+  function extraireDate(brut){
+    if (!brut) return 'date inconnue';
+    const s = String(brut).trim();
+
+    // Format JJ/MM/AAAA ou JJ-MM-AAAA
+    let m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+    if (m) return m[1].padStart(2,'0') + '/' + m[2].padStart(2,'0') + '/' + m[3];
+
+    // Format ISO AAAA-MM-JJ
+    m = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+    if (m) return m[3].padStart(2,'0') + '/' + m[2].padStart(2,'0') + '/' + m[1];
+
+    // Fallback : essayer Date
+    try {
+      const d = new Date(s);
+      if (!isNaN(d)){
+        return String(d.getDate()).padStart(2,'0') + '/' +
+               String(d.getMonth()+1).padStart(2,'0') + '/' +
+               d.getFullYear();
+      }
+    } catch(e){}
+    return s;
+  }
+
   async function chargerTout(){
     const params = new URLSearchParams(location.search);
     const formation = params.get('formation');
@@ -487,14 +532,20 @@
       const rowsR = parseCSV(await resRefus.text());
       const rowsSyn = parseCSV(await resSynth.text());
 
+      // Suggestions : structure CSV = Date | Formation | Suggestion
       rowsS.slice(1).forEach(r => {
+        const dateBrute = (r[0] || '').trim();
         const f = (r[1] || '').trim();
         const s = (r[2] || '').trim();
         if (!f || !s) return;
         if (!SUGGESTIONS[f]) SUGGESTIONS[f] = [];
-        SUGGESTIONS[f].push(s);
+        SUGGESTIONS[f].push({
+          date: extraireDate(dateBrute),
+          texte: s
+        });
       });
 
+      // Synthèses IA
       rowsSyn.slice(1).forEach(r => {
         const f = (r[0] || '').trim();
         if (!f) return;
@@ -504,6 +555,7 @@
         };
       });
 
+      // Refus
       let refusInfo = { refus: null, taux: null };
       rowsR.slice(1).forEach(r => {
         if ((r[0] || '').trim() === formation){
@@ -514,6 +566,7 @@
         }
       });
 
+      // Trouver la formation dans les résultats
       const row = rowsF.slice(1).find(r => (r[0] || '').trim() === formation);
       if (!row){
         showError("Formation introuvable", "La formation « " + formation + " » n'existe pas dans les données.");
@@ -580,25 +633,39 @@
       '</div>';
     };
 
-    let synthBlock = '';
-    if (r.synthese && r.synthese.texte){
-      synthBlock =
-        '<div class="synth-bloc">' +
-          '<h2 class="synth-title">🤖 Synthèse IA ' +
-            '<span class="badge">' + r.synthese.nb + ' remarque' + (r.synthese.nb > 1 ? 's' : '') + '</span>' +
-          '</h2>' +
-          '<div class="synth-content">' + formaterSynthese(r.synthese.texte) + '</div>' +
-        '</div>';
-    } else {
-      synthBlock =
-        '<div class="synth-bloc">' +
-          '<h2 class="synth-title">🤖 Synthèse IA</h2>' +
-          '<div class="synth-none">Aucune synthèse générée pour cette formation.</div>' +
-        '</div>';
-    }
-
+    /* ---------- Bloc Suggestions & remarques (parent) ---------- */
     let suggBlock = '';
+
     if (r.suggestions.length){
+      // Synthèse IA (sous-section, si disponible)
+      let synthSub = '';
+      if (r.synthese && r.synthese.texte){
+        synthSub =
+          '<div class="sub-section synth">' +
+            '<h3 class="sub-title">🤖 Synthèse IA ' +
+              '<span class="badge">' + r.synthese.nb + ' remarque' + (r.synthese.nb > 1 ? 's' : '') + '</span>' +
+            '</h3>' +
+            '<div class="synth-content">' + formaterSynthese(r.synthese.texte) + '</div>' +
+          '</div>';
+      } else {
+        synthSub =
+          '<div class="sub-section synth">' +
+            '<h3 class="sub-title">🤖 Synthèse IA</h3>' +
+            '<div class="synth-none">Aucune synthèse générée pour cette formation.</div>' +
+          '</div>';
+      }
+
+      // Liste brute des suggestions
+      const rawSub =
+        '<div class="sub-section">' +
+          '<h3 class="sub-title">📝 Toutes les remarques ' +
+            '<span class="badge">' + r.suggestions.length + '</span>' +
+          '</h3>' +
+          '<ul class="raw-list">' +
+            r.suggestions.map(s => '<li>'+esc(s.texte)+'</li>').join('') +
+          '</ul>' +
+        '</div>';
+
       suggBlock =
         '<div class="sugg-bloc">' +
           '<div class="sugg-header">' +
@@ -612,7 +679,8 @@
               'Télécharger le verbatim des suggestions et remarques' +
             '</button>' +
           '</div>' +
-          '<ul>' + r.suggestions.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul>' +
+          synthSub +
+          rawSub +
         '</div>';
     } else {
       suggBlock =
@@ -620,7 +688,7 @@
           '<div class="sugg-header">' +
             '<h2 class="sugg-title">💬 Suggestions & remarques</h2>' +
           '</div>' +
-          '<div class="none">Aucune remarque pour cette formation.</div>' +
+          '<div class="synth-none">Aucune remarque pour cette formation.</div>' +
         '</div>';
     }
 
@@ -652,7 +720,6 @@
           indCard('Qualité animation', r.pQua) +
         '</div>' +
 
-        synthBlock +
         suggBlock +
 
       '</div>';
@@ -663,7 +730,7 @@
   }
 
   /* ============================================================
-     TÉLÉCHARGEMENT DU VERBATIM (.txt)
+     TÉLÉCHARGEMENT DU VERBATIM (.txt) GROUPÉ PAR DATE
      ============================================================ */
   function telechargerVerbatim(){
     if (!DONNEES_FORMATION){
@@ -677,21 +744,43 @@
       hour:'2-digit', minute:'2-digit'
     });
 
+    // Regrouper les suggestions par date
+    const parDate = {};
+    r.suggestions.forEach(s => {
+      const d = s.date || 'date inconnue';
+      if (!parDate[d]) parDate[d] = [];
+      parDate[d].push(s.texte);
+    });
+
+    // Trier les dates : les plus récentes d'abord
+    const datesTriees = Object.keys(parDate).sort((a, b) => {
+      const da = parseDateFr(a);
+      const db = parseDateFr(b);
+      if (da && db) return db - da;  // décroissant
+      return b.localeCompare(a);     // fallback alphabétique
+    });
+
+    // Construction du contenu
     let contenu = '';
     contenu += '================================================================\n';
     contenu += 'VERBATIM DES SUGGESTIONS ET REMARQUES\n';
     contenu += '================================================================\n\n';
-    contenu += 'Formation : ' + r.name + '\n';
-    contenu += 'Nombre de remarques : ' + r.suggestions.length + '\n';
-    if (r.reponses != null) contenu += 'Nombre de réponses : ' + r.reponses + '\n';
-    if (r.satisfaction != null) contenu += 'Taux de satisfaction : ' + fmtPct(r.satisfaction) + '\n';
-    contenu += 'Exporté le : ' + dateStr + '\n';
-    contenu += '\n================================================================\n';
-    contenu += 'SUGGESTIONS ET REMARQUES BRUTES\n';
-    contenu += '================================================================\n\n';
+    contenu += 'Formation    : ' + r.name + '\n';
+    contenu += 'Remarques    : ' + r.suggestions.length + '\n';
+    if (r.reponses != null) contenu += 'Réponses     : ' + r.reponses + '\n';
+    if (r.satisfaction != null) contenu += 'Satisfaction : ' + fmtPct(r.satisfaction) + '\n';
+    contenu += 'Sessions     : ' + datesTriees.length + '\n';
+    contenu += 'Exporté le   : ' + dateStr + '\n';
+    contenu += '\n';
 
-    r.suggestions.forEach((s, i) => {
-      contenu += (i + 1) + '. ' + s + '\n\n';
+    datesTriees.forEach(date => {
+      const items = parDate[date];
+      contenu += '================================================================\n';
+      contenu += 'SESSION DU ' + date + '  (' + items.length + ' remarque' + (items.length > 1 ? 's' : '') + ')\n';
+      contenu += '================================================================\n\n';
+      items.forEach((txt, i) => {
+        contenu += '  ' + (i + 1) + '. ' + txt + '\n\n';
+      });
     });
 
     contenu += '================================================================\n';
@@ -713,6 +802,13 @@
     URL.revokeObjectURL(url);
 
     console.log("Verbatim téléchargé : " + nomFichier);
+  }
+
+  /* Convertit "JJ/MM/AAAA" en objet Date (ou null) */
+  function parseDateFr(str){
+    const m = String(str).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (!m) return null;
+    return new Date(parseInt(m[3]), parseInt(m[2])-1, parseInt(m[1]));
   }
 
   function showError(title, msg){
