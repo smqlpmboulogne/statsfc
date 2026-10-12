@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Détail de la formation — Lycée Maritime Boulogne</title>
 <link rel="icon" href="data:,">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
   :root{
     --marine:#1e3a5f;--marine-fonce:#152a45;--ocean:#2c5a8c;
@@ -40,6 +41,7 @@
   .header h1{margin:0;font-size:15px;font-weight:700;line-height:1.3;color:#fff}
   .header .subtitle{margin:4px 0 0;font-size:12.5px;color:#b8d2e8;font-weight:500}
 
+  /* Barre d'actions */
   .top-bar{
     display:flex;justify-content:space-between;align-items:center;
     gap:10px;margin-bottom:14px;flex-wrap:wrap;
@@ -59,7 +61,7 @@
   }
   .back-link .arrow{color:var(--azur);font-weight:700}
 
-  .print-btn{
+  .btn-print{
     display:inline-flex;align-items:center;gap:8px;
     padding:9px 16px;
     background:var(--marine);color:#fff;
@@ -69,12 +71,13 @@
     cursor:pointer;
     transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
   }
-  .print-btn:hover{
+  .btn-print:hover{
     background:var(--ocean);
     transform:translateY(-2px);
     box-shadow:0 6px 14px rgba(30,58,95,.25);
   }
-  .print-btn svg{width:16px;height:16px;fill:currentColor}
+  .btn-print:active{transform:translateY(0)}
+  .btn-print svg{width:16px;height:16px;fill:currentColor}
 
   .loading{
     text-align:center;padding:50px 16px;color:var(--muted);font-size:15px;
@@ -87,6 +90,7 @@
   }
   @keyframes spin{to{transform:rotate(360deg)}}
 
+  /* Blocs génériques */
   .page{display:flex;flex-direction:column;gap:16px}
 
   .titre-bloc{
@@ -172,23 +176,101 @@
   .ind-card.mid .ind-value{color:var(--warning)}
   .ind-card.low .ind-value{color:var(--danger)}
 
+  /* Bloc synthèse IA */
+  .synth-bloc{
+    background: linear-gradient(135deg, #ffffff, var(--ecume));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:22px 24px;
+    border-left:5px solid var(--anis);
+  }
+  .synth-bloc .synth-title{
+    font-size:16px;font-weight:700;color:var(--marine);
+    margin:0 0 16px;
+    display:flex;align-items:center;gap:10px;
+    padding-bottom:12px;border-bottom:1px solid var(--border);
+  }
+  .synth-bloc .synth-title .badge{
+    background:var(--ecume-2);color:var(--muted);
+    font-size:11.5px;font-weight:600;
+    padding:3px 10px;border-radius:12px;
+  }
+  .synth-bloc .synth-content{
+    font-size:14.5px;color:#475467;line-height:1.65;
+  }
+  .synth-bloc .synth-content h1,
+  .synth-bloc .synth-content h2,
+  .synth-bloc .synth-content h3{
+    color:var(--marine);font-weight:700;
+    margin:14px 0 8px 0;padding-bottom:4px;
+    border-bottom:1px dashed var(--border);
+  }
+  .synth-bloc .synth-content h1{font-size:17px}
+  .synth-bloc .synth-content h2{font-size:15px}
+  .synth-bloc .synth-content h3{font-size:14px}
+  .synth-bloc .synth-content h1:first-child,
+  .synth-bloc .synth-content h2:first-child,
+  .synth-bloc .synth-content h3:first-child{margin-top:0}
+  .synth-bloc .synth-content p{margin:0 0 12px 0}
+  .synth-bloc .synth-content p:last-child{margin-bottom:0}
+  .synth-bloc .synth-content strong{color:var(--marine);font-weight:700}
+  .synth-bloc .synth-content em{font-style:italic}
+  .synth-bloc .synth-content ul,
+  .synth-bloc .synth-content ol{margin:0 0 12px 20px;padding:0}
+  .synth-bloc .synth-content li{margin-bottom:6px}
+  .synth-bloc .synth-content hr{
+    border:none;border-top:1px dashed var(--border);margin:14px 0;
+  }
+  .synth-bloc .synth-none{
+    color:var(--muted);font-style:italic;font-size:14px;
+    text-align:center;padding:20px;
+  }
+
+  /* Bloc suggestions */
   .sugg-bloc{
     background:var(--card);border:1px solid var(--border);
     border-radius:var(--radius);box-shadow:var(--shadow);
     padding:22px 24px;
   }
+  .sugg-bloc .sugg-header{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:12px;flex-wrap:wrap;
+    margin-bottom:16px;
+    padding-bottom:12px;border-bottom:1px solid var(--border);
+  }
   .sugg-bloc .sugg-title{
     font-size:16px;font-weight:700;color:var(--marine);
-    margin:0 0 16px;
+    margin:0;
     display:flex;align-items:center;gap:10px;
-    padding-bottom:12px;border-bottom:1px solid var(--border);
   }
   .sugg-bloc .sugg-title .count{
     background:var(--ecume);color:var(--muted);
     font-size:12px;font-weight:600;
     padding:3px 10px;border-radius:12px;
   }
-  .sugg-bloc ul{margin:0;padding:0;list-style:none}
+  .btn-download{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 16px;
+    background:#fff;color:var(--marine);
+    border:1px solid var(--azur-clair);
+    border-radius:var(--radius);
+    font-size:13px;font-weight:600;font-family:inherit;
+    cursor:pointer;
+    transition:background .15s ease, transform .15s ease, border-color .15s ease;
+    text-decoration:none;
+  }
+  .btn-download:hover{
+    background:var(--ecume);
+    border-color:var(--azur);
+    transform:translateY(-2px);
+  }
+  .btn-download:active{transform:translateY(0)}
+  .btn-download svg{width:15px;height:15px;fill:currentColor}
+
+  .sugg-bloc ul{
+    margin:0;padding:0;list-style:none;
+  }
   .sugg-bloc li{
     padding:12px 14px;
     background:var(--ecume);
@@ -229,13 +311,20 @@
     .header h1{font-size:17px}
     .titre-bloc h1{font-size:28px}
     .taux-bloc .value{font-size:72px}
+    .synth-bloc{padding:26px 30px}
+    .sugg-bloc{padding:26px 30px}
+  }
+
+  @media (max-width:600px){
+    .top-bar{flex-direction:column;align-items:stretch}
+    .back-link, .btn-print{width:100%;justify-content:center}
   }
 
   @media print {
     @page { size: A4; margin: 15mm 12mm; }
     html, body { background: #fff !important; color: #000; font-size: 11pt; }
     .wrap{ max-width: 100%; padding: 0; margin: 0; }
-    .back-link, .print-btn, footer.foot .mention{ display: none !important; }
+    .back-link, .btn-print, .btn-download, footer.foot .mention{ display: none !important; }
     .header{
       background: none !important; border: none; box-shadow: none;
       padding: 0 0 10px 0; margin-bottom: 12px;
@@ -251,8 +340,13 @@
     .indicators-grid{ grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .ind-card{ border: 1px solid #ccc; box-shadow: none; padding: 10px 8px; page-break-inside: avoid; }
     .ind-card .ind-value{font-size: 18pt}
+    .synth-bloc{ border: 1px solid #ccc; box-shadow: none; padding: 14px 16px; page-break-inside: avoid; }
     .sugg-bloc{ border: 1px solid #ccc; box-shadow: none; padding: 14px 16px; page-break-inside: avoid; }
     .sugg-bloc li{ background: #f5f5f5; border-left-color: #999; padding: 8px 10px; }
+    .synth-bloc .synth-content strong,
+    .synth-bloc .synth-content h1,
+    .synth-bloc .synth-content h2,
+    .synth-bloc .synth-content h3{ color: #000; }
     .page > *{ page-break-inside: avoid }
     footer.foot{ margin-top: 16px; padding-top: 8px; border-top: 1px solid #ccc; font-size: 9pt; }
   }
@@ -274,7 +368,7 @@
       <span class="arrow">←</span>
       Retour au tableau de bord
     </a>
-    <button class="print-btn" onclick="window.print()" type="button">
+    <button class="btn-print" onclick="window.print()" type="button">
       <svg viewBox="0 0 24 24">
         <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>
       </svg>
@@ -306,8 +400,11 @@
   const CSV_RESULTATS = BASE + "formations.csv";
   const CSV_SUGGESTIONS = BASE + "suggestions.csv";
   const CSV_REFUS = BASE + "refus.csv";
+  const CSV_SYNTHESE = BASE + "synthese.csv";
 
   let SUGGESTIONS = {};
+  let SYNTHESES = {};
+  let DONNEES_FORMATION = null;
 
   function esc(s){
     return String(s).replace(/[&<>"']/g, c => ({
@@ -357,6 +454,17 @@
     return v.toFixed(1).replace('.',',') + ' %';
   }
 
+  function formaterSynthese(texteMarkdown){
+    if (!texteMarkdown) return '';
+    if (typeof marked === 'undefined') return esc(texteMarkdown);
+    try {
+      return marked.parse(texteMarkdown, { breaks: false, gfm: true });
+    } catch (e) {
+      console.error("Erreur rendu markdown:", e);
+      return esc(texteMarkdown);
+    }
+  }
+
   async function chargerTout(){
     const params = new URLSearchParams(location.search);
     const formation = params.get('formation');
@@ -367,15 +475,17 @@
     }
 
     try {
-      const [resFormations, resSuggestions, resRefus] = await Promise.all([
+      const [resFormations, resSuggestions, resRefus, resSynth] = await Promise.all([
         fetch(CSV_RESULTATS + '?t=' + Date.now(), { cache: 'no-store' }),
         fetch(CSV_SUGGESTIONS + '?t=' + Date.now(), { cache: 'no-store' }),
-        fetch(CSV_REFUS + '?t=' + Date.now(), { cache: 'no-store' })
+        fetch(CSV_REFUS + '?t=' + Date.now(), { cache: 'no-store' }),
+        fetch(CSV_SYNTHESE + '?t=' + Date.now(), { cache: 'no-store' })
       ]);
 
       const rowsF = parseCSV(await resFormations.text());
       const rowsS = parseCSV(await resSuggestions.text());
       const rowsR = parseCSV(await resRefus.text());
+      const rowsSyn = parseCSV(await resSynth.text());
 
       // Suggestions
       rowsS.slice(1).forEach(r => {
@@ -384,6 +494,16 @@
         if (!f || !s) return;
         if (!SUGGESTIONS[f]) SUGGESTIONS[f] = [];
         SUGGESTIONS[f].push(s);
+      });
+
+      // Synthèses IA
+      rowsSyn.slice(1).forEach(r => {
+        const f = (r[0] || '').trim();
+        if (!f) return;
+        SYNTHESES[f] = {
+          nb: parseInt(r[1], 10) || 0,
+          texte: (r[2] || '').trim()
+        };
       });
 
       // Refus
@@ -433,14 +553,17 @@
       const vals = [pRep, pObj, pUti, pQua].filter(v => v != null);
       const satisfaction = vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : null;
 
-      render({
+      DONNEES_FORMATION = {
         name: formation,
         satisfaction, reponses,
         pRep, pObj, pUti, pQua,
         refus: refusInfo.refus,
         tauxRefus: refusInfo.taux,
-        suggestions: SUGGESTIONS[formation] || []
-      });
+        suggestions: SUGGESTIONS[formation] || [],
+        synthese: SYNTHESES[formation] || null
+      };
+
+      render(DONNEES_FORMATION);
 
     } catch (e) {
       console.error("Erreur chargement:", e);
@@ -461,17 +584,53 @@
       '</div>';
     };
 
-    const sugsBlock = r.suggestions.length
-      ? '<div class="sugg-bloc">' +
-          '<h2 class="sugg-title">💬 Suggestions & remarques ' +
-            '<span class="count">'+r.suggestions.length+'</span></h2>' +
+    // Synthèse IA
+    let synthBlock = '';
+    if (r.synthese && r.synthese.texte){
+      synthBlock =
+        '<div class="synth-bloc">' +
+          '<h2 class="synth-title">🤖 Synthèse IA ' +
+            '<span class="badge">' + r.synthese.nb + ' remarque' + (r.synthese.nb > 1 ? 's' : '') + '</span>' +
+          '</h2>' +
+          '<div class="synth-content">' + formaterSynthese(r.synthese.texte) + '</div>' +
+        '</div>';
+    } else {
+      synthBlock =
+        '<div class="synth-bloc">' +
+          '<h2 class="synth-title">🤖 Synthèse IA</h2>' +
+          '<div class="synth-none">Aucune synthèse générée pour cette formation.</div>' +
+        '</div>';
+    }
+
+    // Suggestions
+    let suggBlock = '';
+    if (r.suggestions.length){
+      suggBlock =
+        '<div class="sugg-bloc">' +
+          '<div class="sugg-header">' +
+            '<h2 class="sugg-title">💬 Suggestions & remarques ' +
+              '<span class="count">' + r.suggestions.length + '</span>' +
+            '</h2>' +
+            '<button class="btn-download" onclick="telechargerVerbatim()" type="button">' +
+              '<svg viewBox="0 0 24 24">' +
+                '<path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>' +
+              '</svg>' +
+              'Télécharger le verbatim (.txt)' +
+            '</button>' +
+          '</div>' +
           '<ul>' + r.suggestions.map(s => '<li>'+esc(s)+'</li>').join('') + '</ul>' +
-        '</div>'
-      : '<div class="sugg-bloc">' +
-          '<h2 class="sugg-title">💬 Suggestions & remarques</h2>' +
+        '</div>';
+    } else {
+      suggBlock =
+        '<div class="sugg-bloc">' +
+          '<div class="sugg-header">' +
+            '<h2 class="sugg-title">💬 Suggestions & remarques</h2>' +
+          '</div>' +
           '<div class="none">Aucune remarque pour cette formation.</div>' +
         '</div>';
+    }
 
+    // Meta
     const metaParts = [];
     if (r.reponses != null) metaParts.push('<strong>'+r.reponses+'</strong> réponse'+(r.reponses > 1 ? 's' : ''));
     if (r.refus != null && r.refus > 0) metaParts.push('<strong>'+r.refus+'</strong> refus');
@@ -480,6 +639,7 @@
 
     document.getElementById('content').innerHTML =
       '<div class="page">' +
+
         '<div class="titre-bloc '+lvl+'">' +
           '<div class="eyebrow">Formation</div>' +
           '<h1>'+esc(r.name)+'</h1>' +
@@ -499,12 +659,68 @@
           indCard('Qualité animation', r.pQua) +
         '</div>' +
 
-        sugsBlock +
+        synthBlock +
+        suggBlock +
+
       '</div>';
 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('content').style.display = 'block';
     document.title = r.name + ' — Évaluation complète';
+  }
+
+  /* ============================================================
+     TÉLÉCHARGEMENT DU VERBATIM (.txt)
+     ============================================================ */
+  function telechargerVerbatim(){
+    if (!DONNEES_FORMATION){
+      alert("Les données ne sont pas encore chargées.");
+      return;
+    }
+    const r = DONNEES_FORMATION;
+    const maintenant = new Date();
+    const dateStr = maintenant.toLocaleString('fr-FR', {
+      day:'2-digit', month:'long', year:'numeric',
+      hour:'2-digit', minute:'2-digit'
+    });
+
+    let contenu = '';
+    contenu += '================================================================\n';
+    contenu += 'VERBATIM DES SUGGESTIONS ET REMARQUES\n';
+    contenu += '================================================================\n\n';
+    contenu += 'Formation : ' + r.name + '\n';
+    contenu += 'Nombre de remarques : ' + r.suggestions.length + '\n';
+    if (r.reponses != null) contenu += 'Nombre de réponses : ' + r.reponses + '\n';
+    if (r.satisfaction != null) contenu += 'Taux de satisfaction : ' + fmtPct(r.satisfaction) + '\n';
+    contenu += 'Exporté le : ' + dateStr + '\n';
+    contenu += '\n================================================================\n';
+    contenu += 'SUGGESTIONS ET REMARQUES BRUTES\n';
+    contenu += '================================================================\n\n';
+
+    r.suggestions.forEach((s, i) => {
+      contenu += (i + 1) + '. ' + s + '\n\n';
+    });
+
+    contenu += '================================================================\n';
+    contenu += 'Lycée Professionnel Maritime Boulogne - Le Portel\n';
+    contenu += 'Conception et réalisation : ZEG\n';
+    contenu += '================================================================\n';
+
+    const blob = new Blob([contenu], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    // Nom du fichier : on remplace les caractères problématiques
+    const nomFichier = 'Verbatim_' +
+      r.name.replace(/[^a-zA-Z0-9]/g, '_') + '_' +
+      maintenant.toISOString().slice(0, 10) + '.txt';
+    a.href = url;
+    a.download = nomFichier;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    console.log("Verbatim téléchargé : " + nomFichier);
   }
 
   function showError(title, msg){
